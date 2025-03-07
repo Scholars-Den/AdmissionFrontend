@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
-//   fetchUserDetails,
-//   submitFormData,
-//   updateUserDetails,
-// } from "../../redux/formDataSlice";
+import {
+  fetchUserDetails,
+  submitFormData,
+  updateUserDetails,
+} from "../../redux/formDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../api/Spinner";
@@ -13,7 +14,7 @@ import Spinner from "../api/Spinner";
 
 const SignupForm = () => {
   const navigate = useNavigate();
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
@@ -32,6 +33,10 @@ const SignupForm = () => {
   // State hooks
   const [errors, setErrors] = useState({
     studentName: "",
+    dateOfAdmission: "",
+    Scholarship:"",
+    AadharID : "",
+    Gender : "",
     fatherContactNumber: "",
     fatherName: "",
   });
