@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import TakenBy from "./Components/TakenBy";
 import { Provider } from "react-redux";
 import store from "./../redux/store";
+import FamilyDetails from "./Components/fAMILYdETAILS.JSX";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
 
@@ -18,6 +19,7 @@ function App() {
         <div className="flex  justify-center items-center ">
           <Routes>
             <Route path="/" element={<Signup />} />
+            <Route path="/familyDetails" element = {< FamilyDetails />} />
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
