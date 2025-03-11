@@ -9,6 +9,8 @@ import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 
+
+
 const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,26 +19,19 @@ const SignupForm = () => {
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Define form fields
-  const formFields = [
-    { name: "studentName", type: "text", placeholder: "*Student Name", required: true },
-    { name: "fatherName", type: "text", placeholder: "*Parents Name", required: true },
-    { name: "email", type: "email", placeholder: "Email ID", required: false },
-    { name: "fatherContactNumber", type: "tel", placeholder: "*Contact no (Parents)", required: true },
-  ];
 
-  const selectFields = [
-    {
-      name: "grade",
-      label: "Select Grade",
-      options: ["Nursery", "KG", "1st", "2nd", "3rd", "4th", "5th"],
-      required: true,
-    },
-  ];
+
+
+
+
+  useEffect(()=>{
+    console.log("userData", userData);
+  })
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,6 +41,102 @@ const SignupForm = () => {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
   };
+
+  // Define form fields
+  const formFields = [
+    {
+      name: "studentName",
+      type: "text",
+      placeholder: "*Student Name",
+      required: true,
+    },
+    {
+      name: "aadharID",
+      type: "text",
+      placeholder: "*Aadher ID",
+      required: true,
+    },
+    // { name: "email", type: "email", placeholder: "Email ID", required: false },
+    {
+      name: "studentContactNumber",
+      type: "tel",
+      placeholder: "Enter Your Contact Number",
+      required: true,
+    },
+  ];
+
+  const selectFields = [
+    // {
+    //   name: "grade",
+    //   label: "Select Grade",
+    //   options: ["Nursery", "KG", "1st", "2nd", "3rd", "4th", "5th"],
+    //   required: true,
+    // },
+
+    {
+      name: "gender",
+      label: "Select Gender",
+      options: ["Male", "Female", "Other"],
+      value: userData.gender,
+      onChange: { handleChange },
+      error: errors.gender,
+    },
+
+    {
+      name: "category",
+      label: "Select Category",
+      options: ["General", "OBC", "SC", "ST", "ETS"],
+      value: userData.category,
+      onChange: {handleChange},
+      error: errors.category
+      
+    },
+  ];
+
+
+
+  function validateAadhaar(aadhaarNumber) {
+    // Check if the Aadhaar number is exactly 12 digits long and contains only numbers
+    const aadhaarRegex = /^\d{12}$/;
+    
+    if (!aadhaarRegex.test(aadhaarNumber)) {
+        return { isValid: false, message: "Aadhaar number must be 12 digits long and contain only numbers." };
+    }
+    
+    // Optional: You can include a checksum validation like Luhn Algorithm for basic checks
+    if (!luhnCheck(aadhaarNumber)) {
+        return { isValid: false, message: "Aadhaar number failed checksum validation." };
+    }
+    
+    return true;
+}
+
+// Optional: Luhn Algorithm for basic checksum validation
+function luhnCheck(number) {
+    let sum = 0;
+    let shouldDouble = false;
+    
+    // Loop through the digits from right to left
+    for (let i = number.length - 1; i >= 0; i--) {
+        let digit = parseInt(number.charAt(i));
+        
+        if (shouldDouble) {
+            digit *= 2;
+            if (digit > 9) {
+                digit -= 9; // Sum of digits of the product
+            }
+        }
+        
+        sum += digit;
+        shouldDouble = !shouldDouble;
+    }
+    
+    // If the sum modulo 10 is 0, then it's valid
+    return (sum % 10 === 0);
+}
+
+
+
 
   const validateForm = () => {
     const formErrors = {};
@@ -60,6 +151,12 @@ const SignupForm = () => {
 
     if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
       formErrors.email = "Email must be valid";
+      isValid = false;
+    }
+
+    // if(userData.aadharID && validateAadhaar(userData.aadharID)){
+    if(userData.aadharID && !validateAadhaar(userData.aadharID)){
+      formErrors. aadharID = "Aadhar Id must be valid";
       isValid = false;
     }
 
@@ -112,9 +209,13 @@ const SignupForm = () => {
       if (!codeVerified) {
         return setSubmitMessage("Please Verify Your Phone Number");
       }
+      console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
       navigate("/enquiryform");
+      await dispatch(submitFormData(userData));
+      navigate("/familyDetails")
+      // navigate("/enquiryform");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
@@ -128,8 +229,10 @@ const SignupForm = () => {
       <form className="flex flex-col px-12 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
         <h2 className="text-4xl text-white">Admission Form</h2>
 
+      
+
         <div className="flex flex-col w-full gap-4 items-center">
-          {formFields.map((field) => (
+          {formFields?.map((field) => (
             <InputField
               key={field.name}
               name={field.name}
@@ -141,7 +244,7 @@ const SignupForm = () => {
             />
           ))}
 
-          {selectFields.map((field) => (
+          {selectFields?.map((field) => (
             <SelectField
               key={field.name}
               name={field.name}
@@ -188,7 +291,54 @@ const SignupForm = () => {
           {submitMessage && <p className="text-sm text-[#ffdd00] text-center">{submitMessage}</p>}
         </div>
 
-        <button type="submit" className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4">
+            
+            
+        
+
+       
+
+          {/* Phone Verification */}
+          {/* <div className="flex gap-3 w-2/3">
+            <input
+              type="text"
+              id="verificationCode"
+              name="verificationCode"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="*Verification Code"
+              className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
+            />
+            {showCodeBox && (
+              <button
+                type="button"
+                onClick={checkVerificationCode}
+                className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+              >
+                Verify
+              </button>
+            )}
+          </div> */}
+
+          {!showCodeBox && !codeVerified && (
+            <button
+              type="button"
+              onClick={verifyPhoneNo}
+              className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+            >
+              Send OTP
+            </button>
+          )}
+
+          {submitMessage && (
+            <p className="text-sm text-[#ffdd00] text-center">
+              {submitMessage}
+            </p>
+          )}
+
+        <button
+          type="submit"
+          className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4"
+        >
           Next
         </button>
 

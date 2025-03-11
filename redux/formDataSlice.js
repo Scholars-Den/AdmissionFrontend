@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -20,7 +21,27 @@ export const fetchUserDetails = createAsyncThunk(
                     dataExist: true, // Indicate data exists
                     userData: {
                         studentName: data?.studentName || '',
-                        Category: data?.Category || '',
+                        aadharID: data?.aadharID || '',
+                        gender: data?.gender || '',
+                        category: data?.Category || '',
+                        dob: data?.dob || '',
+                        bloogGroup: data?.bloogGroup || '',
+                        scholarship: data?.scholarship || '',
+
+
+                        fatherName: data?.fatherName || '',
+                        fatherAadharId: data?.fatherAadharId || '',
+                        fatherDob: data?.fatherDob || '',
+                        fatherBloodGroup: data?.fatherBloodGroup || '',
+                        fatherOccupations: data?.fatherOccupatoions || '',
+                        motherName: data?.motherName || '',
+                        motherAadharId: data?.motherAadharId || '',
+                        motherDob: data?.motherDob || '',
+                        motherBloodGroup: data?.motherBloodGroup || '',
+                        motherOccupations: data?.motherOccupations || '',
+
+
+
                         studentContactNumber: data?.studentContactNumber || '',
                         email: data?.email || '',
                         parentsName: data?.parentsName || '',
@@ -28,8 +49,6 @@ export const fetchUserDetails = createAsyncThunk(
                         program: data?.program || '',
                         courseOfIntrested: data?.courseOfIntrested || '',
                         fatherContactNumber: data?.fatherContactNumber || '',
-                        fatherName: data?.fatherName || '',
-                        fatherOccupations: data?.fatherOccupations || '',
                         city: data?.city || '',
                         state: data?.state || '',
                         knowAboutUs: data?.knowAboutUs || "",
@@ -60,7 +79,7 @@ export const submitFormData = createAsyncThunk(
         try {
 
             console.log("formData from submitFormData", formData);
-            const response = await axios.post('/user', formData);
+            const response = await axios.post('/admissions/createAdmission', formData);
 
             document.cookie = `token=${response.data.token}`;
 
@@ -154,7 +173,7 @@ export const putFormData = createAsyncThunk(
             }
         } catch (error) {
             console.log("error from submitFormData", error);
-           
+
             return rejectWithValue(error.response?.data || 'Failed to update user details');
         }
     }
