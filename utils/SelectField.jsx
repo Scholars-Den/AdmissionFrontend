@@ -1,9 +1,9 @@
-import Neeche from "../assets/Neeche.png";
+import Neeche from "../src/assets/Neeche.png";
 
 
 
 const SelectField = ({ label, name, value, options, onChange, error }) => (
-    <div className="flex flex-col">
+    <div className="w-full">
       {/* <label htmlFor={name} className="text-lg font-semibold mb-1">
         {label}
       </label> */}
@@ -11,7 +11,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => (
         name={name}
         value={value || ""}
         onChange={onChange}
-        className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none  appearance-none "
+        className="border-b-2 text-white py-2 w-full bg-[#c61d23] focus:outline-none  appearance-none "
         style={{
           backgroundImage: `url(${Neeche})`,
   

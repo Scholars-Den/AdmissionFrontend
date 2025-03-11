@@ -1,46 +1,45 @@
 import { useEffect, useState } from "react";
-import axios from "../../api/axios";
-import { useNavigate, Link } from "react-router-dom";
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
-import {
-  fetchUserDetails,
-  submitFormData,
-  updateUserDetails,
-} from "../../redux/formDataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
+import { updateUserDetails, submitFormData } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
-// import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
+import SelectField from "../../utils/SelectField";
+import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 
 const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.userDetails);
+  const { loading } = useSelector((state) => state.loadingDetails);
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
-  const { userData, dataExist, error } = useSelector(
-    (state) => state.userDetails
-  );
-
-  const { loading } = useSelector((state) => state.loadingDetails);
-
-  const [submitMessage, setSubmitMessage] = useState("");
-
-  const phoneRegex = /^\+91[0-9]{10}$/;
-  // const [codeVerified, setCodeVerified] = useState(true);
   const [codeVerified, setCodeVerified] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [errors, setErrors] = useState({});
 
-  // State hooks
-  const [errors, setErrors] = useState({
-    studentName: "",
-    fatherContactNumber: "",
-    fatherName: "",
-  });
+  // Define form fields
+  const formFields = [
+    { name: "studentName", type: "text", placeholder: "*Student Name", required: true },
+    { name: "fatherName", type: "text", placeholder: "*Parents Name", required: true },
+    { name: "email", type: "email", placeholder: "Email ID", required: false },
+    { name: "fatherContactNumber", type: "tel", placeholder: "*Contact no (Parents)", required: true },
+  ];
+
+  const selectFields = [
+    {
+      name: "grade",
+      label: "Select Grade",
+      options: ["Nursery", "KG", "1st", "2nd", "3rd", "4th", "5th"],
+      required: true,
+    },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
 
     if (value.trim()) {
@@ -48,21 +47,13 @@ const SignupForm = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("userData from useEffect", userData);
-  }, [userData]);
-
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
-    // Field validation
-    ["studentName", "fatherContactNumber", "fatherName"].forEach((field) => {
-      if (!userData[field]?.trim()) {
-        const formattedField = field
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
-        formErrors[field] = `${formattedField} is required`;
+    formFields.forEach(({ name, required }) => {
+      if (required && !userData[name]?.trim()) {
+        formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
         isValid = false;
       }
     });
@@ -72,48 +63,24 @@ const SignupForm = () => {
       isValid = false;
     }
 
-    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
-      formErrors.fatherContactNumber =
-        "fatherContactNumber must be a valid 10-digit number";
-      isValid = false;
-    }
-
     setErrors(formErrors);
     return isValid;
   };
 
-  // useEffect(() => {
-  //   dispatch(fetchUserDetails());
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("error in useEffect", error);
-  // }, [error]);
-
-  // useEffect(() => {
-  //   if (document.cookie !== "") {
-  //     navigate("/enquiryform");
-  //   }
-  // }, [dataExist, userData]);
-
   const verifyPhoneNo = async () => {
     try {
       dispatch(setLoading(true));
-      // setShowCodeBox(true);
-
       const response = await axios.post("/user/sendVerification", {
-        mobileNumber: `${userData.fatherContactNumber}`,
+        mobileNumber: userData.fatherContactNumber,
       });
       if (response.status === 200) {
         setShowCodeBox(true);
-        setSubmitMessage("OTP sent successfully"); // Update the message to "OTP sent successfully" in the set
+        setSubmitMessage("OTP sent successfully");
       }
     } catch (error) {
-      console.log("Error message", error);
-      setSubmitMessage(`${error.response.data.message}`);
+      setSubmitMessage(error.response?.data?.message || "Error sending OTP");
     } finally {
       dispatch(setLoading(false));
-      // setShowCodeBox(true);
     }
   };
 
@@ -121,23 +88,16 @@ const SignupForm = () => {
     try {
       dispatch(setLoading(true));
       const response = await axios.post("/user/verifyNumber", {
-        mobileNumber: `${userData.fatherContactNumber}`,
+        mobileNumber: userData.fatherContactNumber,
         otp: code,
       });
-      console.log("response from checkVerificationCode", response);
       if (response.status === 200) {
-        setSubmitMessage("fatherContactNumber number verified successfully!");
+        setSubmitMessage("Phone number verified successfully!");
         setCodeVerified(true);
         setShowCodeBox(false);
-        return true;
       }
-      // setCodeVerified(true);
-      // setShowCodeBox(false);
-      // return true;
     } catch (error) {
-      console.log("Error messagefor checkVerificationCode", error);
-      setSubmitMessage("Error verifying fatherContactNumber number");
-      return false;
+      setSubmitMessage("Error verifying phone number");
     } finally {
       dispatch(setLoading(false));
     }
@@ -145,229 +105,96 @@ const SignupForm = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let codeChecked = await checkVerificationCode();
+    if (!validateForm()) return;
 
-      console.log("codeChecked", codeChecked);
+    try {
       dispatch(setLoading(true));
-      setSubmitMessage("");
-      console.log("Button Clicked");
-      if (codeChecked === false) {
-        setShowCodeBox(false);
-        setCodeVerified(false);
+      if (!codeVerified) {
         return setSubmitMessage("Please Verify Your Phone Number");
       }
 
-      // if (validateForm() && codeChecked === true) {
-      if (validateForm()) {
-        await dispatch(submitFormData(userData));
-
-        if (document.cookie !== "") {
-          navigate("/enquiryform");
-        }
-
-        console.log("userData for onSubmit", userData);
-        console.log("dataExist for onSubmit", dataExist);
-      }
+      await dispatch(submitFormData(userData));
+      navigate("/enquiryform");
     } catch (error) {
-      console.log("error from onSubmit", error);
+      console.log("Error submitting form:", error);
     } finally {
-      await dispatch(setLoading(false));
+      dispatch(setLoading(false));
     }
   };
 
   return (
     <div className="w-full">
       {loading && <Spinner />}
-      <form
-        className="flex flex-col justify-center px-12 items-center gap-2 py-2 text-white "
-        onSubmit={onSubmit}
-      >
-        <div className="flex flex-col justify-center items-center">
-          <h2 className="text-4xl text-white ">Admission Form</h2>
-        </div>
+      <form className="flex flex-col px-12 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
+        <h2 className="text-4xl text-white">Admission Form</h2>
 
-        {/* Name Field */}
-        <div className="flex flex-col justify-center items-center w-full gap-4">
-          <div className="flex flex-col items-center w-2/3 appearance-none">
+        <div className="flex flex-col w-full gap-4 items-center">
+          {formFields.map((field) => (
             <InputField
-              name="studentName"
-              value={userData?.studentName}
+              key={field.name}
+              name={field.name}
+              value={userData?.[field.name] || ""}
               onChange={handleChange}
-              error={errors.studentName}
-              type="text"
-              placeholder="*Student Name"
+              error={errors[field.name]}
+              type={field.type}
+              placeholder={field.placeholder}
             />
-            <div className="w-full">
-              <input
-                autoComplete="off"
-                type="text"
-                id="studentName"
-                name="studentName"
-                value={userData?.studentName || ""}
-                onChange={handleChange}
-                placeholder="*Student Name"
-                className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white "
-                style={{ backgroundColor: "#c61d23" }}
-              />
-              {errors.studentName && (
-                <p className="text-white text-xs">{errors.studentName}</p>
-              )}
-            </div>
-          </div>
+          ))}
 
-          <div className="flex flex-col items-center w-2/3 appearance-none">
-            <div className="w-full">
-              <div className="flex-1 flex flex-col">
-                <input
-                  autoComplete="off"
-                  type="text"
-                  id="fatherName"
-                  name="fatherName"
-                  value={userData?.fatherName || ""}
-                  onChange={handleChange}
-                  placeholder="*Parents Name"
-                  className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
-                  style={{ backgroundColor: "#c61d23" }}
-                />
-                {errors.fatherName && (
-                  <p className="text-white text-xs mt-1">{errors.fatherName}</p>
-                )}
-              </div>
-            </div>
-          </div>
+          {selectFields.map((field) => (
+            <SelectField
+              key={field.name}
+              name={field.name}
+              value={userData?.[field.name] || ""}
+              onChange={handleChange}
+              options={field.options}
+              error={errors[field.name]}
+              label={field.label}
+            />
+          ))}
 
-          {/* Email Field */}
-          <div className="flex flex-col items-center w-2/3 appearance-none">
-            <div className="w-full">
-              <input
-                autoComplete="off"
-                type="email"
-                id="email"
-                name="email"
-                value={userData?.email || ""}
-                onChange={handleChange}
-                placeholder="Email ID"
-                className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
-                style={{ backgroundColor: "#c61d23" }}
-              />
-            </div>
-          </div>
-
-          {/* Phone Field */}
-          <div className="flex gap-3 flex-col w-2/3">
-            <div className="flex-1 flex justify-center items-center w-full">
-              <input
-                autoComplete="off"
-                type="tel"
-                id="phone"
-                name="fatherContactNumber"
-                value={userData?.fatherContactNumber || ""}
-                onChange={handleChange}
-                placeholder="*Contact no (Parents)"
-                className="border-b-2 border-gray-300 py-2 focus:outline-none flex-1 my-auto placeholder-white"
-                style={{ backgroundColor: "#c61d23" }}
-              />
-              {!showCodeBox && !codeVerified && (
-                <div className="flex">
-                  <button
-                    type="button"
-                    onClick={verifyPhoneNo}
-                    className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-                    style={{ backgroundColor: "#c61d23" }}
-                  >
-                    Send OTP
-                  </button>
-                </div>
-              )}
-            </div>
-            {errors.fatherContactNumber && (
-              <p className="text-white text-xs mt-1">
-                {errors.fatherContactNumber}
-              </p>
+          {/* Phone Verification */}
+          <div className="flex gap-3 w-2/3">
+            <input
+              type="text"
+              id="verificationCode"
+              name="verificationCode"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="*Verification Code"
+              className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
+            />
+            {showCodeBox && (
+              <button
+                type="button"
+                onClick={checkVerificationCode}
+                className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+              >
+                Verify
+              </button>
             )}
           </div>
 
-          <div className="flex gap-3   justify-center w-2/3">
-            <div className="flex-1 flex flex-col">
-              <input
-                autoComplete="off"
-                type="text"
-                id="code"
-                name="code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="*Verification Code"
-                className="border-b-2 border-gray-300  py-2 focus:outline-none w-4/5 placeholder-white"
-                style={{ backgroundColor: "#c61d23" }}
-              />
-              {/* <button
-                    type="button"
-                    onClick={checkVerificationCode}
-                    className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-                    style={{ backgroundColor: "#c61d23" }}
-                  >
-                    Verify
-                  </button> */}
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center w-2/3 appearance-none">
-            <div
-              className={`flex justify-end items-end ${
-                showCodeBox ? "flex-col" : "flex-row"
-              } gap-1`}
+          {!showCodeBox && !codeVerified && (
+            <button
+              type="button"
+              onClick={verifyPhoneNo}
+              className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
             >
-              {/* <input
-            type="password"
-            id="password"
-            name="password"
-            value={userData?.password || ""}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            className="border-b-2 border-gray-300 py-2 focus:outline-none w-2/3 "
-            style={{ backgroundColor: "#c61d23" }}
-          /> */}
-            </div>
-          </div>
+              Send OTP
+            </button>
+          )}
+
+          {submitMessage && <p className="text-sm text-[#ffdd00] text-center">{submitMessage}</p>}
         </div>
-        {/* {errors.password && (
-          <p className="text-white text-xs">{errors.password}</p>
-        )} */}
 
-        {/* Submit Message */}
-        {submitMessage && (
-          <p className={`text-sm text-center ${"text-[#ffdd00]"}`}>
-            {submitMessage}
-          </p>
-        )}
-        {error && <p className="text-sm text-center text-white">{error}</p>}
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all mt-4"
-          style={{ backgroundColor: "#c61d23" }}
-        >
+        <button type="submit" className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4">
           Next
         </button>
 
-        <div className="w-full h-full flex justify-center items-center">
-          <div className=" w-24 mt-4">
-            <img src={scholarsDenLogo} alt="" />
-          </div>
+        <div className="w-24 mt-4">
+          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div>
-
-        {/* Login Link */}
-        {/* <div className="text-gray-300 mt-20 flex justify-between items-center">
-        <p className="text-sm">Already have an account?</p>
-        <Link
-          to="/"
-          className=" border-2 rounded-full py-2 px-5 font-medium hover:underline"
-        >
-          Log in
-        </Link>
-      </div> */}
       </form>
     </div>
   );
