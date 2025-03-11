@@ -149,6 +149,11 @@ function luhnCheck(number) {
       }
     });
 
+    if(userData.studentContactNumber && !/^\d{10}$/.test(userData.studentContactNumber)){
+      formErrors.studentContactNumber = "Contact number must be 10 digits";
+      isValid = false;
+    }
+
     if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
       formErrors.email = "Email must be valid";
       isValid = false;

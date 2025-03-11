@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
+import SignupDetailsPage from "./Components/SignupDetailsPage";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
 
@@ -20,6 +21,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Signup />} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />
+            <Route path="/siblingsDetails" element= {<SignupDetailsPage />} />
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
-import { useNavigate } from 'react-router-dom';
 
 
 
@@ -22,6 +21,7 @@ export const fetchUserDetails = createAsyncThunk(
                     userData: {
                         studentName: data?.studentName || '',
                         aadharID: data?.aadharID || '',
+                        studentContactNumber: data?.studentContactNumber || '',
                         gender: data?.gender || '',
                         category: data?.Category || '',
                         dob: data?.dob || '',
@@ -42,7 +42,6 @@ export const fetchUserDetails = createAsyncThunk(
 
 
 
-                        studentContactNumber: data?.studentContactNumber || '',
                         email: data?.email || '',
                         parentsName: data?.parentsName || '',
                         schoolName: data?.schoolName || '',
@@ -92,15 +91,40 @@ export const submitFormData = createAsyncThunk(
                 return {
                     dataExist: true, // Indicate data exists
                     userData: {
+
+
+
                         studentName: data?.studentName || '',
+                        aadharID: data?.aadharID || '',
                         studentContactNumber: data?.studentContactNumber || '',
+                        gender: data?.gender || '',
+                        category: data?.Category || '',
+                        dob: data?.dob || '',
+                        bloogGroup: data?.bloogGroup || '',
+                        scholarship: data?.scholarship || '',
+
+
+                        fatherName: data?.fatherName || '',
+                        fatherAadharId: data?.fatherAadharId || '',
+                        fatherDob: data?.fatherDob || '',
+                        fatherBloodGroup: data?.fatherBloodGroup || '',
+                        fatherOccupations: data?.fatherOccupatoions || '',
+                        motherName: data?.motherName || '',
+                        motherAadharId: data?.motherAadharId || '',
+                        motherDob: data?.motherDob || '',
+                        motherBloodGroup: data?.motherBloodGroup || '',
+                        motherOccupations: data?.motherOccupations || '',
+
+
+
+
+
                         email: data?.email || '',
                         schoolName: data?.schoolName || '',
                         program: data?.program || '',
                         courseOfIntrested: data?.courseOfIntrested || '',
                         fatherContactNumber: data?.fatherContactNumber || '',
-                        fatherName: data?.fatherName || '',
-                        fatherOccupations: data?.fatherOccupations || '',
+                     
                         city: data?.city || '',
                         state: data?.state || '',
                         knowAboutUs: data?.knowAboutUs || "",
@@ -143,17 +167,42 @@ export const putFormData = createAsyncThunk(
                 return {
                     dataExist: true, // Indicate data exists
                     userData: {
+                        
+
                         studentName: data?.studentName || '',
+                        aadharID: data?.aadharID || '',
                         studentContactNumber: data?.studentContactNumber || '',
+
+                        gender: data?.gender || '',
+                        category: data?.Category || '',
+                        dob: data?.dob || '',
+                        bloogGroup: data?.bloogGroup || '',
+                        scholarship: data?.scholarship || '',
+
+
+                        fatherName: data?.fatherName || '',
+                        fatherAadharId: data?.fatherAadharId || '',
+                        fatherDob: data?.fatherDob || '',
+                        fatherBloodGroup: data?.fatherBloodGroup || '',
+                        fatherOccupations: data?.fatherOccupatoions || '',
+                        motherName: data?.motherName || '',
+                        motherAadharId: data?.motherAadharId || '',
+                        motherDob: data?.motherDob || '',
+                        motherBloodGroup: data?.motherBloodGroup || '',
+                        motherOccupations: data?.motherOccupations || '',
+
+
+
+
+                        
                         email: data?.email || '',
                         schoolName: data?.schoolName || '',
                         program: data?.program || '',
                         courseOfIntrested: data?.courseOfIntrested || '',
                         fatherContactNumber: data?.fatherContactNumber || '',
-                        fatherName: data?.fatherName || '',
-                        fatherOccupations: data?.fatherOccupations || '',
+                     
                         city: data?.city || '',
-                        state: data?.state || "",
+                        state: data?.state || '',
                         knowAboutUs: data?.knowAboutUs || "",
                         remarks: data?.remarks || '',
                         intime: data?.intime || "",
