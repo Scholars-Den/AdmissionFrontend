@@ -104,6 +104,8 @@ export const submitFormData = createAsyncThunk(
                         scholarship: data?.scholarship || '',
 
 
+
+
                         fatherName: data?.fatherName || '',
                         fatherAadharId: data?.fatherAadharId || '',
                         fatherDob: data?.fatherDob || '',
@@ -118,13 +120,14 @@ export const submitFormData = createAsyncThunk(
 
 
 
-
                         email: data?.email || '',
                         schoolName: data?.schoolName || '',
                         program: data?.program || '',
                         courseOfIntrested: data?.courseOfIntrested || '',
                         fatherContactNumber: data?.fatherContactNumber || '',
                      
+
+
                         city: data?.city || '',
                         state: data?.state || '',
                         knowAboutUs: data?.knowAboutUs || "",
@@ -134,6 +137,7 @@ export const submitFormData = createAsyncThunk(
                         brochureGiven: data?.brochureGiven || "",
                         parentsName: data?.parentsName || "",
 
+                        
                     },
                 };
 

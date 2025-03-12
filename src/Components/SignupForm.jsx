@@ -31,7 +31,7 @@ const SignupForm = () => {
 
   useEffect(()=>{
     console.log("userData", userData);
-  })
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -217,10 +217,7 @@ function luhnCheck(number) {
       console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
-      navigate("/enquiryform");
-      await dispatch(submitFormData(userData));
-      navigate("/familyDetails")
-      // navigate("/enquiryform");
+      navigate("/familyDetails");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {

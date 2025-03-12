@@ -110,6 +110,7 @@ const FamilyDetails = () => {
   
 
   const onSubmit = async (e) => {
+    e.preventDefault()
     if (!validateForm()) return;
 
  try {
