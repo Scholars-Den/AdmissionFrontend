@@ -8,6 +8,7 @@ import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import { use } from "react";
 
 
 
@@ -27,11 +28,14 @@ const SignupForm = () => {
 
 
 
+  // Aadhar example: 1234 5678 9012
+
+
 
 
   useEffect(()=>{
     console.log("userData", userData);
-  })
+  },[userData])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +67,7 @@ const SignupForm = () => {
       placeholder: "Enter Your Contact Number",
       required: true,
     },
+    
   ];
 
   const selectFields = [
@@ -216,11 +221,9 @@ function luhnCheck(number) {
       }
       console.log("userData in onSumit ", userData);
 
-      await dispatch(submitFormData(userData));
-      navigate("/enquiryform");
+
       await dispatch(submitFormData(userData));
       navigate("/familyDetails")
-      // navigate("/enquiryform");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {

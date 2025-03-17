@@ -19,42 +19,42 @@ export const fetchUserDetails = createAsyncThunk(
                 return {
                     dataExist: true, // Indicate data exists
                     userData: {
-                        studentName: data?.studentName || '',
-                        aadharID: data?.aadharID || '',
-                        studentContactNumber: data?.studentContactNumber || '',
-                        gender: data?.gender || '',
-                        category: data?.Category || '',
-                        dob: data?.dob || '',
-                        bloogGroup: data?.bloogGroup || '',
-                        scholarship: data?.scholarship || '',
+                        studentName: data?.newAdmission?.studentName || '',
+                        aadharID: data?.newAdmission?.aadharID || '',
+                        studentContactNumber: data?.newAdmission?.studentContactNumber || '',
+                        gender: data?.newAdmission?.gender || '',
+                        category: data?.newAdmission?.Category || '',
+                        dob: data?.newAdmission?.dob || '',
+                        bloogGroup: data?.newAdmission?.bloogGroup || '',
+                        scholarship: data?.newAdmission?.scholarship || '',
 
 
-                        fatherName: data?.fatherName || '',
-                        fatherAadharId: data?.fatherAadharId || '',
-                        fatherDob: data?.fatherDob || '',
-                        fatherBloodGroup: data?.fatherBloodGroup || '',
-                        fatherOccupations: data?.fatherOccupatoions || '',
-                        motherName: data?.motherName || '',
-                        motherAadharId: data?.motherAadharId || '',
-                        motherDob: data?.motherDob || '',
-                        motherBloodGroup: data?.motherBloodGroup || '',
-                        motherOccupations: data?.motherOccupations || '',
+                        fatherName: data?.newAdmission?.fatherName || '',
+                        fatherAadharId: data?.newAdmission?.fatherAadharId || '',
+                        fatherDob: data?.newAdmission?.fatherDob || '',
+                        fatherBloodGroup: data?.newAdmission?.fatherBloodGroup || '',
+                        fatherOccupations: data?.newAdmission?.fatherOccupatoions || '',
+                        motherName: data?.newAdmission?.motherName || '',
+                        motherAadharId: data?.newAdmission?.motherAadharId || '',
+                        motherDob: data?.newAdmission?.motherDob || '',
+                        motherBloodGroup: data?.newAdmission?.motherBloodGroup || '',
+                        motherOccupations: data?.newAdmission?.motherOccupations || '',
 
 
 
-                        email: data?.email || '',
-                        parentsName: data?.parentsName || '',
-                        schoolName: data?.schoolName || '',
-                        program: data?.program || '',
-                        courseOfIntrested: data?.courseOfIntrested || '',
-                        fatherContactNumber: data?.fatherContactNumber || '',
-                        city: data?.city || '',
-                        state: data?.state || '',
-                        knowAboutUs: data?.knowAboutUs || "",
-                        remarks: data?.remarks || '',
-                        intime: data?.intime || "",
-                        enquiryTakenBy: data?.enquiryTakenBy || "",
-                        brochureGiven: data?.brochureGiven || ""
+                        email: data?.newAdmission?.email || '',
+                        parentsName: data?.newAdmission?.parentsName || '',
+                        schoolName: data?.newAdmission?.schoolName || '',
+                        program: data?.newAdmission?.program || '',
+                        courseOfIntrested: data?.newAdmission?.courseOfIntrested || '',
+                        fatherContactNumber: data?.newAdmission?.fatherContactNumber || '',
+                        city: data?.newAdmission?.city || '',
+                        state: data?.newAdmission?.state || '',
+                        knowAboutUs: data?.newAdmission?.knowAboutUs || "",
+                        remarks: data?.newAdmission?.remarks || '',
+                        intime: data?.newAdmission?.intime || "",
+                        enquiryTakenBy: data?.newAdmission?.enquiryTakenBy || "",
+                        brochureGiven: data?.newAdmission?.brochureGiven || ""
 
                     },
                 };
@@ -94,45 +94,45 @@ export const submitFormData = createAsyncThunk(
 
 
 
-                        studentName: data?.studentName || '',
-                        aadharID: data?.aadharID || '',
-                        studentContactNumber: data?.studentContactNumber || '',
-                        gender: data?.gender || '',
-                        category: data?.Category || '',
-                        dob: data?.dob || '',
-                        bloogGroup: data?.bloogGroup || '',
-                        scholarship: data?.scholarship || '',
+                        studentName: data?.newAdmission?.studentName || '',
+                        aadharID: data?.newAdmission?.aadharID || '',
+                        studentContactNumber: data?.newAdmission?.studentContactNumber || '',
+                        gender: data?.newAdmission?.gender || '',
+                        category: data?.newAdmission?.Category || '',
+                        dob: data?.newAdmission?.dob || '',
+                        bloogGroup: data?.newAdmission?.bloogGroup || '',
+                        scholarship: data?.newAdmission?.scholarship || '',
 
 
-                        fatherName: data?.fatherName || '',
-                        fatherAadharId: data?.fatherAadharId || '',
-                        fatherDob: data?.fatherDob || '',
-                        fatherBloodGroup: data?.fatherBloodGroup || '',
-                        fatherOccupations: data?.fatherOccupatoions || '',
-                        motherName: data?.motherName || '',
-                        motherAadharId: data?.motherAadharId || '',
-                        motherDob: data?.motherDob || '',
-                        motherBloodGroup: data?.motherBloodGroup || '',
-                        motherOccupations: data?.motherOccupations || '',
+                        fatherName: data?.newAdmission?.fatherName || '',
+                        fatherAadharId: data?.newAdmission?.fatherAadharId || '',
+                        fatherDob: data?.newAdmission?.fatherDob || '',
+                        fatherBloodGroup: data?.newAdmission?.fatherBloodGroup || '',
+                        fatherOccupations: data?.newAdmission?.fatherOccupatoions || '',
+                        motherName: data?.newAdmission?.motherName || '',
+                        motherAadharId: data?.newAdmission?.motherAadharId || '',
+                        motherDob: data?.newAdmission?.motherDob || '',
+                        motherBloodGroup: data?.newAdmission?.motherBloodGroup || '',
+                        motherOccupations: data?.newAdmission?.motherOccupations || '',
 
 
 
 
 
-                        email: data?.email || '',
-                        schoolName: data?.schoolName || '',
-                        program: data?.program || '',
-                        courseOfIntrested: data?.courseOfIntrested || '',
-                        fatherContactNumber: data?.fatherContactNumber || '',
+                        email: data?.newAdmission?.email || '',
+                        schoolName: data?.newAdmission?.schoolName || '',
+                        program: data?.newAdmission?.program || '',
+                        courseOfIntrested: data?.newAdmission?.courseOfIntrested || '',
+                        fatherContactNumber: data?.newAdmission?.fatherContactNumber || '',
                      
-                        city: data?.city || '',
-                        state: data?.state || '',
-                        knowAboutUs: data?.knowAboutUs || "",
-                        remarks: data?.remarks || '',
-                        intime: data?.intime || "",
-                        enquiryTakenBy: data?.enquiryTakenBy || "",
-                        brochureGiven: data?.brochureGiven || "",
-                        parentsName: data?.parentsName || "",
+                        city: data?.newAdmission?.city || '',
+                        state: data?.newAdmission?.state || '',
+                        knowAboutUs: data?.newAdmission?.knowAboutUs || "",
+                        remarks: data?.newAdmission?.remarks || '',
+                        intime: data?.newAdmission?.intime || "",
+                        enquiryTakenBy: data?.newAdmission?.enquiryTakenBy || "",
+                        brochureGiven: data?.newAdmission?.brochureGiven || "",
+                        parentsName: data?.newAdmission?.parentsName || "",
 
                     },
                 };
@@ -156,7 +156,7 @@ export const putFormData = createAsyncThunk(
     async (formData, { rejectWithValue }) => {
         try {
             console.log("formData from submitFormData", formData);
-            const response = await axios.patch('/user/putFormData', formData);
+            const response = await axios.patch('/admissions/putFormData', formData);
 
             console.log("response from submitsuserDetails", response);
 
