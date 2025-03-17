@@ -91,12 +91,9 @@ const SiblingsDetails = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     try {
       dispatch(setLoading(true));
-
       console.log("userData in onSumit ", userData);
-
       await dispatch(putFormData(userData));
       navigate("/siblingsDetails");
     } catch (error) {
@@ -167,8 +164,10 @@ const SiblingsDetails = () => {
 
         <div className="flex w-full gap-4">
           {datafield.map((field, index) => (
+
+            console.log("field", field),
             <div className="flex flex-col w-1/2">
-                    <label htmlFor={name} className="text-lg font-semibold mb-1">
+                    <label htmlFor={field.name} className="text-lg font-semibold mb-1">
         {field.label}
       </label> 
             <InputField

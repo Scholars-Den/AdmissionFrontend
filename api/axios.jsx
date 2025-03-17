@@ -24,8 +24,8 @@ instance.interceptors.request.use(
 
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, '$1');
     // console.log("import.meta.env.VITE_APP_API_URL", `${import.meta.env.VITE_APP_API_URL}`);
+console.log("token", token);
 
-// console.log("token", token);
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

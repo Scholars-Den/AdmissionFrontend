@@ -24,6 +24,8 @@ export const fetchUserDetails = createAsyncThunk(
                         studentContactNumber: data?.newAdmission?.studentContactNumber || '',
                         gender: data?.newAdmission?.gender || '',
                         category: data?.newAdmission?.Category || '',
+
+
                         dob: data?.newAdmission?.dob || '',
                         bloogGroup: data?.newAdmission?.bloogGroup || '',
                         scholarship: data?.newAdmission?.scholarship || '',
@@ -156,6 +158,8 @@ export const submitFormData = createAsyncThunk(
 export const putFormData = createAsyncThunk(
     'userDetails/putFormData',
     async (formData, { rejectWithValue }) => {
+
+        console.log("formData from submitFormData", formData);
         try {
             console.log("formData from submitFormData", formData);
             const response = await axios.patch('/admissions/putFormData', formData);
