@@ -119,6 +119,7 @@ export const submitFormData = createAsyncThunk(
 
 
 
+
                         email: data?.newAdmission?.email || '',
                         schoolName: data?.newAdmission?.schoolName || '',
                         program: data?.newAdmission?.program || '',
@@ -134,6 +135,7 @@ export const submitFormData = createAsyncThunk(
                         brochureGiven: data?.newAdmission?.brochureGiven || "",
                         parentsName: data?.newAdmission?.parentsName || "",
 
+                        
                     },
                 };
 
