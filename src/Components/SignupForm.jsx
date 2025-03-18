@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { updateUserDetails, submitFormData } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
@@ -8,7 +8,6 @@ import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
-import { use } from "react";
 
 
 
@@ -39,6 +38,15 @@ const SignupForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("name", name, "value", value);
+    if(name === "termsAndCondition"){
+
+      console.log("e.target.checked", e.target.checked);
+
+      dispatch(updateUserDetails({ [e.target.name]: e.target.checked ? "true" : "false" }));
+      return;
+    }
+
     dispatch(updateUserDetails({ [name]: value }));
 
     if (value.trim()) {
@@ -97,6 +105,10 @@ const SignupForm = () => {
       
     },
   ];
+
+
+
+
 
 
 
@@ -166,10 +178,15 @@ function luhnCheck(number) {
 
     // if(userData.aadharID && validateAadhaar(userData.aadharID)){
     if(userData.aadharID && !validateAadhaar(userData.aadharID)){
-      formErrors. aadharID = "Aadhar Id must be valid";
+      formErrors.aadharID = "Aadhar Id must be valid";
       isValid = false;
     }
+console.log("userData.termsAndCondition",userData.termsAndCondition);
+    if(userData.termsAndCondition!=="on"){
+      formErrors.termsAndCondition = "Please accept terms and conditions";
+      isValid = false;
 
+    }
     setErrors(formErrors);
     return isValid;
   };
@@ -349,6 +366,19 @@ function luhnCheck(number) {
         >
           Next
         </button>
+        <div className="flex gap-1 justify-center items-center">
+      <input 
+        type="checkbox"
+        name="termsAndCondition"
+        checked={userData?.termsAndCondition ? true : false} // Ensure it's a boolean
+        onChange={handleChange}
+        className="cursor-pointer"
+      /> 
+      <label className="p-1">
+        I agree to <Link to="/termsAndConditions" className="text-[#ffdd00] underline">Terms & Conditions</Link>
+      </label>
+    </div>
+      {errors.termsAndCondition && <span className="text-white text-sm mt-1">{errors.termsAndCondition}</span>}
 
         <div className="w-24 mt-4">
           <img src={scholarsDenLogo} alt="Scholars Den Logo" />

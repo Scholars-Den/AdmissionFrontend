@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
+import TermsAndConditionPage from '../src/Components/TermsAndConditionPage';
 
 
 
@@ -29,6 +30,7 @@ export const fetchUserDetails = createAsyncThunk(
                         dob: data?.newAdmission?.dob || '',
                         bloogGroup: data?.newAdmission?.bloogGroup || '',
                         scholarship: data?.newAdmission?.scholarship || '',
+                        termsAndCondition: data?.TermsAndCondition || '',
 
 
                         fatherName: data?.newAdmission?.fatherName || '',
@@ -42,21 +44,13 @@ export const fetchUserDetails = createAsyncThunk(
                         motherBloodGroup: data?.newAdmission?.motherBloodGroup || '',
                         motherOccupations: data?.newAdmission?.motherOccupations || '',
 
+                        noOfBrother: data?.newAdmission?.noOfBrother || '',
+                        noOfSister: data?.newAdmission?.noOfSister || '',
+                        siblingsPosition: data?.newAdmission?.siblingsPosition || '',
+                        siblings: data?.newAdmission?.siblings || '',
+                        signatures: data?.newAdmission?.signatures || '',
+                     
 
-
-                        email: data?.newAdmission?.email || '',
-                        parentsName: data?.newAdmission?.parentsName || '',
-                        schoolName: data?.newAdmission?.schoolName || '',
-                        program: data?.newAdmission?.program || '',
-                        courseOfIntrested: data?.newAdmission?.courseOfIntrested || '',
-                        fatherContactNumber: data?.newAdmission?.fatherContactNumber || '',
-                        city: data?.newAdmission?.city || '',
-                        state: data?.newAdmission?.state || '',
-                        knowAboutUs: data?.newAdmission?.knowAboutUs || "",
-                        remarks: data?.newAdmission?.remarks || '',
-                        intime: data?.newAdmission?.intime || "",
-                        enquiryTakenBy: data?.newAdmission?.enquiryTakenBy || "",
-                        brochureGiven: data?.newAdmission?.brochureGiven || ""
 
                     },
                 };
@@ -104,6 +98,8 @@ export const submitFormData = createAsyncThunk(
                         dob: data?.newAdmission?.dob || '',
                         bloogGroup: data?.newAdmission?.bloogGroup || '',
                         scholarship: data?.newAdmission?.scholarship || '',
+                        termsAndCondition: data?.TermsAndCondition || '',
+
 
 
                         fatherName: data?.newAdmission?.fatherName || '',
@@ -169,7 +165,7 @@ export const putFormData = createAsyncThunk(
                         dob: data?.dob || '',
                         bloogGroup: data?.bloogGroup || '',
                         scholarship: data?.scholarship || '',
-
+                        termsAndCondition: data?.TermsAndCondition || '',
 
                         fatherName: data?.fatherName || '',
                         fatherAadharId: data?.fatherAadharId || '',
@@ -181,12 +177,6 @@ export const putFormData = createAsyncThunk(
                         motherDob: data?.motherDob || '',
                         motherBloodGroup: data?.motherBloodGroup || '',
                         motherOccupations: data?.motherOccupations || '',
-
-
-
-
-                        
-                       
 
                     },
                 };

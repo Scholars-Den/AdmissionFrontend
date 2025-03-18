@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../../redux/loadingSlice";
-import { putFormData, submitSiblingsDetails, updateSiblingDetails, updateUserDetails } from "../../redux/formDataSlice";
+import { fetchUserDetails, putFormData, submitSiblingsDetails, updateSiblingDetails, updateUserDetails } from "../../redux/formDataSlice";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "../../api/Spinner";
+import { use } from "react";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
@@ -129,7 +130,9 @@ const SiblingsDetails = () => {
       })
     );
   };
-
+useEffect(()=>{
+  fetchUserDetails();
+},[])
   return (
     <div className="w-full px-8 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}

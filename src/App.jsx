@@ -10,6 +10,7 @@ import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
 
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
+import TermsAndConditionPage from "./Components/TermsAndConditionPage";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
 
@@ -23,6 +24,8 @@ function App() {
             <Route path="/" element={<Signup />} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
+            <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
+
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
