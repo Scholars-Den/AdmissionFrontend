@@ -1,88 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../../redux/loadingSlice";
-import { putFormData, updateUserDetails } from "../../redux/formDataSlice";
-import InputField from "../../utils/InputField";
+import { putFormData, submitSiblingsDetails, updateSiblingDetails, updateUserDetails } from "../../redux/formDataSlice";
+import SignatureCanvas from "react-signature-canvas";
+import Spinner from "../../api/Spinner";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
   const [errors, setErrors] = useState({});
+  const [signatures, setSignatures] = useState({
+    student: "",
+    parent: "",
+    admissionOfficer: "",
+  });
+
+  const signatureRefs = {
+    student: useRef(null),
+    parent: useRef(null),
+    admissionOfficer: useRef(null),
+  };
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.userDetails);
 
-  const datafield = [
+  const siblingsData = [
     {
-      name: "noOFBrother",
+      name: "noOfBrother",
+      label: "No. of Brothers",
       type: "number",
-      placeholder: "Enter Number of Brother",
       required: true,
     },
     {
       name: "noOfSister",
+      label: "No. of Sisters",
       type: "number",
-      placeholder: "Enter Number of Sisters",
+      required: true,
     },
     {
-      name: "siblingsposition",
+      name: "siblingsPosition",
+      label: "Your position among siblings",
       type: "number",
-      placeholder: "Your position among siblings in descending order",
+      required: true,
     },
   ];
 
-  // const siblingsDetails = [
-  //   {
-  //     name: "relation",
-  //     type: "string",
-  //     placeholder: "Enter Relation",
-  //   },
-  //   {
-  //     name: "name",
-  //     type: "string",
-  //     placeholder: "Enter Name",
-  //   },
-  //   {
-  //     name: "currentOccupation",
-  //     type: "string",
-  //     placeholder: "Enter Current Occupation",
-  //   },
-  //   {
-  //     name: "standard",
-  //     type: "string",
-  //     placeholder: "Enter your brother class ",
-  //   },
-  //   {
-  //     name: "School",
-  //     type: "string",
-  //     placeholder: "Enter your school name",
-  //   },
-  //   {
-  //     name: "Board",
-  //     type: "string",
-  //     placeholder: "Enter Your Board name",
-  //   },
-  //   {
-  //     name: "",
-  //   },
-  // ];
+  const siblingsTable = Array(4).fill(null);
 
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
-    datafield.forEach(({ name, required }) => {
+    siblingsData.forEach(({ name, required }) => {
       if (required && !userData[name]?.trim()) {
         formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
         isValid = false;
       }
     });
 
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-      formErrors.email = "Email must be valid";
-      isValid = false;
-    }
+    Object.keys(signatures).forEach((key) => {
+      if (!signatures[key]) {
+        formErrors[key] = "Signature is required";
+        isValid = false;
+      }
+    });
 
     setErrors(formErrors);
     return isValid;
@@ -91,10 +73,11 @@ const SiblingsDetails = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+
     try {
       dispatch(setLoading(true));
-      console.log("userData in onSumit ", userData);
-      await dispatch(putFormData(userData));
+      const formData = { ...userData, signatures };
+      await dispatch(submitSiblingsDetails(formData));
       navigate("/siblingsDetails");
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -103,93 +86,184 @@ const SiblingsDetails = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(updateUserDetails({ [name]: value }));
 
+    if (value.trim()) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    }
+  };
+
+  const handleSignatureEnd = (key) => {
+    setSignatures((prev) => ({
+      ...prev,
+      [key]: signatureRefs[key].current.toDataURL(),
+    }));
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
+  };
+
+  useEffect(()=>{
+    console.log("signatures", signatures);
+  },[signatures]);
+
+  const clearSignature = (key) => {
+    signatureRefs[key].current.clear();
+    setSignatures((prev) => ({ ...prev, [key]: "" }));
+  };
+
+  useEffect(() => {
   
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      dispatch(updateUserDetails({ [name]: value }));
+      dispatch(updateUserDetails({ siblings: Array(4).fill({}) }));
+    
+  }, []);
+
+  const handleSiblingChange = (index, e) => {
+    const { name, value, type, checked } = e.target;
   
-      if (value.trim()) {
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-      }
-    };
-
-  const siblingsData = [
-    {
-      name: "noOfBrother",
-      type: "number",
-      label: "Enter Number of Brother",
-      required: true,
-
-    },
-    {
-      name: "noOfSister",
-      type: "number",
-      label: "Enter Number of Sisters",
-      required: true,
-    },
-  ];
-
-  // const formFields = [
-  //   {
-  //     name: "studentName",
-  //     type: "text",
-  //     placeholder: "*Student Name",
-  //     required: true,
-  //   },
-  //   {
-  //     name: "aadharID",
-  //     type: "text",
-  //     placeholder: "*Aadher ID",
-  //     required: true,
-  //   },
-  //   // { name: "email", type: "email", placeholder: "Email ID", required: false },
-  //   {
-  //     name: "studentContactNumber",
-  //     type: "tel",
-  //     placeholder: "Enter Your Contact Number",
-  //     required: true,
-  //   },
-
-  // ];
+    dispatch(
+      updateSiblingDetails({
+        index,
+        name,
+        value: type === "checkbox" ? checked : value
+      })
+    );
+  };
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
-      <form
-        className="flex flex-col px-12 items-center gap-2 text-white"
-        onSubmit={onSubmit}
-      >
-        <h2 className="text-4xl text-white">Siblings Details Form</h2>
+      <form onSubmit={onSubmit} className="">
+        <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
 
-        <div className="flex w-full gap-4">
-          {datafield.map((field, index) => (
-
-            console.log("field", field),
-            <div className="flex flex-col w-1/2">
-                    <label htmlFor={field.name} className="text-lg font-semibold mb-1">
-        {field.label}
-      </label> 
-            <InputField
-              key={index}
-              label={field.name}
-              name={field.name}
-              type={field.type}
-              value={userData[field.name]}
-              onChange={handleChange}
+        <div className="flex gap-2 mb-2">
+          {siblingsData?.map((field) => (
+            <div key={field.name} className="flex flex-col w-1/3">
+              <label className="mb-1 font-medium">{field.label}</label>
+              <input
+                type={field.type}
+                name={field.name}
+                value={userData[field.name] || ""}
+                onChange={handleChange}
+                className="border p-2 rounded-md text-black"
               />
-              </div>
+              {errors[field.name] && (
+                <p className="text-red-500 text-sm">{errors[field.name]}</p>
+              )}
+            </div>
           ))}
         </div>
-        <div className="flex flex-col w-full gap-4 items-center">
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4"
-          >
-            Next
-          </button>
+
+        <table className="w-full border-collapse border border-gray-400">
+          <thead>
+            <tr>
+              <th className="border p-2">S.No</th>
+              <th className="border p-2">Relation</th>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">Current Occupation</th>
+              <th className="border p-2">Studying In</th>
+            </tr>
+          </thead>
+          <tbody>
+  {userData?.siblings?.map((sibling, index) => (
+    <tr key={index}>
+      <td className="border p-2">{index + 1}</td>
+      <td className="border p-2">
+        <input 
+          type="text" 
+          name="relation"
+          value={sibling?.relation || ""}
+          onChange={(e) => handleSiblingChange(index, e)}
+          className="w-full p-1 text-black"
+        />
+      </td>
+      <td className="border p-2">
+        <input 
+          type="text" 
+          name="name"
+          value={sibling?.name || ""}
+          onChange={(e) => handleSiblingChange(index, e)}
+          className="w-full p-1 text-black"
+        />
+      </td>
+      <td className="border p-2 flex gap-2">
+        <label>
+          <input 
+            type="checkbox"
+            name="isStudent"
+            checked={sibling?.isStudent || false}
+            onChange={(e) => handleSiblingChange(index, e)}
+          /> Student
+        </label>
+        <label className="ml-4">
+          <input 
+            type="checkbox"
+            name="isWorking"
+            checked={sibling?.isWorking || false}
+            onChange={(e) => handleSiblingChange(index, e)}
+          /> Working
+        </label>
+      </td>
+      <td className="border p-2">
+        <input 
+          type="text" 
+          name="studyingIn"
+          value={sibling?.studyingIn || ""}
+          onChange={(e) => handleSiblingChange(index, e)}
+          className="w-full p-1 text-black"
+        />
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+        </table>
+
+        {/* Digital Signature Fields */}
+        <div className="flex justify-center items-center w-full text-center ">
+          {[
+            { key: "student", label: "Signature of Student" },
+            {
+              key: "parent",
+              label: "Signature of Parent (Should match with PAN)",
+            },
+            {
+              key: "admissionOfficer",
+              label: "Admission Formalities Completed by",
+            },
+          ].map(({ key, label }) => (
+            <div key={key} className="m-2 flex flex-col justify-center items-center w-1/3 ">
+              <h3 className="flex items-center text-lg font-semibold h-16">{label}</h3>
+              <div className="border border-gray-400 bg-white px-2 m-2 rounded-md">
+                <SignatureCanvas
+                  ref={signatureRefs[key]}
+                  penColor="black"
+                  canvasProps={{ className: "w-full h-24" }}
+                  onEnd={() => handleSignatureEnd(key)}
+                />
+              </div>
+              <div className="">
+                <button
+                  type="button"
+                  onClick={() => clearSignature(key)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Clear Signature
+                </button>
+              </div>
+              {errors[key] && (
+                <p className="text-red-500 text-sm">{errors[key]}</p>
+              )}
+            </div>
+          ))}
         </div>
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-2 rounded-lg"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );

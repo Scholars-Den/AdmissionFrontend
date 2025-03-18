@@ -122,21 +122,6 @@ export const submitFormData = createAsyncThunk(
 
 
 
-                        email: data?.newAdmission?.email || '',
-                        schoolName: data?.newAdmission?.schoolName || '',
-                        program: data?.newAdmission?.program || '',
-                        courseOfIntrested: data?.newAdmission?.courseOfIntrested || '',
-                        fatherContactNumber: data?.newAdmission?.fatherContactNumber || '',
-                     
-                        city: data?.newAdmission?.city || '',
-                        state: data?.newAdmission?.state || '',
-                        knowAboutUs: data?.newAdmission?.knowAboutUs || "",
-                        remarks: data?.newAdmission?.remarks || '',
-                        intime: data?.newAdmission?.intime || "",
-                        enquiryTakenBy: data?.newAdmission?.enquiryTakenBy || "",
-                        brochureGiven: data?.newAdmission?.brochureGiven || "",
-                        parentsName: data?.newAdmission?.parentsName || "",
-
                         
                     },
                 };
@@ -201,20 +186,7 @@ export const putFormData = createAsyncThunk(
 
 
                         
-                        email: data?.email || '',
-                        schoolName: data?.schoolName || '',
-                        program: data?.program || '',
-                        courseOfIntrested: data?.courseOfIntrested || '',
-                        fatherContactNumber: data?.fatherContactNumber || '',
-                     
-                        city: data?.city || '',
-                        state: data?.state || '',
-                        knowAboutUs: data?.knowAboutUs || "",
-                        remarks: data?.remarks || '',
-                        intime: data?.intime || "",
-                        enquiryTakenBy: data?.enquiryTakenBy || "",
-                        brochureGiven: data?.brochureGiven || "",
-                        parentsName: data?.parentsName || "",
+                       
 
                     },
                 };
@@ -236,6 +208,25 @@ export const putFormData = createAsyncThunk(
 
 
 
+export const submitSiblingsDetails = createAsyncThunk(
+    "form/submitSiblingsDetails",
+    async (formData, { rejectWithValue }) => {
+
+        console.log("formData from submitSiblingsDetails", formData);
+        try {
+            const response = await axios.patch(`/admissions/submitSiblingsDetails`, formData);
+
+            console.log("response from submitSiblingsDetails", response);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+
+
+
 // Slice
 const formDataSlice = createSlice({
     name: 'userDetails',
@@ -250,6 +241,15 @@ const formDataSlice = createSlice({
         updateUserDetails(state, action) {
             state.userData = { ...state.userData, ...action.payload };
         },
+
+        updateSiblingDetails: (state, action) => {
+            const { index, name, value } = action.payload;
+            state.userData.siblings[index] = {
+                ...state.userData.siblings[index],
+                [name]: value
+            };
+        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -287,5 +287,5 @@ const formDataSlice = createSlice({
     },
 });
 
-export const { updateUserDetails } = formDataSlice.actions;
+export const { updateUserDetails , updateSiblingDetails} = formDataSlice.actions;
 export default formDataSlice.reducer;
