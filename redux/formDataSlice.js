@@ -49,7 +49,25 @@ export const fetchUserDetails = createAsyncThunk(
                         siblingsPosition: data?.newAdmission?.siblingsPosition || '',
                         siblings: data?.newAdmission?.siblings || '',
                         signatures: data?.newAdmission?.signatures || '',
-                     
+
+
+                        accountHolder: data?.newAdmission?.accountHolder || '',
+                        bankName: data?.newAdmission?.bankName || '',
+                        accountNumber: data?.newAdmission?.accountNumber || '',
+                        ifscCode: data?.newAdmission?.ifscCode || '',
+                        relationWithStudent: data?.newAdmission?.relationWithStudent || '',
+                        documents: {
+                            cancelledCheque: data?.newAdmission?.documents?.cancelledCheque || '',
+                            passbook: data?.newAdmission?.documents?.passbook || '',
+                            studentAadhar: data?.newAdmission?.documents?.studentAadhar || '',
+                            parentAadhar: data?.newAdmission?.documents?.parentAadhar || '',
+                            passportPhotos: data?.newAdmission?.documents?.passportPhotos || '',
+                        },
+                        signatures: {
+                            admissionOfficer: data?.newAdmission?.signatures?.admissionOfficer || '',
+                            parent: data?.newAdmission?.signatures?.parent || '',
+                        },
+
 
 
                     },
@@ -66,6 +84,50 @@ export const fetchUserDetails = createAsyncThunk(
         }
 
     }
+)
+
+
+export const submitBankRefundForm = createAsyncThunk(
+    'userDetails/submitBankRefundForm',
+    async (formData, { rejectWithValue }) => {
+        try {
+            console.log("formData from submitBankRefundForm", formData);
+            const response = await axios.patch('/admissions/submitBankRefundForm', formData);
+            console.log("response from submitBankRefundForm", response);
+
+
+
+            const data = response.data;
+            if (data.length !== 0) {
+                return {
+                    dataExist: true, // Indicate data exists
+                    userData: {
+
+                        accountHolder: formData,
+                        bankName: "",
+                        accountNumber: "",
+                        ifscCode: "",
+                        relationWithStudent: "",
+                        documents: {
+                          cancelledCheque: false,
+                          passbook: false,
+                          studentAadhar: false,
+                          parentAadhar: false,
+                          passportPhotos: false,
+                        },
+                        signatures: {
+                          admissionOfficer: "",
+                          parent: "",
+                        },
+
+                    }
+                }
+            }
+        } catch (error) {
+            console.log("error ", error);
+        }
+    }
+
 )
 
 export const submitFormData = createAsyncThunk(
@@ -118,7 +180,7 @@ export const submitFormData = createAsyncThunk(
 
 
 
-                        
+
                     },
                 };
 
@@ -154,7 +216,7 @@ export const putFormData = createAsyncThunk(
                 return {
                     dataExist: true, // Indicate data exists
                     userData: {
-                        
+
 
                         studentName: data?.studentName || '',
                         aadharID: data?.aadharID || '',
@@ -277,5 +339,5 @@ const formDataSlice = createSlice({
     },
 });
 
-export const { updateUserDetails , updateSiblingDetails} = formDataSlice.actions;
+export const { updateUserDetails, updateSiblingDetails } = formDataSlice.actions;
 export default formDataSlice.reducer;

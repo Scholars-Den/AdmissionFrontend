@@ -43,7 +43,7 @@ const SignupForm = () => {
 
       console.log("e.target.checked", e.target.checked);
 
-      dispatch(updateUserDetails({ [e.target.name]: e.target.checked ? "true" : "false" }));
+      dispatch(updateUserDetails({ [e.target.name]: e.target.checked}));
       return;
     }
 
@@ -161,7 +161,7 @@ function luhnCheck(number) {
 
     formFields.forEach(({ name, required }) => {
       if (required && !userData[name]?.trim()) {
-        formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
+        formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
         isValid = false;
       }
     });
@@ -182,7 +182,7 @@ function luhnCheck(number) {
       isValid = false;
     }
 console.log("userData.termsAndCondition",userData.termsAndCondition);
-    if(userData.termsAndCondition!=="on"){
+    if(!userData.termsAndCondition){
       formErrors.termsAndCondition = "Please accept terms and conditions";
       isValid = false;
 
@@ -367,13 +367,14 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
           Next
         </button>
         <div className="flex gap-1 justify-center items-center">
-      <input 
-        type="checkbox"
-        name="termsAndCondition"
-        checked={userData?.termsAndCondition ? true : false} // Ensure it's a boolean
-        onChange={handleChange}
-        className="cursor-pointer"
-      /> 
+        <input 
+  type="checkbox"
+  name="termsAndCondition"
+  value={Boolean(userData?.termsAndCondition)}
+  checked={Boolean(userData?.termsAndCondition)} // Ensure it's a boolean
+  onChange={handleChange}
+  className="cursor-pointer"
+/>
       <label className="p-1">
         I agree to <Link to="/termsAndConditions" className="text-[#ffdd00] underline">Terms & Conditions</Link>
       </label>

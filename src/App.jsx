@@ -11,6 +11,7 @@ import FamilyComponents from "./Components/FamilyComponents";
 
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
+import BankRefundComponents from "./Components/BankRefundComponents";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/familyDetails" element = {< FamilyComponents />} />
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
             <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
+            <Route path="/bankRefund" element={<BankRefundComponents/>} />
 
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />

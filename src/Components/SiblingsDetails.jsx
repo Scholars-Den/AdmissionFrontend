@@ -79,7 +79,7 @@ const SiblingsDetails = () => {
       dispatch(setLoading(true));
       const formData = { ...userData, signatures };
       await dispatch(submitSiblingsDetails(formData));
-      navigate("/siblingsDetails");
+      navigate("/bankRefund");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
