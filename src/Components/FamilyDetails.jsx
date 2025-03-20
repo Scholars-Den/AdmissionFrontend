@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import Spinner from "../../api/Spinner";
-import { putFormData, submitFormData, updateUserDetails } from "../../redux/formDataSlice";
+import { putFormData, updateUserDetails } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
 
 const FamilyDetails = () => {
@@ -13,19 +13,9 @@ const FamilyDetails = () => {
   const { userData } = useSelector((state) => state.userDetails);
   const { loading } = useSelector((state) => state.loadingDetails);
 
-  const [code, setCode] = useState("");
-  const [showCodeBox, setShowCodeBox] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
   const occupationOptions = ["Business", "Service", "Other"];
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
-
-
-
-
-
 
   const familySections = [
     {
@@ -101,93 +91,93 @@ const FamilyDetails = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(updateUserDetails({ [name]: value }));
-
-    if (value.trim()) {
+    if (value.trim())
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    }
   };
-
-  
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
- try {
-       dispatch(setLoading(true));
-   
-       console.log("userData in onSumit ", userData);
- 
-       await dispatch(putFormData(userData));
-       navigate("/siblingsDetails");
-     
-     } catch (error) {
-       console.log("Error submitting form:", error);
-     } finally {
-       dispatch(setLoading(false));
-     }
+    try {
+      dispatch(setLoading(true));
+      await dispatch(putFormData(userData));
+      navigate("/siblingsDetails");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
-
-    familySections.forEach(({ name, required }) => {
-      if (required && !userData[name]?.trim()) {
-        formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
-        isValid = false;
-      }
+    familySections.forEach(({ fields }) => {
+      fields.forEach(({ name, required }) => {
+        if (required && !userData[name]?.trim()) {
+          formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
+          isValid = false;
+        }
+      });
     });
-
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-      formErrors.email = "Email must be valid";
-      isValid = false;
-    }
-
     setErrors(formErrors);
     return isValid;
-  };  
-
+  };
 
   return (
-    <div className="w-full">
+    <div className="w-full px-4 py-2 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
-      <form
-        className="flex flex-col px-12 items-center gap-2 text-white"
-        onSubmit={onSubmit}
-      >
-        <h2 className="text-4xl text-white">Family Details Form</h2>
-        <div className="flex flex-col w-full gap-4 items-center">
-          {familySections.map((section, sectionIndex) =>
-            section.fields.map((field, fieldIndex) =>
-              field.type === "select" ? (
-                <SelectField
-                  key={fieldIndex}
-                  name={field.name}
-                  options={field.options}
-                  label={field.label}
-                  required={field.required}
-                  value={userData?.[field.name] || ""}
-                  onChange={handleChange}
-                />
-              ) : (
-                <InputField
-                  key={fieldIndex}
-                  name={field.name}
-                  type={field.type}
-                  value={userData?.[field.name] || ""}
-                  onChange={handleChange}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                />
-              )
-            )
-          )}
+      <form className="max-w-4xl mx-auto" onSubmit={onSubmit}>
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
+          Family Details Form
+        </h2>
+        {familySections.map((section, sectionIndex) => (
+          <div key={sectionIndex} className="mb-6 md:w-2/3 mx-auto">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4">
+              {section.title}
+            </h3>
+            <div className="grid grid-cols-1  gap-4">
+              {section.fields.map((field, fieldIndex) =>
+                field.type === "select" ? (
+                  <SelectField
+                    key={fieldIndex}
+                    name={field.name}
+                    options={field.options}
+                    label={field.label}
+                    required={field.required}
+                    value={userData?.[field.name] || ""}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <InputField
+                    key={fieldIndex}
+                    name={field.name}
+                    type={field.type}
+                    value={userData?.[field.name] || ""}
+                    onChange={handleChange}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                  />
+                )
+              )}
+            </div>
+          </div>
+        ))}
+        {/* <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" onClick={() => navigate("/")}>Back</button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" type="submit">Next</button>
+        </div> */}
 
-          {/* Submit Button */}
+        <div className="flex justify-between ">
           <button
-            type="submit"
-            className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4"
+            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+            onClick={() => navigate("/familyDetails")}
+          >
+            Back
+          </button>
+          <button
+            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+            onClick={onSubmit}
           >
             Next
           </button>

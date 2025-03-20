@@ -5,7 +5,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
 
   // console.log("OPTIONS", options);
   return (
-    <div className="flex flex-col items-center w-2/3 appearance-none">
+    <div className="flex flex-col items-center w-full appearance-none">
       <div className="w-full">
         {/* <label htmlFor={name} className="text-lg font-semibold mb-1">
         {label}

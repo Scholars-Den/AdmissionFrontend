@@ -251,12 +251,12 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
   return (
     <div className="w-full">
       {loading && <Spinner />}
-      <form className="flex flex-col px-12 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
+      <form className="flex flex-col px-4 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
         <h2 className="text-4xl text-white">Admission Form</h2>
 
       
 
-        <div className="flex flex-col w-full gap-4 items-center">
+        <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
           {formFields?.map((field) => (
             <InputField
               key={field.name}
@@ -282,7 +282,7 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
           ))}
 
           {/* Phone Verification */}
-          <div className="flex gap-3 w-2/3">
+          <div className="flex gap-3 w-full">
             <input
               type="text"
               id="verificationCode"
@@ -381,10 +381,10 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
     </div>
       {errors.termsAndCondition && <span className="text-white text-sm mt-1">{errors.termsAndCondition}</span>}
 
-        <div className="w-24 mt-4">
-          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
-        </div>
       </form>
+        {/* <div className="w-24">
+          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
+        </div> */}
     </div>
   );
 };

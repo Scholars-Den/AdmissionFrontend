@@ -6,9 +6,12 @@ import {
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { use } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const BankRefundForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -140,12 +143,12 @@ const BankRefundForm = () => {
       "passportPhotos",
     ];
 
-    const documentsChecked = requiredDocuments.some(
+    const documentsChecked = requiredDocuments.every(
       (doc) => formData.documents[doc]
     );
 
     if (!documentsChecked) {
-      formErrors.documents = "At least one document should be selected";
+      formErrors.documents = "All required documents must be selected";
       isValid = false;
     }
 
@@ -157,7 +160,7 @@ const BankRefundForm = () => {
         isValid = false;
       }
     });
-console.log("formErrors", formErrors);
+    console.log("formErrors", formErrors);
     // Set errors if there are any
     setErrors(formErrors);
 
@@ -172,7 +175,7 @@ console.log("formErrors", formErrors);
     if (!validateForm()) return;
     try {
       await dispatch(submitBankRefundForm(formData));
-      
+
       // navigate("/siblingsDetails");
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -191,7 +194,7 @@ console.log("formErrors", formErrors);
       <h2 className="text-xl text-center font-bold mb-4">
         Bank Account Details for Caution Money Refund
       </h2>
-      <div className="grid grid-cols-2 gap-4 ">
+      <div className="grid md:grid-cols-2 gap-4 ">
         {[
           { label: "Account Holder Name", name: "accountHolder" },
           { label: "Bank Name", name: "bankName" },
@@ -216,7 +219,7 @@ console.log("formErrors", formErrors);
         ))}
       </div>
       <h3 className="mt-4">Document Checklist (Please Tick)</h3>
-      <div className="grid grid-cols-3  gap-4">
+      <div className="grid grid-cols-3 gap-4 md:mt-4">
         {[
           { label: "Cancelled Cheque", name: "cancelledCheque" },
           { label: "Photocopy of Passbook", name: "passbook" },
@@ -224,8 +227,8 @@ console.log("formErrors", formErrors);
           { label: "Photocopy of Parent’s Aadhar", name: "parentAadhar" },
           { label: "Two Passport Size Photographs", name: "passportPhotos" },
         ].map(({ label, name }) => (
-          <div className="flex flex-col">
-            <label key={name} className="flex items-center">
+          <div className="flex md:flex-col">
+            <label key={name} className="flex flex-col md:flex-row text-xs md:text-sm">
               <input
                 type="checkbox"
                 name={name}
@@ -235,14 +238,16 @@ console.log("formErrors", formErrors);
               />
               {label}
             </label>
-            {errors[name] && (
-              <p className="text-black text-xs">{errors[name]}</p>
-            )}{" "}
-            {/* Display error */}
           </div>
         ))}
+        <div className="col-span-3 text-center">
+          {errors.documents && (
+            <p className="text-black text-xs">{errors.documents}</p>
+          )}{" "}
+          {/* Display error */}
+        </div>
       </div>
-      <div className="mt-6 grid grid-cols-2 gap-4">
+      <div className="mt-6 grid md:grid-cols-2  gap-4">
         {["admissionOfficer", "parent"].map((key) => (
           <div key={key} className="flex flex-col items-center">
             <h3 className="text-md font-semibold mb-2">
@@ -268,7 +273,13 @@ console.log("formErrors", formErrors);
           </div>
         ))}
       </div>
-      <div className="text-center">
+      <div className="flex justify-between ">
+        <button
+          className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+          onClick={()=>navigate("/siblingsDetails")}
+        >
+          Back
+        </button>
         <button
           className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
           onClick={onSubmit}

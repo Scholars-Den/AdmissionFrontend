@@ -23,9 +23,9 @@ function App() {
         <div className="flex  justify-center items-center ">
           <Routes>
             <Route path="/" element={<Signup />} />
+            <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
-            <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
             <Route path="/bankRefund" element={<BankRefundComponents/>} />
 
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
