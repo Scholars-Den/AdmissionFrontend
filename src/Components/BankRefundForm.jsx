@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import {
+  fetchUserDetails,
   submitBankRefundForm,
   updateUserDetails,
 } from "../../redux/formDataSlice";
@@ -128,7 +129,7 @@ const BankRefundForm = () => {
     ];
 
     requiredTextFields.forEach((field) => {
-      if (!formData[field]?.trim()) {
+      if (!userData[field]?.trim()) {
         formErrors[field] = `${field} is required`;
         isValid = false;
       }
@@ -144,7 +145,7 @@ const BankRefundForm = () => {
     ];
 
     const documentsChecked = requiredDocuments.every(
-      (doc) => formData.documents[doc]
+      (doc) => userData.documents[doc]
     );
 
     if (!documentsChecked) {
@@ -155,7 +156,7 @@ const BankRefundForm = () => {
     // Check if signatures are provided
     const requiredSignatures = ["admissionOfficer", "parent"];
     requiredSignatures.forEach((key) => {
-      if (!formData.signatures[key]) {
+      if (!userData.signatures[key]) {
         formErrors[key] = `${key} signature is required`;
         isValid = false;
       }
@@ -166,6 +167,11 @@ const BankRefundForm = () => {
 
     return isValid;
   };
+
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -186,7 +192,7 @@ const BankRefundForm = () => {
   };
 
   useEffect(() => {
-    console.log("userData", userData);
+    console.log("userData in onSumit ", userData);
   }, []);
 
   return (
@@ -207,7 +213,7 @@ const BankRefundForm = () => {
             <input
               type="text"
               name={name}
-              value={formData[name] || ""}
+              value={userData[name] || ""}
               onChange={handleChange}
               className=" p-2 rounded-md text-black"
             />
@@ -227,12 +233,12 @@ const BankRefundForm = () => {
           { label: "Photocopy of Parent’s Aadhar", name: "parentAadhar" },
           { label: "Two Passport Size Photographs", name: "passportPhotos" },
         ].map(({ label, name }) => (
-          <div className="flex md:flex-col">
+          <div className="flex md:flex-col" key={name}>
             <label key={name} className="flex flex-col md:flex-row text-xs md:text-sm">
               <input
                 type="checkbox"
                 name={name}
-                checked={formData?.documents?.[name] || false}
+                checked={userData?.documents?.[name] || false}
                 onChange={handleChange}
                 className="mr-2"
               />
@@ -247,7 +253,7 @@ const BankRefundForm = () => {
           {/* Display error */}
         </div>
       </div>
-      <div className="mt-6 grid md:grid-cols-2  gap-4">
+      <div className="mt-6 grid md:grid-cols-2 gap-4">
         {["admissionOfficer", "parent"].map((key) => (
           <div key={key} className="flex flex-col items-center">
             <h3 className="text-md font-semibold mb-2">

@@ -27,7 +27,7 @@ const SignupForm = () => {
 
 
 
-  // Aadhar example: 1234 5678 9012
+    // Aadhar example: 1234 5678 9012
 
 
 

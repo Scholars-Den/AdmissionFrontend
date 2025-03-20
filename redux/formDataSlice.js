@@ -9,83 +9,83 @@ export const fetchUserDetails = createAsyncThunk(
     'userDetails/fetchUserDetails',
     async (_, { rejectWithValue }) => {
         try {
-            console.log("token from fetchUserDetailvgwgrs");
-            const response = await axios.get('/user/getUserbyToken');
-
+            console.log("Fetching user details...");
+            const response = await axios.get('/admissions/getUserbyToken');
 
             const data = response.data;
 
-            console.log("data from fetchUserDetails", response.data);
-            if (data.length !== 0) {
+            console.log("Fetched user data:", data);
+            if (data) {
+                // Ensure siblings array always has a length of 4
+                const siblings = data?.siblings || [];
+                const filledSiblings = [...siblings, ...Array(4 - siblings.length).fill({})];
+
                 return {
-                    dataExist: true, // Indicate data exists
+                    dataExist: true,  // Data exists
                     userData: {
-                        studentName: data?.newAdmission?.studentName || '',
-                        aadharID: data?.newAdmission?.aadharID || '',
-                        studentContactNumber: data?.newAdmission?.studentContactNumber || '',
-                        gender: data?.newAdmission?.gender || '',
-                        category: data?.newAdmission?.Category || '',
-
-
-                        dob: data?.newAdmission?.dob || '',
-                        bloogGroup: data?.newAdmission?.bloogGroup || '',
-                        scholarship: data?.newAdmission?.scholarship || '',
+                        studentName: data?.studentName || '',
+                        aadharID: data?.aadharID || '',
+                        studentContactNumber: data?.studentContactNumber || '',
+                        gender: data?.gender || '',
+                        category: data?.Category || '',
+                        dob: data?.dob || '',
+                        bloogGroup: data?.bloogGroup || '',
+                        scholarship: data?.scholarship || '',
                         termsAndCondition: data?.TermsAndCondition || '',
+                        fatherName: data?.fatherName || '',
+                        fatherAadharId: data?.fatherAadharId || '',
+                        fatherDob: data?.fatherDob || '',
+                        fatherBloodGroup: data?.fatherBloodGroup || '',
+                        fatherOccupations: data?.fatherOccupations || '',
+                        motherName: data?.motherName || '',
+                        motherAadharId: data?.motherAadharId || '',
+                        motherDob: data?.motherDob || '',
+                        motherBloodGroup: data?.motherBloodGroup || '',
+                        motherOccupations: data?.motherOccupations || '',
+                        siblings: filledSiblings,  // Ensure siblings always has 4 elements
+                        signatures: data?.signatures || {},
+                        noOfBrother: data?.noOfBrother || 0,
+                        noOfSister: data?.noOfSister || 0,
+                        siblingsPosition: data?.siblingsPosition || 0,
 
 
-                        fatherName: data?.newAdmission?.fatherName || '',
-                        fatherAadharId: data?.newAdmission?.fatherAadharId || '',
-                        fatherDob: data?.newAdmission?.fatherDob || '',
-                        fatherBloodGroup: data?.newAdmission?.fatherBloodGroup || '',
-                        fatherOccupations: data?.newAdmission?.fatherOccupatoions || '',
-                        motherName: data?.newAdmission?.motherName || '',
-                        motherAadharId: data?.newAdmission?.motherAadharId || '',
-                        motherDob: data?.newAdmission?.motherDob || '',
-                        motherBloodGroup: data?.newAdmission?.motherBloodGroup || '',
-                        motherOccupations: data?.newAdmission?.motherOccupations || '',
 
-                        noOfBrother: data?.newAdmission?.noOfBrother || '',
-                        noOfSister: data?.newAdmission?.noOfSister || '',
-                        siblingsPosition: data?.newAdmission?.siblingsPosition || '',
-                        siblings: data?.newAdmission?.siblings || '',
-                        signatures: data?.newAdmission?.signatures || '',
+                        accountHolder: data?.accountHolder || '',
+                        bankName: data?.bankName || '',
+                        accountNumber: data?.accountNumber || '',
+                        ifscCode: data?.ifscCode || '',
+                        relationWithStudent: data?.relationWithStudent || '',
+                        cancelledCheque: data?.cancelledCheque || false,
+                        passbook: data?.passbook || false,
+                        studentAadhar: data?.studentAadhar || false,
+                        parentAadhar: data?.parentAadhar || false,
+                        passportPhotos: data?.passportPhotos || false,
+                        admissionOfficer: data?.admissionOfficer || '',
+                        parent: data?.parent || '',
 
 
-                        accountHolder: data?.newAdmission?.accountHolder || '',
-                        bankName: data?.newAdmission?.bankName || '',
-                        accountNumber: data?.newAdmission?.accountNumber || '',
-                        ifscCode: data?.newAdmission?.ifscCode || '',
-                        relationWithStudent: data?.newAdmission?.relationWithStudent || '',
                         documents: {
-                            cancelledCheque: data?.newAdmission?.documents?.cancelledCheque || '',
-                            passbook: data?.newAdmission?.documents?.passbook || '',
-                            studentAadhar: data?.newAdmission?.documents?.studentAadhar || '',
-                            parentAadhar: data?.newAdmission?.documents?.parentAadhar || '',
-                            passportPhotos: data?.newAdmission?.documents?.passportPhotos || '',
-                        },
-                        signatures: {
-                            admissionOfficer: data?.newAdmission?.signatures?.admissionOfficer || '',
-                            parent: data?.newAdmission?.signatures?.parent || '',
-                        },
-
-
+                            cancelledCheque: data?.documents?.cancelledCheque || false,
+                            passbook: data?.documents?.passbook || false,
+                            studentAadhar: data?.documents?.studentAadhar || false,
+                            parentAadhar: data?.documents?.parentAadhar || false,
+                            passportPhotos: data?.documents?.passportPhotos || false
+                        }
 
                     },
                 };
             } else {
                 return {
-                    dataExist: false, // Indicate data does not exist
-                    formData: {}, // Default empty data
+                    dataExist: false,
+                    formData: {},
                 };
             }
         } catch (error) {
-            console.log("error from fetchUserDetails", error);
+            console.log("Error from fetchUserDetails", error);
             return rejectWithValue(error.response?.data || 'Failed to fetch user details');
         }
-
     }
-)
-
+);
 
 export const submitBankRefundForm = createAsyncThunk(
     'userDetails/submitBankRefundForm',
@@ -103,21 +103,21 @@ export const submitBankRefundForm = createAsyncThunk(
                     dataExist: true, // Indicate data exists
                     userData: {
 
-                        accountHolder: formData,
-                        bankName: "",
-                        accountNumber: "",
-                        ifscCode: "",
-                        relationWithStudent: "",
+                        accountHolder: data?.accountHolder || '',
+                        bankName: data?.bankName || '',
+                        accountNumber: data?.accountNumber || '',
+                        ifscCode: data?.ifscCode || '',
+                        relationWithStudent: data?.relationWithStudent || '',
                         documents: {
-                          cancelledCheque: false,
-                          passbook: false,
-                          studentAadhar: false,
-                          parentAadhar: false,
-                          passportPhotos: false,
+                          cancelledCheque: data?.documents?.cancelledCheque || '',
+                          passbook: data?.documents?.passbook || '',
+                          studentAadhar: data?.documents?.studentAadhar || '',
+                          parentAadhar: data?.documents?.parentAadhar || '',
+                          passportPhotos: data?.documents?.passportPhotos || '',
                         },
                         signatures: {
-                          admissionOfficer: "",
-                          parent: "",
+                          admissionOfficer: data?.accountNumber || '',
+                          parent: data?.accountNumber || '',
                         },
 
                     }

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import Spinner from "../../api/Spinner";
-import { putFormData, updateUserDetails } from "../../redux/formDataSlice";
+import {
+  fetchUserDetails,
+  putFormData,
+  updateUserDetails,
+} from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
 
 const FamilyDetails = () => {
@@ -28,7 +32,7 @@ const FamilyDetails = () => {
           required: true,
         },
         {
-          name: "fatherAadhar",
+          name: "fatherAadharId",
           type: "text",
           placeholder: "*Father's Aadhar ID",
           required: true,
@@ -41,7 +45,7 @@ const FamilyDetails = () => {
           required: true,
         },
         {
-          name: "fatherOccupation",
+          name: "fatherOccupations",
           type: "select",
           label: "Occupation",
           options: occupationOptions,
@@ -59,13 +63,13 @@ const FamilyDetails = () => {
           required: true,
         },
         {
-          name: "motherAadhar",
+          name: "motherAadharId",
           type: "text",
           placeholder: "*Mother's Aadhar ID",
           required: true,
         },
         {
-          name: "motherDOB",
+          name: "motherDob",
           type: "date",
           placeholder: "Mother's DOB",
           required: true,
@@ -78,7 +82,7 @@ const FamilyDetails = () => {
           required: true,
         },
         {
-          name: "motherOccupation",
+          name: "motherOccupations",
           type: "select",
           label: "Occupation",
           options: occupationOptions,
@@ -97,9 +101,14 @@ const FamilyDetails = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    console.log("onsUBMIT click");
     if (!validateForm()) return;
     try {
       dispatch(setLoading(true));
+
+      console.log("userData in onSumit ", userData);
+
       await dispatch(putFormData(userData));
       navigate("/siblingsDetails");
     } catch (error) {
@@ -120,9 +129,20 @@ const FamilyDetails = () => {
         }
       });
     });
+
+    console.log("formErrors", formErrors);
     setErrors(formErrors);
     return isValid;
   };
+
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, []);
+
+  useEffect(() => {
+    console.log("userData", userData);
+    console.log("userData[]", userData?.fatherOccupations);
+  }, [userData]);
 
   return (
     <div className="w-full px-4 py-2 text-center bg-[#c61d23] text-white">
@@ -168,13 +188,13 @@ const FamilyDetails = () => {
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" type="submit">Next</button>
         </div> */}
 
-        <div className="flex justify-between ">
-          <button
+        <div className="flex justify-center ">
+          {/* <button
             className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
             onClick={() => navigate("/familyDetails")}
           >
             Back
-          </button>
+          </button> */}
           <button
             className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
             onClick={onSubmit}
