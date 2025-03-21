@@ -28,6 +28,8 @@ export const fetchUserDetails = createAsyncThunk(
                         studentContactNumber: data?.studentContactNumber || '',
                         gender: data?.gender || '',
                         category: data?.Category || '',
+                        studentClass: data?.studentClass || '',
+                        program: data?.program || '',
                         dob: data?.dob || '',
                         bloogGroup: data?.bloogGroup || '',
                         scholarship: data?.scholarship || '',
@@ -102,22 +104,22 @@ export const submitBankRefundForm = createAsyncThunk(
                 return {
                     dataExist: true, // Indicate data exists
                     userData: {
-
                         accountHolder: data?.accountHolder || '',
+                        studentClass: data?.studentClass || '',
                         bankName: data?.bankName || '',
                         accountNumber: data?.accountNumber || '',
                         ifscCode: data?.ifscCode || '',
                         relationWithStudent: data?.relationWithStudent || '',
                         documents: {
-                          cancelledCheque: data?.documents?.cancelledCheque || '',
-                          passbook: data?.documents?.passbook || '',
-                          studentAadhar: data?.documents?.studentAadhar || '',
-                          parentAadhar: data?.documents?.parentAadhar || '',
-                          passportPhotos: data?.documents?.passportPhotos || '',
+                            cancelledCheque: data?.documents?.cancelledCheque || '',
+                            passbook: data?.documents?.passbook || '',
+                            studentAadhar: data?.documents?.studentAadhar || '',
+                            parentAadhar: data?.documents?.parentAadhar || '',
+                            passportPhotos: data?.documents?.passportPhotos || '',
                         },
                         signatures: {
-                          admissionOfficer: data?.accountNumber || '',
-                          parent: data?.accountNumber || '',
+                            admissionOfficer: data?.accountNumber || '',
+                            parent: data?.accountNumber || '',
                         },
 
                     }
@@ -161,6 +163,8 @@ export const submitFormData = createAsyncThunk(
                         bloogGroup: data?.newAdmission?.bloogGroup || '',
                         scholarship: data?.newAdmission?.scholarship || '',
                         termsAndCondition: data?.TermsAndCondition || '',
+                        studentClass: data?.newAdmission?.studentClass || '',
+                        program: data?.newAdmission?.program || '',
 
 
 

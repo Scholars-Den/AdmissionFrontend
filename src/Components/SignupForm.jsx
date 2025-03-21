@@ -45,6 +45,44 @@ const SignupForm = () => {
     }
   };
 
+
+
+  const convertToNumber = (romanNumeral) => {
+    const romanToNumber = {
+      VI: 6,
+      VII: 7,
+      VIII: 8,
+      IX: 9,
+      X: 10,
+      XI: 11,
+      XII: 12,
+    };
+
+    return romanToNumber[romanNumeral];
+  };
+
+  let subjectOptions =
+   userData?.studentClass >= 6 &&
+    userData?.studentClass <= 10
+      ? ["Foundation"]
+      : ["Engineering", "Medical"];
+  const convertToRoman = (num) => {
+    const romanNumerals = {
+      6: "VI",
+      7: "VII",
+      8: "VIII",
+      9: "IX",
+      10: "X",
+      11: "XI",
+      12: "XII",
+    };
+    return romanNumerals[num];
+  };
+
+
+  useEffect(()=>{
+    console.log("userData", userData);
+  },[userData])
   // Define form fields
   const formFields = [
     {
@@ -93,6 +131,23 @@ const SignupForm = () => {
       onChange: { handleChange },
       error: errors.category,
     },
+    {
+      name: "studentClass",
+      label: "Select Class",
+      options: Array.from({ length: 7 }, (_, i) => i + 6),
+      value: convertToRoman(userData?.class),
+      onChange: { handleChange },
+      error: errors.class,
+    },
+    {
+      name: "program",
+      label: "Select Program",
+      options: subjectOptions,
+      value: userData.program,
+      onChange: { handleChange },
+      error: errors.program,
+    },
+    
   ];
 
   function validateAadhaar(aadhaarNumber) {
@@ -368,7 +423,6 @@ const SignupForm = () => {
         >
           Next
         </button>
-
         {errors.termsAndCondition && (
           <span className="text-white text-sm mt-1">
             {errors.termsAndCondition}

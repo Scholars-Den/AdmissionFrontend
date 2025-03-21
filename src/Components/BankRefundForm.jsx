@@ -6,7 +6,6 @@ import {
   submitBankRefundForm,
   updateUserDetails,
 } from "../../redux/formDataSlice";
-import { use } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -104,7 +103,7 @@ const BankRefundForm = () => {
 
 
   const clearSignature = (key) => {
-    signatureRefs[key].current.clear();
+    signatureRefs[key]?.current?.clear();
     setFormData((prev) => ({
       ...prev,
       signatures: {
@@ -151,7 +150,6 @@ const BankRefundForm = () => {
       formErrors.documents = "All required documents must be selected";
       isValid = false;
     }
-
 
     Object.keys(signatures).forEach((key) => {
       if (!signatures[key]) {
