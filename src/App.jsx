@@ -12,6 +12,7 @@ import FamilyComponents from "./Components/FamilyComponents";
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
 import BankRefundComponents from "./Components/BankRefundComponents";
+import Spinner from "../api/Spinner";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
 

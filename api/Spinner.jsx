@@ -6,11 +6,14 @@ const Spinner = () => {
   let [loading, setLoading] = useState(true);
   let [color, setColor] = useState("#ffffff");
   return (
-    <div
-      className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center h-full w-full bg-black bg-opacity-50 backdrop-blur-sm"
-    >
+    // <div
+    //   className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center w-full bg-black bg-opacity-50 backdrop-blur-sm"
+    // >
+    <div className="fixed inset-0 flex justify-center items-center w-full h-screen] blur-md z-50">
+
+      
       <BeatLoader
-        color="#c61d23"
+        color="#ffdd00"
         loading
         margin={8}
         size={18}

@@ -11,7 +11,6 @@ import {
 } from "../../redux/formDataSlice";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "../../api/Spinner";
-import { use } from "react";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
@@ -59,9 +58,9 @@ const SiblingsDetails = () => {
     const formErrors = {};
     let isValid = true;
 
-    siblingsData.forEach(({ name, required }) => {
+    siblingsData.forEach(({ name, label, required }) => {
       if (required && !userData[name]) {
-        formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
+        formErrors[name] = `${label} is required`;
         isValid = false;
       }
     });
@@ -94,15 +93,11 @@ const SiblingsDetails = () => {
   };
 
 
-  useEffect(()=>{
-    dispatch(fetchUserDetails());
-  },[])
-  useEffect(()=>{
-    console.log("userData in onSumit ", userData);
-  },[])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
 
     if (value.trim()) {
@@ -113,45 +108,24 @@ const SiblingsDetails = () => {
   const handleSignatureEnd = (key) => {
     setSignatures((prev) => ({
       ...prev,
-      [key]: signatureRefs[key].current.toDataURL(),
+      [key]: signatureRefs[key]?.current?.toDataURL(),
     }));
     setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
 
-  useEffect(() => {
-    console.log("signatures", signatures);
-  }, [signatures]);
-
-  useEffect(() => {
-    // If there are existing signatures, load them into the canvas
-    Object.keys(signatures).forEach((key) => {
-      if (signatures[key] && signatureRefs[key].current) {
-        signatureRefs[key].current.fromDataURL(signatures[key]);
-      }
-    });
-  }, [signatures]);
 
 
-  useEffect(() => {
-    // Fetch user data, including signatures
-    dispatch(fetchUserDetails()).then((fetchedUserData) => {
-
-      console.log("fetchedUserData", fetchedUserData.signatures);
-      // Check if the signatures are available and set them 
-      if (fetchedUserData?.signatures) {
-        setSignatures(fetchedUserData.signatures);
-      }
-    });
-  }, [dispatch]);
 
   const clearSignature = (key) => {
-    signatureRefs[key].current.clear();
+    signatureRefs[key]?.current?.clear();
     setSignatures((prev) => ({ ...prev, [key]: "" }));
   };
 
   useEffect(() => {
-    dispatch(updateUserDetails({ siblings: Array(4).fill({}) }));
-  }, []);
+    if (!userData?.siblings || userData.siblings.length === 0) {
+      dispatch(updateUserDetails({ siblings: Array(4).fill({}) }));
+    }
+  }, [userData, dispatch]);
 
   const handleSiblingChange = (index, e) => {
     const { name, value, type, checked } = e.target;
@@ -164,20 +138,16 @@ const SiblingsDetails = () => {
       })
     );
   };
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
-  useEffect(() => {
-    console.log("userData from useEffect", userData);
-  },[userData])
+
 
 
   useEffect(() => {
-    // Assuming fetchUserDetails action fetches the data and includes the signature info
-    dispatch(fetchUserDetails()).then((fetchedUserData) => {
-      console.log("Fetched User Data:", fetchedUserData); // Debug log to check the data
-      if (fetchedUserData?.signatures) {
-        setSignatures(fetchedUserData.signatures); // Set the signatures from fetched data
+    dispatch(fetchUserDetails()).then((action) => {
+      console.log("action.payload", action.payload);
+      const fetchedUserData = action.payload; // Extract payload from Redux action
+      console.log("userData in useEffect", fetchedUserData?.userData?.signatures);
+      if (fetchedUserData?.userData?.signatures) {
+        setSignatures(fetchedUserData?.userData?.signatures);
       }
     });
   }, []);
@@ -185,15 +155,15 @@ const SiblingsDetails = () => {
   // After fetching, load the signature data into the canvas
   useEffect(() => {
     Object.keys(signatures).forEach((key) => {
-      if (signatures[key] && signatureRefs[key].current) {
-        try {
-          signatureRefs[key].current.fromDataURL(signatures[key]); // Load signature into canvas
-        } catch (error) {
-          console.error(`Error loading signature for ${key}:`, error);
-        }
+      if (signatures[key] && signatureRefs[key]?.current) {
+        setTimeout(() => {
+          signatureRefs[key]?.current?.fromDataURL(signatures[key]);
+        }, 300); // Delay ensures canvas is ready
       }
     });
-  }, [signatures]); 
+  }, [signatures]);
+  
+  
 
 
 
@@ -206,11 +176,6 @@ const SiblingsDetails = () => {
              {/* Siblings Count Inputs */}
              <div className="flex flex-wrap justify-center gap-4">
                {siblingsData.map((field) => (
-
-
-// console.log("userDatac in the siblings", userData?.[field.name]),
-// console.log("userDatac in the siblings", field.name),
-// console.log("userDatac in the siblings", userData?.[field.name] ?? "Not Found")
                 <div key={field.name} className="w-full md:w-auto">
                   <label className="block mb-1 font-medium">{field.label}</label>
                   <input

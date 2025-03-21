@@ -13,29 +13,16 @@ import { useNavigate } from "react-router-dom";
 const BankRefundForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+    const [signatures, setSignatures] = useState({
+      parent: "",
+      admissionHead: "",
+    });
 
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({
-    accountHolder: "",
-    bankName: "",
-    accountNumber: "",
-    ifscCode: "",
-    relationWithStudent: "",
-    documents: {
-      cancelledCheque: false,
-      passbook: false,
-      studentAadhar: false,
-      parentAadhar: false,
-      passportPhotos: false,
-    },
-    signatures: {
-      admissionOfficer: "",
-      parent: "",
-    },
-  });
+
 
   const signatureRefs = {
-    admissionOfficer: React.createRef(),
+    admissionHead: React.createRef(),
     parent: React.createRef(),
   };
 
@@ -55,54 +42,66 @@ const BankRefundForm = () => {
 
   const { userData } = useSelector((state) => state.userDetails);
   const { loading } = useSelector((state) => state.loadingDetails);
+  // const handleChange = (e) => {
+  //   const { name, value, type, checked } = e.target;
+  //   console.log("name value type checked", name, value, type, checked);
+
+  //   let updatedFormData;
+
+  //   console.log("name", name, "value", value, "type", type, "checked", checked);
+
+  //   if (type === "text") {
+  //     updatedFormData = { [name]: value };
+  //   } else if (type === "checkbox") {
+  //     updatedFormData = {
+  //       documents: {
+  //         ...userData.documents,
+  //         [name]: checked,
+  //       },
+  //     };
+  //   }
+
+  //   // Correcting this line to properly update state
+  //   setFormData((prev) => ({ ...prev, ...updatedFormData }));
+
+  //   if (value.trim()) {
+  //     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  //   }
+  // };
+
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    console.log("name value type checked", name, value, type, checked);
-
-    let updatedFormData;
-
-    console.log("name", name, "value", value, "type", type, "checked", checked);
-
-    if (type === "text") {
-      updatedFormData = { [name]: value };
-    } else if (type === "checkbox") {
-      updatedFormData = {
+    console.log("name:", name, "value:", value, "type:", type, "checked:", checked);
+  
+    if (type === "checkbox") {
+      dispatch(updateUserDetails({
         documents: {
-          ...formData.documents,
+          ...userData?.documents, // Ensure previous document data is preserved
           [name]: checked,
-        },
-      };
+        }
+      }));
+    } else {
+      dispatch(updateUserDetails({ [name]: value }));
     }
-
-    // Correcting this line to properly update state
-    setFormData((prev) => ({ ...prev, ...updatedFormData }));
-
+  
+    // Remove errors if the user fills the field
     if (value.trim()) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
   };
-
-  useEffect(() => {
-    console.log("formData", formData);
-  }, [formData]);
+  
 
   const handleSignatureEnd = (key) => {
-    setFormData((prev) => ({
+    console.log("key", key);
+    setSignatures((prev) => ({
       ...prev,
-      signatures: {
-        ...prev.signatures,
-        [key]: signatureRefs[key].current.toDataURL(),
-      },
+      [key]: signatureRefs[key].current.toDataURL(),
     }));
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
 
-  // const handleSignatureEnd = (key) => {
-  //   setSignatures((prev) => ({
-  //     ...prev,
-  //     [key]: signatureRefs[key].current.toDataURL(),
-  //   }));
-  //   setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
-  // };
+
 
   const clearSignature = (key) => {
     signatureRefs[key].current.clear();
@@ -153,14 +152,22 @@ const BankRefundForm = () => {
       isValid = false;
     }
 
-    // Check if signatures are provided
-    const requiredSignatures = ["admissionOfficer", "parent"];
-    requiredSignatures.forEach((key) => {
-      if (!userData.signatures[key]) {
-        formErrors[key] = `${key} signature is required`;
+
+    Object.keys(signatures).forEach((key) => {
+      if (!signatures[key]) {
+        formErrors[key] = "Signature is required";
         isValid = false;
       }
     });
+
+    // Check if signatures are provided
+    // const requiredSignatures = ["admissionHead", "parent"];
+    // requiredSignatures.forEach((key) => {
+    //   if (!userData.signatures[key]) {
+    //     formErrors[key] = `${key} signature is required`;
+    //     isValid = false;
+    //   }
+    // });
     console.log("formErrors", formErrors);
     // Set errors if there are any
     setErrors(formErrors);
@@ -169,9 +176,30 @@ const BankRefundForm = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchUserDetails());
-
+    dispatch(fetchUserDetails()).then((action) => {
+      console.log("action.payload", action.payload);
+      const fetchedUserData = action.payload; // Extract payload from Redux action
+      console.log("userData in useEffect", fetchedUserData?.userData?.signatures);
+      if (fetchedUserData?.userData?.signatures) {
+        setSignatures(fetchedUserData?.userData?.signatures);
+      }
+    });
   }, []);
+  useEffect(()=>{
+    console.log("userData form Use", userData);
+  },[userData])
+
+  // After fetching, load the signature data into the canvas
+  useEffect(() => {
+    Object.keys(signatures).forEach((key) => {
+      if (signatures[key] && signatureRefs[key]?.current) {
+        setTimeout(() => {
+          signatureRefs[key]?.current?.fromDataURL(signatures[key]);
+        }, 300); // Delay ensures canvas is ready
+      }
+    });
+  }, [signatures]);
+  
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -180,6 +208,8 @@ const BankRefundForm = () => {
 
     if (!validateForm()) return;
     try {
+      const formData = { ...userData, signatures };
+
       await dispatch(submitBankRefundForm(formData));
 
       // navigate("/siblingsDetails");
@@ -191,9 +221,7 @@ const BankRefundForm = () => {
     // }
   };
 
-  useEffect(() => {
-    console.log("userData in onSumit ", userData);
-  }, []);
+
 
   return (
     <div className="w-full text-white p-8 rounded-lg  ">
@@ -254,7 +282,7 @@ const BankRefundForm = () => {
         </div>
       </div>
       <div className="mt-6 grid md:grid-cols-2 gap-4">
-        {["admissionOfficer", "parent"].map((key) => (
+        {["admissionHead", "parent"].map((key) => (
           <div key={key} className="flex flex-col items-center">
             <h3 className="text-md font-semibold mb-2">
               {key === "parent"

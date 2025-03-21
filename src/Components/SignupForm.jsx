@@ -9,8 +9,6 @@ import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 
-
-
 const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,26 +22,19 @@ const SignupForm = () => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
+  // Aadhar example: 1234 5678 9012
 
-
-
-    // Aadhar example: 1234 5678 9012
-
-
-
-
-  useEffect(()=>{
+  useEffect(() => {
     console.log("userData", userData);
-  },[userData])
+  }, [userData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log("name", name, "value", value);
-    if(name === "termsAndCondition"){
-
+    if (name === "termsAndCondition") {
       console.log("e.target.checked", e.target.checked);
 
-      dispatch(updateUserDetails({ [e.target.name]: e.target.checked}));
+      dispatch(updateUserDetails({ [e.target.name]: e.target.checked }));
       return;
     }
 
@@ -75,7 +66,6 @@ const SignupForm = () => {
       placeholder: "Enter Your Contact Number",
       required: true,
     },
-    
   ];
 
   const selectFields = [
@@ -100,60 +90,57 @@ const SignupForm = () => {
       label: "Select Category",
       options: ["General", "OBC", "SC", "ST", "ETS"],
       value: userData.category,
-      onChange: {handleChange},
-      error: errors.category
-      
+      onChange: { handleChange },
+      error: errors.category,
     },
   ];
-
-
-
-
-
-
 
   function validateAadhaar(aadhaarNumber) {
     // Check if the Aadhaar number is exactly 12 digits long and contains only numbers
     const aadhaarRegex = /^\d{12}$/;
-    
+
     if (!aadhaarRegex.test(aadhaarNumber)) {
-        return { isValid: false, message: "Aadhaar number must be 12 digits long and contain only numbers." };
+      return {
+        isValid: false,
+        message:
+          "Aadhaar number must be 12 digits long and contain only numbers.",
+      };
     }
-    
+
     // Optional: You can include a checksum validation like Luhn Algorithm for basic checks
     if (!luhnCheck(aadhaarNumber)) {
-        return { isValid: false, message: "Aadhaar number failed checksum validation." };
+      return {
+        isValid: false,
+        message: "Aadhaar number failed checksum validation.",
+      };
     }
-    
-    return true;
-}
 
-// Optional: Luhn Algorithm for basic checksum validation
-function luhnCheck(number) {
+    return true;
+  }
+
+  // Optional: Luhn Algorithm for basic checksum validation
+  function luhnCheck(number) {
     let sum = 0;
     let shouldDouble = false;
-    
+
     // Loop through the digits from right to left
     for (let i = number.length - 1; i >= 0; i--) {
-        let digit = parseInt(number.charAt(i));
-        
-        if (shouldDouble) {
-            digit *= 2;
-            if (digit > 9) {
-                digit -= 9; // Sum of digits of the product
-            }
+      let digit = parseInt(number.charAt(i));
+
+      if (shouldDouble) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9; // Sum of digits of the product
         }
-        
-        sum += digit;
-        shouldDouble = !shouldDouble;
+      }
+
+      sum += digit;
+      shouldDouble = !shouldDouble;
     }
-    
+
     // If the sum modulo 10 is 0, then it's valid
-    return (sum % 10 === 0);
-}
-
-
-
+    return sum % 10 === 0;
+  }
 
   const validateForm = () => {
     const formErrors = {};
@@ -166,7 +153,10 @@ function luhnCheck(number) {
       }
     });
 
-    if(userData.studentContactNumber && !/^\d{10}$/.test(userData.studentContactNumber)){
+    if (
+      userData.studentContactNumber &&
+      !/^\d{10}$/.test(userData.studentContactNumber)
+    ) {
       formErrors.studentContactNumber = "Contact number must be 10 digits";
       isValid = false;
     }
@@ -177,15 +167,14 @@ function luhnCheck(number) {
     }
 
     // if(userData.aadharID && validateAadhaar(userData.aadharID)){
-    if(userData.aadharID && !validateAadhaar(userData.aadharID)){
+    if (userData.aadharID && !validateAadhaar(userData.aadharID)) {
       formErrors.aadharID = "Aadhar Id must be valid";
       isValid = false;
     }
-console.log("userData.termsAndCondition",userData.termsAndCondition);
-    if(!userData.termsAndCondition){
+    console.log("userData.termsAndCondition", userData.termsAndCondition);
+    if (!userData.termsAndCondition) {
       formErrors.termsAndCondition = "Please accept terms and conditions";
       isValid = false;
-
     }
     setErrors(formErrors);
     return isValid;
@@ -238,9 +227,8 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
       }
       console.log("userData in onSumit ", userData);
 
-
       await dispatch(submitFormData(userData));
-      navigate("/familyDetails")
+      navigate("/familyDetails");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
@@ -251,10 +239,11 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
   return (
     <div className="w-full">
       {loading && <Spinner />}
-      <form className="flex flex-col px-4 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
+      <form
+        className="flex flex-col px-4 items-center gap-2 py-2 text-white"
+        onSubmit={onSubmit}
+      >
         <h2 className="text-4xl text-white">Admission Form</h2>
-
-      
 
         <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
           {formFields?.map((field) => (
@@ -313,17 +302,15 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
             </button>
           )}
 
-          {submitMessage && <p className="text-sm text-[#ffdd00] text-center">{submitMessage}</p>}
+          {submitMessage && (
+            <p className="text-sm text-[#ffdd00] text-center">
+              {submitMessage}
+            </p>
+          )}
         </div>
 
-            
-            
-        
-
-       
-
-          {/* Phone Verification */}
-          {/* <div className="flex gap-3 w-2/3">
+        {/* Phone Verification */}
+        {/* <div className="flex gap-3 w-2/3">
             <input
               type="text"
               id="verificationCode"
@@ -344,45 +331,51 @@ console.log("userData.termsAndCondition",userData.termsAndCondition);
             )}
           </div> */}
 
-          {!showCodeBox && !codeVerified && (
-            <button
-              type="button"
-              onClick={verifyPhoneNo}
-              className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-            >
-              Send OTP
-            </button>
-          )}
+        {!showCodeBox && !codeVerified && (
+          <button
+            type="button"
+            onClick={verifyPhoneNo}
+            className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+          >
+            Send OTP
+          </button>
+        )}
 
-          {submitMessage && (
-            <p className="text-sm text-[#ffdd00] text-center">
-              {submitMessage}
-            </p>
-          )}
+        {submitMessage && (
+          <p className="text-sm text-[#ffdd00] text-center">{submitMessage}</p>
+        )}
+
+        <div className="flex gap-1 justify-center items-center">
+          <input
+            type="checkbox"
+            name="termsAndCondition"
+            value={Boolean(userData?.termsAndCondition)}
+            checked={Boolean(userData?.termsAndCondition)} // Ensure it's a boolean
+            onChange={handleChange}
+            className="cursor-pointer"
+          />
+          <label className="p-1">
+            I agree to{" "}
+            <Link to="/termsAndConditions" className="text-[#ffdd00] underline">
+              Terms & Conditions
+            </Link>
+          </label>
+        </div>
 
         <button
           type="submit"
-          className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-4"
+          className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-2"
         >
           Next
         </button>
-        <div className="flex gap-1 justify-center items-center">
-        <input 
-  type="checkbox"
-  name="termsAndCondition"
-  value={Boolean(userData?.termsAndCondition)}
-  checked={Boolean(userData?.termsAndCondition)} // Ensure it's a boolean
-  onChange={handleChange}
-  className="cursor-pointer"
-/>
-      <label className="p-1">
-        I agree to <Link to="/termsAndConditions" className="text-[#ffdd00] underline">Terms & Conditions</Link>
-      </label>
-    </div>
-      {errors.termsAndCondition && <span className="text-white text-sm mt-1">{errors.termsAndCondition}</span>}
 
+        {errors.termsAndCondition && (
+          <span className="text-white text-sm mt-1">
+            {errors.termsAndCondition}
+          </span>
+        )}
       </form>
-        {/* <div className="w-24">
+      {/* <div className="w-24">
           <img src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div> */}
     </div>
