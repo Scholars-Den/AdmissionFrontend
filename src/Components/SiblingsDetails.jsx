@@ -79,6 +79,7 @@ const SiblingsDetails = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    
     if (!validateForm()) return;
 
     try {
@@ -136,10 +137,10 @@ const SiblingsDetails = () => {
     // Fetch user data, including signatures
     dispatch(fetchUserDetails()).then((fetchedUserData) => {
 
-      console.log("fetchedUserData", fetchedUserData.signatures);
+      console.log("fetchedUserData", fetchedUserData);
       // Check if the signatures are available and set them 
-      if (fetchedUserData?.signatures) {
-        setSignatures(fetchedUserData.signatures);
+      if (fetchedUserData?.payload?.userData?.signatures) {
+        setSignatures(fetchedUserData?.payload?.userData?.signatures);
       }
     });
   }, [dispatch]);
@@ -175,6 +176,9 @@ const SiblingsDetails = () => {
   useEffect(() => {
     // Assuming fetchUserDetails action fetches the data and includes the signature info
     dispatch(fetchUserDetails()).then((fetchedUserData) => {
+
+
+      console.log("fetchedUserData", fetchedUserData);
       console.log("Fetched User Data:", fetchedUserData); // Debug log to check the data
       if (fetchedUserData?.signatures) {
         setSignatures(fetchedUserData.signatures); // Set the signatures from fetched data
