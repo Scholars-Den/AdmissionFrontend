@@ -134,11 +134,12 @@ const SignupForm = () => {
     {
       name: "studentClass",
       label: "Select Class",
-      options: Array.from({ length: 7 }, (_, i) => i + 6),
+      options: [...Array.from({ length: 7 }, (_, i) => i + 6), "12 Pass"], // Add "12 Pass"
       value: convertToRoman(userData?.class),
-      onChange: { handleChange },
+      onChange: handleChange, // Remove curly braces around handleChange
       error: errors.class,
     },
+    
     {
       name: "program",
       label: "Select Program",

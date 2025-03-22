@@ -106,6 +106,7 @@ export const submitBankRefundForm = createAsyncThunk(
                     userData: {
                         accountHolder: data?.accountHolder || '',
                         studentClass: data?.studentClass || '',
+                        program: data?.program || '',
                         bankName: data?.bankName || '',
                         accountNumber: data?.accountNumber || '',
                         ifscCode: data?.ifscCode || '',
