@@ -21,23 +21,19 @@ const SuccessContent = () => {
     navigate("/");
   };
 
-  //   useEffect(() => {
-  //     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-  //     dispatch(updateUserDetails(userdata));
+    useEffect(() => {
+    
 
-  //     // const interval = setInterval(() => {
-  //     //   setTime((prev) => {
-  //     //     if (prev <= 1) {
-  //     //       clearInterval(interval);
-  //     //       navigate("/");
-  //     //       return 0;
-  //     //     }
-  //     //     return prev - 1;
-  //     //   });
-  //     // }, 1000);
+      const interval = setInterval(async () => {
+        
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+        await dispatch(updateUserDetails(userdata));
+        navigate("/");
 
-  //     // return () => clearInterval(interval); // Clean up the interval on component unmount
-  //   }, [navigate]);
+      }, 3000);
+
+      return () => clearInterval(interval); // Clean up the interval on component unmount
+    }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchUserDetails());

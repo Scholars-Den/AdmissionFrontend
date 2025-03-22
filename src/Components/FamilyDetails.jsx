@@ -196,7 +196,7 @@ const FamilyDetails = () => {
             Back
           </button> */}
           <button
-            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+            className="mt-6 border-2 text-white hover:bg-[#ffdd00] hover:text-black px-4 py-2 rounded"
             onClick={onSubmit}
           >
             Next

@@ -337,7 +337,7 @@ const SignupForm = () => {
             <button
               type="button"
               onClick={verifyPhoneNo}
-              className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+              className="px-4 py-2 border-2 text-white   rounded-full"
             >
               Send OTP
             </button>
@@ -376,7 +376,7 @@ const SignupForm = () => {
           <button
             type="button"
             onClick={verifyPhoneNo}
-            className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+            className="px-4 py-2 border-2 text-white hover:bg-[#ffdd00] hover:text-black rounded-full"
           >
             Send OTP
           </button>
@@ -408,7 +408,7 @@ const SignupForm = () => {
 
         <button
           type="submit"
-          className="w-2/5 py-2 border-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 mt-2"
+          className="w-2/5 py-2 border-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black mt-2"
         >
           Next
         </button>
