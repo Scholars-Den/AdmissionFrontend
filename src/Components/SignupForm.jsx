@@ -267,7 +267,9 @@ const SignupForm = () => {
       console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
-      navigate("/familyDetails");
+      if(document.cookie){
+        navigate("/familyDetails");
+      }
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
