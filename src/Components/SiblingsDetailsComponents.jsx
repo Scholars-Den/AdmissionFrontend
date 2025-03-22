@@ -3,7 +3,7 @@ import SignupForm from "./SignupForm";
 import SignupDetailsPage from "./SignupDetailsPage";
 import FamilyDetails from "./FamilyDetails";
 import SiblingsDetails from "./SiblingsDetails";
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 
 const SiblingsDetailsComponents = () => {
   return (

@@ -7,7 +7,6 @@ import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 
 const SignupForm = () => {
   const navigate = useNavigate();

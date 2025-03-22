@@ -2,7 +2,7 @@ import React from "react";
 import SignupForm from "./SignupForm";
 import SignupDetailsPage from "./SignupDetailsPage";
 import FamilyDetails from "./FamilyDetails";
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 
 
 const FamilyComponents = () => {

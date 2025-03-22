@@ -1,5 +1,5 @@
 
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import SignupDetailsPage from "./SignupDetailsPage";
 import SuccessContent from "./SuccessContent";
 

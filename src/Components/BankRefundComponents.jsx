@@ -4,7 +4,7 @@ import SignupDetailsPage from "./SignupDetailsPage";
 
 import BankRefundForm from "./BankRefundForm";
 
-import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 
 const BankRefundComponents = () => {
   return (
