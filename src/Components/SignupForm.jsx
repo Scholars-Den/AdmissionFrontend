@@ -45,25 +45,8 @@ const SignupForm = () => {
     }
   };
 
-
-
-  const convertToNumber = (romanNumeral) => {
-    const romanToNumber = {
-      VI: 6,
-      VII: 7,
-      VIII: 8,
-      IX: 9,
-      X: 10,
-      XI: 11,
-      XII: 12,
-    };
-
-    return romanToNumber[romanNumeral];
-  };
-
   let subjectOptions =
-   userData?.studentClass >= 6 &&
-    userData?.studentClass <= 10
+    userData?.studentClass >= 6 && userData?.studentClass <= 10
       ? ["Foundation"]
       : ["Engineering", "Medical"];
   const convertToRoman = (num) => {
@@ -79,10 +62,9 @@ const SignupForm = () => {
     return romanNumerals[num];
   };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     console.log("userData", userData);
-  },[userData])
+  }, [userData]);
   // Define form fields
   const formFields = [
     {
@@ -107,13 +89,6 @@ const SignupForm = () => {
   ];
 
   const selectFields = [
-    // {
-    //   name: "grade",
-    //   label: "Select Grade",
-    //   options: ["Nursery", "KG", "1st", "2nd", "3rd", "4th", "5th"],
-    //   required: true,
-    // },
-
     {
       name: "gender",
       label: "Select Gender",
@@ -121,6 +96,7 @@ const SignupForm = () => {
       value: userData.gender,
       onChange: { handleChange },
       error: errors.gender,
+      required: true,
     },
 
     {
@@ -130,6 +106,7 @@ const SignupForm = () => {
       value: userData.category,
       onChange: { handleChange },
       error: errors.category,
+      required: true,
     },
     {
       name: "studentClass",
@@ -138,8 +115,9 @@ const SignupForm = () => {
       value: convertToRoman(userData?.class),
       onChange: handleChange, // Remove curly braces around handleChange
       error: errors.class,
+      required: true,
     },
-    
+
     {
       name: "program",
       label: "Select Program",
@@ -147,8 +125,8 @@ const SignupForm = () => {
       value: userData.program,
       onChange: { handleChange },
       error: errors.program,
+      required: true,
     },
-    
   ];
 
   function validateAadhaar(aadhaarNumber) {
@@ -203,6 +181,12 @@ const SignupForm = () => {
     let isValid = true;
 
     formFields.forEach(({ name, required }) => {
+      if (required && !userData[name]?.trim()) {
+        formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
+        isValid = false;
+      }
+    });
+    selectFields.forEach(({ name, required }) => {
       if (required && !userData[name]?.trim()) {
         formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
         isValid = false;
@@ -417,6 +401,9 @@ const SignupForm = () => {
             </Link>
           </label>
         </div>
+        {errors.termsAndCondition && (
+          <span className="text-white text-sm">{errors.termsAndCondition}</span>
+        )}
 
         <button
           type="submit"
@@ -424,11 +411,6 @@ const SignupForm = () => {
         >
           Next
         </button>
-        {errors.termsAndCondition && (
-          <span className="text-white text-sm mt-1">
-            {errors.termsAndCondition}
-          </span>
-        )}
       </form>
       {/* <div className="w-24">
           <img src={scholarsDenLogo} alt="Scholars Den Logo" />

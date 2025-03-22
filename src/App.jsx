@@ -15,7 +15,7 @@ import BankRefundComponents from "./Components/BankRefundComponents";
 import Spinner from "../api/Spinner";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
-
+import SuccessComponent from "./Components/SuccessComponent";
 function App() {
 
   return (
@@ -28,6 +28,7 @@ function App() {
             <Route path="/familyDetails" element = {< FamilyComponents />} />
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
             <Route path="/bankRefund" element={<BankRefundComponents/>} />
+            <Route path="/admissionComplete" element={<SuccessComponent/>} />
 
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />

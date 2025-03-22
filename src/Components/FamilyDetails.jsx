@@ -145,9 +145,9 @@ const FamilyDetails = () => {
   }, [userData]);
 
   return (
-    <div className="w-full px-4 py-2 text-center bg-[#c61d23] text-white">
+    <div className="w-full ">
       {loading && <Spinner />}
-      <form className="max-w-4xl mx-auto" onSubmit={onSubmit}>
+      <form className="flex flex-col px-4 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Family Details Form
         </h2>
@@ -164,7 +164,7 @@ const FamilyDetails = () => {
                     name={field.name}
                     options={field.options}
                     label={field.label}
-                    required={field.required}
+                    error={errors[field.name]}
                     value={userData?.[field.name] || ""}
                     onChange={handleChange}
                   />
@@ -176,8 +176,8 @@ const FamilyDetails = () => {
                     value={userData?.[field.name] || ""}
                     onChange={handleChange}
                     placeholder={field.placeholder}
-                    required={field.required}
-                  />
+                    error={errors[field.name]}
+                    />
                 )
               )}
             </div>

@@ -24,6 +24,9 @@ export const fetchUserDetails = createAsyncThunk(
                     dataExist: true,  // Data exists
                     userData: {
                         studentName: data?.studentName || '',
+                        admissionRollNo: data?.admissionRollNo || '',
+                        enrollmentNumber: data?.enrollmentNumber || '',
+                        
                         aadharID: data?.aadharID || '',
                         studentContactNumber: data?.studentContactNumber || '',
                         gender: data?.gender || '',
@@ -105,6 +108,8 @@ export const submitBankRefundForm = createAsyncThunk(
                     dataExist: true, // Indicate data exists
                     userData: {
                         accountHolder: data?.accountHolder || '',
+                        admissionRollNo: data?.admissionRollNo || '',
+                        enrollmentNumber: data?.enrollmentNumber || '',
                         studentClass: data?.studentClass || '',
                         program: data?.program || '',
                         bankName: data?.bankName || '',

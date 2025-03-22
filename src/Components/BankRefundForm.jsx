@@ -7,18 +7,18 @@ import {
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { useNavigate } from "react-router-dom";
-
+import InputField from "../../utils/InputField";
+import CheckboxField from "../../utils/CheckboxField";
 
 const BankRefundForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-    const [signatures, setSignatures] = useState({
-      parent: "",
-      admissionHead: "",
-    });
+  const [signatures, setSignatures] = useState({
+    parent: "",
+    admissionHead: "",
+  });
 
   const [errors, setErrors] = useState({});
-
 
   const signatureRefs = {
     admissionHead: React.createRef(),
@@ -68,28 +68,37 @@ const BankRefundForm = () => {
   //   }
   // };
 
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    console.log("name:", name, "value:", value, "type:", type, "checked:", checked);
-  
+    console.log(
+      "name:",
+      name,
+      "value:",
+      value,
+      "type:",
+      type,
+      "checked:",
+      checked
+    );
+
     if (type === "checkbox") {
-      dispatch(updateUserDetails({
-        documents: {
-          ...userData?.documents, // Ensure previous document data is preserved
-          [name]: checked,
-        }
-      }));
+      dispatch(
+        updateUserDetails({
+          documents: {
+            ...userData?.documents, // Ensure previous document data is preserved
+            [name]: checked,
+          },
+        })
+      );
     } else {
       dispatch(updateUserDetails({ [name]: value }));
     }
-  
+
     // Remove errors if the user fills the field
     if (value.trim()) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
   };
-  
 
   const handleSignatureEnd = (key) => {
     console.log("key", key);
@@ -99,8 +108,6 @@ const BankRefundForm = () => {
     }));
     setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
-
-
 
   const clearSignature = (key) => {
     signatureRefs[key]?.current?.clear();
@@ -177,15 +184,18 @@ const BankRefundForm = () => {
     dispatch(fetchUserDetails()).then((action) => {
       console.log("action.payload", action.payload);
       const fetchedUserData = action.payload; // Extract payload from Redux action
-      console.log("userData in useEffect", fetchedUserData?.userData?.signatures);
+      console.log(
+        "userData in useEffect",
+        fetchedUserData?.userData?.signatures
+      );
       if (fetchedUserData?.userData?.signatures) {
         setSignatures(fetchedUserData?.userData?.signatures);
       }
     });
   }, []);
-  useEffect(()=>{
+  useEffect(() => {
     console.log("userData form Use", userData);
-  },[userData])
+  }, [userData]);
 
   // After fetching, load the signature data into the canvas
   useEffect(() => {
@@ -197,7 +207,6 @@ const BankRefundForm = () => {
       }
     });
   }, [signatures]);
-  
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -210,7 +219,7 @@ const BankRefundForm = () => {
 
       await dispatch(submitBankRefundForm(formData));
 
-      // navigate("/siblingsDetails");
+      navigate("/admissionComplete");
     } catch (error) {
       console.log("Error submitting form:", error);
     }
@@ -219,106 +228,101 @@ const BankRefundForm = () => {
     // }
   };
 
-
-
   return (
-    <div className="w-full text-white p-8 rounded-lg  ">
-      <h2 className="text-xl text-center font-bold mb-4">
-        Bank Account Details for Caution Money Refund
-      </h2>
-      <div className="grid md:grid-cols-2 gap-4 ">
-        {[
-          { label: "Account Holder Name", name: "accountHolder" },
-          { label: "Bank Name", name: "bankName" },
-          { label: "Account Number", name: "accountNumber" },
-          { label: "IFSC Code", name: "ifscCode" },
-          { label: "Relation with Student", name: "relationWithStudent" },
-        ].map(({ label, name }) => (
-          <div key={name} className="flex flex-col">
-            <label>{label}</label>
-            <input
-              type="text"
-              name={name}
-              value={userData[name] || ""}
-              onChange={handleChange}
-              className=" p-2 rounded-md text-black"
-            />
-
-            {errors[name] && (
-              <p className="text-red-500 text-xs">{errors[name]}</p>
-            )}
-          </div>
-        ))}
-      </div>
-      <h3 className="mt-4">Document Checklist (Please Tick)</h3>
-      <div className="grid grid-cols-3 gap-4 md:mt-4">
-        {[
-          { label: "Cancelled Cheque", name: "cancelledCheque" },
-          { label: "Photocopy of Passbook", name: "passbook" },
-          { label: "Photocopy of Student’s Aadhar", name: "studentAadhar" },
-          { label: "Photocopy of Parent’s Aadhar", name: "parentAadhar" },
-          { label: "Two Passport Size Photographs", name: "passportPhotos" },
-        ].map(({ label, name }) => (
-          <div className="flex md:flex-col" key={name}>
-            <label key={name} className="flex flex-col md:flex-row text-xs md:text-sm">
-              <input
-                type="checkbox"
+    <div className="w-full ">
+      {loading && <Spinner />}
+      <form
+        className="flex flex-col px-4 items-center gap-2 py-2 text-white"
+        onSubmit={onSubmit}
+      >
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
+          Bank Account Details for Caution Money Refund
+        </h2>
+        <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
+          {[
+            { label: "Account Holder Name", name: "accountHolder" },
+            { label: "Bank Name", name: "bankName" },
+            { label: "Account Number", name: "accountNumber" },
+            { label: "IFSC Code", name: "ifscCode" },
+            { label: "Relation with Student", name: "relationWithStudent" },
+          ].map(({ label, name }) => (
+              <InputField
+                key={name}
                 name={name}
-                checked={userData?.documents?.[name] || false}
+                value={userData?.[name] || ""}
                 onChange={handleChange}
-                className="mr-2"
+                placeholder={label}
+                error={errors[name]}
               />
-              {label}
-            </label>
+
+     
+          ))}
+          <h3 className="mt-4">Document Checklist (Please Tick)</h3>
+          <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: "Cancelled Cheque", name: "cancelledCheque" },
+            { label: "Photocopy of Passbook", name: "passbook" },
+            { label: "Photocopy of Student’s Aadhar", name: "studentAadhar" },
+            { label: "Photocopy of Parent’s Aadhar", name: "parentAadhar" },
+            { label: "Two Passport Size Photographs", name: "passportPhotos" },
+          ].map(({ label, name }) => (
+            <CheckboxField
+              type="checkbox"
+              name={name}
+              checked={userData?.documents?.[name] || false}
+              onChange={handleChange}
+              label={label}
+            />
+          ))}
           </div>
-        ))}
-        <div className="col-span-3 text-center">
-          {errors.documents && (
-            <p className="text-black text-xs">{errors.documents}</p>
-          )}{" "}
-          {/* Display error */}
+          <div className="col-span-3 text-center">
+            {errors.documents && (
+              <p className="text-black text-xs">{errors.documents}</p>
+            )}{" "}
+            {/* Display error */}
+          </div>
         </div>
-      </div>
-      <div className="mt-6 grid md:grid-cols-2 gap-4">
-        {["admissionHead", "parent"].map((key) => (
-          <div key={key} className="flex flex-col items-center">
-            <h3 className="text-md font-semibold mb-2">
-              {key === "parent"
-                ? "Signature of Parent (Should match with PAN)"
-                : "Signature of Admission Head"}
-            </h3>
-            <div className="border w-64 h-24 bg-white">
-              <SignatureCanvas
-                ref={signatureRefs[key]}
-                penColor="black"
-                canvasProps={{ className: "w-full h-full" }}
-                onEnd={() => handleSignatureEnd(key)}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => clearSignature(key)}
-              className="mt-2 bg-red-500 text-white px-4 py-1 rounded"
-            >
-              Clear Signature
-            </button>
+          <div className="grid md:grid-cols-2 gap-4">
+            {["admissionHead", "parent"].map((key) => (
+              <div key={key} className="flex flex-col items-center">
+                <h3 className="text-md font-semibold mb-2">
+                  {key === "parent"
+                    ? "Signature of Parent (Should match with PAN)"
+                    : "Signature of Admission Head"}
+                </h3>
+                <div className="border w-64 h-24 bg-white">
+                  <SignatureCanvas
+                    ref={signatureRefs[key]}
+                    penColor="black"
+                    canvasProps={{ className: "w-full h-full" }}
+                    onEnd={() => handleSignatureEnd(key)}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => clearSignature(key)}
+                  className="mt-2 bg-red-500 text-white px-4 py-1 rounded"
+                >
+                  Clear Signature
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="flex justify-between ">
-        <button
-          className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
-          onClick={()=>navigate("/siblingsDetails")}
-        >
-          Back
-        </button>
-        <button
-          className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
-          onClick={onSubmit}
-        >
-          Submit
-        </button>
-      </div>
+        <div className="flex w-full justify-between ">
+          <button
+            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+            onClick={() => navigate("/siblingsDetails")}
+          >
+            Back
+          </button>
+          <button
+            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
+            onClick={onSubmit}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
