@@ -10,6 +10,11 @@ import {
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
+import {
+  validateAadhaar,
+  validateDateOfBirth,
+  validateName,
+} from "../../utils/validation/inputValidation";
 
 const FamilyDetails = () => {
   const dispatch = useDispatch();
@@ -30,12 +35,14 @@ const FamilyDetails = () => {
           type: "text",
           placeholder: "*Father’s Name",
           required: true,
+          validation: validateName,
         },
         {
           name: "fatherAadharId",
           type: "text",
           placeholder: "*Father's Aadhar ID",
           required: true,
+          validation: validateAadhaar,
         },
         {
           name: "fatherBloodGroup",
@@ -61,18 +68,21 @@ const FamilyDetails = () => {
           type: "text",
           placeholder: "*Mother’s Name",
           required: true,
+          validation: validateName,
         },
         {
           name: "motherAadharId",
           type: "text",
           placeholder: "*Mother's Aadhar ID",
           required: true,
+          validation: validateAadhaar,
         },
         {
           name: "motherDob",
           type: "date",
           placeholder: "Mother's DOB",
           required: true,
+          validation: validateDateOfBirth,
         },
         {
           name: "motherBloodGroup",
@@ -94,6 +104,7 @@ const FamilyDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
     if (value.trim())
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -122,10 +133,20 @@ const FamilyDetails = () => {
     const formErrors = {};
     let isValid = true;
     familySections.forEach(({ fields }) => {
-      fields.forEach(({ name, required }) => {
-        if (required && !userData[name]?.trim()) {
-          formErrors[name] = `${name.replace(/([A-Z])/g, " $1")} is required`;
-          isValid = false;
+      fields.forEach(({ name, required, validation = "" }) => {
+        if (validation === "") {
+          if (required && !userData[name]?.trim()) {
+            formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;;
+            isValid = false;
+          }
+        } else {
+          const isValidInput = validation(userData[name]);
+          console.log("isValidInput", isValidInput);
+
+          if (required && !isValidInput.isValid) {
+            formErrors[name] = isValidInput.message;
+            isValid = false;
+          }
         }
       });
     });
@@ -147,7 +168,10 @@ const FamilyDetails = () => {
   return (
     <div className="w-full ">
       {loading && <Spinner />}
-      <form className="flex flex-col px-4 items-center gap-2 py-2 text-white" onSubmit={onSubmit}>
+      <form
+        className="flex flex-col px-4 items-center gap-2 py-2 text-white"
+        onSubmit={onSubmit}
+      >
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Family Details Form
         </h2>
@@ -177,7 +201,7 @@ const FamilyDetails = () => {
                     onChange={handleChange}
                     placeholder={field.placeholder}
                     error={errors[field.name]}
-                    />
+                  />
                 )
               )}
             </div>

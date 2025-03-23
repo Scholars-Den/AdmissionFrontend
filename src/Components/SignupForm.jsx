@@ -7,6 +7,11 @@ import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
+import {
+  validateAadhaar,
+  validateName,
+  validatePhoneNo,
+} from "../../utils/validation/inputValidation";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -21,7 +26,7 @@ const SignupForm = () => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Aadhar example: 1234 5678 9012
+  // Aadhar example: 835824268440
 
   useEffect(() => {
     console.log("userData", userData);
@@ -71,12 +76,14 @@ const SignupForm = () => {
       type: "text",
       placeholder: "*Student Name",
       required: true,
+      validation: validateName,
     },
     {
       name: "aadharID",
       type: "text",
       placeholder: "*Aadher ID",
       required: true,
+      validation: validateAadhaar,
     },
     // { name: "email", type: "email", placeholder: "Email ID", required: false },
     {
@@ -84,6 +91,7 @@ const SignupForm = () => {
       type: "tel",
       placeholder: "Enter Your Contact Number",
       required: true,
+      validation: validatePhoneNo,
     },
   ];
 
@@ -128,60 +136,18 @@ const SignupForm = () => {
     },
   ];
 
-  function validateAadhaar(aadhaarNumber) {
-    // Check if the Aadhaar number is exactly 12 digits long and contains only numbers
-    const aadhaarRegex = /^\d{12}$/;
-
-    if (!aadhaarRegex.test(aadhaarNumber)) {
-      return {
-        isValid: false,
-        message:
-          "Aadhaar number must be 12 digits long and contain only numbers.",
-      };
-    }
-
-    // Optional: You can include a checksum validation like Luhn Algorithm for basic checks
-    if (!luhnCheck(aadhaarNumber)) {
-      return {
-        isValid: false,
-        message: "Aadhaar number failed checksum validation.",
-      };
-    }
-
-    return true;
-  }
-
-  // Optional: Luhn Algorithm for basic checksum validation
-  function luhnCheck(number) {
-    let sum = 0;
-    let shouldDouble = false;
-
-    // Loop through the digits from right to left
-    for (let i = number.length - 1; i >= 0; i--) {
-      let digit = parseInt(number.charAt(i));
-
-      if (shouldDouble) {
-        digit *= 2;
-        if (digit > 9) {
-          digit -= 9; // Sum of digits of the product
-        }
-      }
-
-      sum += digit;
-      shouldDouble = !shouldDouble;
-    }
-
-    // If the sum modulo 10 is 0, then it's valid
-    return sum % 10 === 0;
-  }
-
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
-    formFields.forEach(({ name, required }) => {
-      if (required && !userData[name]?.trim()) {
-        formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
+    formFields.forEach(({ name, required, validation }) => {
+      console.log("userData[name]", validation(userData[name]));
+
+      const isValidInput = validation(userData[name]);
+      console.log("isValidInput", isValidInput);
+      if (required && !isValidInput.isValid) {
+        formErrors[name] = isValidInput.message;
+        console.log("formErrors[name]", formErrors[name]);
         isValid = false;
       }
     });
@@ -192,29 +158,20 @@ const SignupForm = () => {
       }
     });
 
-    if (
-      userData.studentContactNumber &&
-      !/^\d{10}$/.test(userData.studentContactNumber)
-    ) {
-      formErrors.studentContactNumber = "Contact number must be 10 digits";
-      isValid = false;
-    }
+   
 
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-      formErrors.email = "Email must be valid";
-      isValid = false;
-    }
+    // if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+    //   formErrors.email = "Email must be valid";
+    //   isValid = false;
+    // }
 
-    // if(userData.aadharID && validateAadhaar(userData.aadharID)){
-    if (userData.aadharID && !validateAadhaar(userData.aadharID)) {
-      formErrors.aadharID = "Aadhar Id must be valid";
-      isValid = false;
-    }
-    console.log("userData.termsAndCondition", userData.termsAndCondition);
+  
+
     if (!userData.termsAndCondition) {
       formErrors.termsAndCondition = "Please accept terms and conditions";
       isValid = false;
     }
+    console.log("formErrors", formErrors);
     setErrors(formErrors);
     return isValid;
   };
@@ -256,9 +213,10 @@ const SignupForm = () => {
   };
 
   const onSubmit = async (e) => {
+    console.log("onsUBMIT click");
     e.preventDefault();
     if (!validateForm()) return;
-
+    console.log("userData in onSumit ", userData);
     try {
       dispatch(setLoading(true));
       if (!codeVerified) {
@@ -267,7 +225,7 @@ const SignupForm = () => {
       console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
-      if(document.cookie){
+      if (document.cookie) {
         navigate("/familyDetails");
       }
     } catch (error) {
