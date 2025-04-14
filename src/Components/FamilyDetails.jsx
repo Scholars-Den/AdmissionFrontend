@@ -27,7 +27,7 @@ const FamilyDetails = () => {
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
   const familySections = [
-    {
+  [  {
       title: "Father's Details",
       fields: [
         {
@@ -36,6 +36,7 @@ const FamilyDetails = () => {
           placeholder: "*Father’s Name",
           required: true,
           validation: validateName,
+          label: "*Father Name"
         },
         {
           name: "fatherAadharId",
@@ -43,24 +44,22 @@ const FamilyDetails = () => {
           placeholder: "*Father's Aadhar ID",
           required: true,
           validation: validateAadhaar,
+          label: "*Father Aadhar Id"
+
         },
-        {
-          name: "fatherBloodGroup",
-          type: "select",
-          label: "Blood Group",
-          options: bloodGroupOptions,
-          required: true,
-        },
+      
         {
           name: "fatherOccupations",
           type: "select",
           label: "Occupation",
           options: occupationOptions,
           required: true,
+          label: "Father Occupation"
+
         },
       ],
-    },
-    {
+    }],
+    [{
       title: "Mother's Details",
       fields: [
         {
@@ -69,6 +68,7 @@ const FamilyDetails = () => {
           placeholder: "*Mother’s Name",
           required: true,
           validation: validateName,
+          label: "Mother Name"
         },
         {
           name: "motherAadharId",
@@ -76,30 +76,20 @@ const FamilyDetails = () => {
           placeholder: "*Mother's Aadhar ID",
           required: true,
           validation: validateAadhaar,
+          label : "Mother Aadhar Id"
         },
-        {
-          name: "motherDob",
-          type: "date",
-          placeholder: "Mother's DOB",
-          required: true,
-          validation: validateDateOfBirth,
-        },
-        {
-          name: "motherBloodGroup",
-          type: "select",
-          label: "Blood Group",
-          options: bloodGroupOptions,
-          required: true,
-        },
+       
+       
         {
           name: "motherOccupations",
           type: "select",
           label: "Occupation",
           options: occupationOptions,
           required: true,
+          label : "Mother Occupation"
         },
       ],
-    },
+    }]
   ];
 
   const handleChange = (e) => {
@@ -136,7 +126,7 @@ const FamilyDetails = () => {
       fields.forEach(({ name, required, validation = "" }) => {
         if (validation === "") {
           if (required && !userData[name]?.trim()) {
-            formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;;
+            formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
             isValid = false;
           }
         } else {
@@ -169,44 +159,96 @@ const FamilyDetails = () => {
     <div className="w-full ">
       {loading && <Spinner />}
       <form
-        className="flex flex-col px-4 items-center gap-2 py-2 text-white"
+        className="flex flex-col px-4 items-center gap-2 w-full py-2 text-white"
         onSubmit={onSubmit}
       >
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Family Details Form
         </h2>
-        {familySections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="mb-6 md:w-2/3 mx-auto">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4">
-              {section.title}
-            </h3>
-            <div className="grid grid-cols-1  gap-4">
-              {section.fields.map((field, fieldIndex) =>
-                field.type === "select" ? (
-                  <SelectField
-                    key={fieldIndex}
-                    name={field.name}
-                    options={field.options}
-                    label={field.label}
-                    error={errors[field.name]}
-                    value={userData?.[field.name] || ""}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <InputField
-                    key={fieldIndex}
-                    name={field.name}
-                    type={field.type}
-                    value={userData?.[field.name] || ""}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    error={errors[field.name]}
-                  />
-                )
-              )}
+
+        <div className="flex flex-col w-full gap-4">
+
+ 
+        <fieldset className="text-white border-2 w-full px-6">
+          <legend> Father Details </legend>
+          {familySections[0].map((section, sectionIndex) => (
+            <div key={sectionIndex} className="mb-6 w-full">
+              {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
+                {section.title}
+              </h3> */}
+              <div className="grid grid-cols-1  gap-4">
+                {section.fields.map((field, fieldIndex) =>
+                  field.type === "select" ? (
+                    <SelectField
+                      key={fieldIndex}
+                      name={field.name}
+                      options={field.options}
+                      label={field.label}
+                      error={errors[field.name]}
+                      value={userData?.[field.name] || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <InputField
+                      key={fieldIndex}
+                      name={field.name}
+                      type={field.type}
+                      label={field.label}
+                      value={userData?.[field.name] || ""}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      error={errors[field.name]}
+                    />
+                  )
+                )}
+              </div>
             </div>
+          ))}
+       
+        </fieldset>
+        <fieldset className="text-white border-2 w-full px-6">
+        <legend>Mother Details</legend>
+
+        {familySections[1].map((section, sectionIndex) => (
+            <div key={sectionIndex} className="mb-6 w-full">
+              {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
+                {section.title}
+              </h3> */}
+              <div className="grid grid-cols-1  gap-4">
+                {section.fields.map((field, fieldIndex) =>
+                  field.type === "select" ? (
+                    <SelectField
+                      key={fieldIndex}
+                      name={field.name}
+                      options={field.options}
+                      label={field.label}
+                      error={errors[field.name]}
+                      value={userData?.[field.name] || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <InputField
+                      key={fieldIndex}
+                      name={field.name}
+                      type={field.type}
+                      label={field.label}
+                      value={userData?.[field.name] || ""}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      error={errors[field.name]}
+                    />
+                  )
+                )}
+              </div>
+            </div>
+          ))
+        }
+
+
+
+
+          </fieldset>
           </div>
-        ))}
         {/* <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" onClick={() => navigate("/")}>Back</button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" type="submit">Next</button>

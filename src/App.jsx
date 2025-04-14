@@ -12,6 +12,7 @@ import FamilyComponents from "./Components/FamilyComponents";
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
 import BankRefundComponents from "./Components/BankRefundComponents";
+import VerificationPage from "./Components/VerificationPage";
 import Spinner from "../api/Spinner";
 // import FormSubmitted from "./Components/FormSumited";
 // import Spinner from "./Components/Spinner";
@@ -23,7 +24,8 @@ function App() {
       <Router>
         <div className="flex  justify-center items-center ">
           <Routes>
-            <Route path="/" element={<Signup />} />
+            <Route path="/" element={<VerificationPage />} />
+            <Route path="/basicDetails" element={<Signup />} />
             <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />

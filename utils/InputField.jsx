@@ -19,9 +19,9 @@ const InputField = ({
   return (
     <div className="flex flex-col items-center w-full appearance-none">
       <div className="w-full">
-        {/* <label htmlFor={name} className="text-lg font-semibold mb-1">
+        <label htmlFor={name} className="text-sm font-semibold mb-1">
         {label}
-      </label> */}
+      </label>
         <input
           autoComplete="off"
           id={name}
