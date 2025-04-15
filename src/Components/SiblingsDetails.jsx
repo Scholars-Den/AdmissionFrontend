@@ -54,27 +54,72 @@ const SiblingsDetails = () => {
 
   const siblingsTable = Array(4).fill(null);
 
-  const validateForm = () => {
-    const formErrors = {};
-    let isValid = true;
+//   const validateForm = () => {
+//     const formErrors = {};
+//     let isValid = true;
 
-    siblingsData.forEach(({ name, label, required }) => {
-      if (required && !userData[name]) {
-        formErrors[name] = `${label} is required`;
-        isValid = false;
-      }
-    });
+//     siblingsData.forEach(({ name, label, required }) => {
+//       if (required && !userData[name]) {
+//         formErrors[name] = `${label} is required`;
+//         isValid = false;
+//       }
+//     });
 
-    Object.keys(signatures).forEach((key) => {
-      if (!signatures[key]) {
-        formErrors[key] = "Signature is required";
-        isValid = false;
-      }
-    });
+//     console.log("signatures", signatures);
 
-    setErrors(formErrors);
-    return isValid;
-  };
+//     Object.keys(signatures).forEach((key) => {
+
+//       console.log("signatures[key]", signatures[key]);
+//       if (!signatures[key]) {
+//         formErrors[key] = "Signature is required";
+//         isValid = false;
+//       }
+//     });
+// console.log("formErrors", formErrors);
+//     setErrors(formErrors);
+//     return isValid;
+//   };
+
+
+
+
+
+
+
+const validateForm = () => {
+  const formErrors = {};
+  let isValid = true;
+  const newSignatures = { ...signatures };
+
+  // Validate text fields
+  siblingsData.forEach(({ name, label, required }) => {
+    if (required && !userData[name]) {
+      formErrors[name] = `${label} is required`;
+      isValid = false;
+    }
+  });
+
+  // Ensure all signatures are captured
+  Object.keys(signatureRefs).forEach((key) => {
+    const signatureData = signatureRefs[key]?.current?.toDataURL();
+
+    console.log(`Signature data for ${key}:`, signatureData);
+
+    if (!signatureData || signatureData === "data:," || signatureData.length < 100) {
+      formErrors[key] = "Signature is required";
+      isValid = false;
+    } else {
+      newSignatures[key] = signatureData;
+    }
+  });
+
+  console.log("Updated signatures:", newSignatures);
+  
+  setSignatures(newSignatures); // Update the state with extracted signatures
+  setErrors(formErrors);
+  
+  return isValid;
+};
 
   const onSubmit = async (e) => {
     e.preventDefault();

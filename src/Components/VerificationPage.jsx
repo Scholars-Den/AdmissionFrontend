@@ -13,7 +13,7 @@ import {
   validatePhoneNo,
 } from "../../utils/validation/inputValidation";
 
-const SignupForm = () => {
+const VerificationPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.userDetails);
@@ -21,8 +21,8 @@ const SignupForm = () => {
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -34,16 +34,8 @@ const SignupForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name === "studentContactNumber"){
-      if(value.length >10) return;
-    }
-    console.log("name", name, "value", value);
-    if (name === "termsAndCondition") {
-      console.log("e.target.checked", e.target.checked);
-
-      dispatch(updateUserDetails({ [e.target.name]: e.target.checked }));
-      return;
-    }
+  
+  
 
     dispatch(updateUserDetails({ [name]: value }));
 
@@ -52,57 +44,12 @@ const SignupForm = () => {
     }
   };
 
-  // let subjectOptions =
-  //   userData?.studentClass >= 6 && userData?.studentClass <= 10
-  //     ? ["Foundation"]
-  //     : ["Engineering", "Medical"];
 
-
-
-
-  let subjectOptionsForClass =
-  (userData?.program === "Engineering"  || userData?.program === "Engineering" )
-    ?  [...Array.from({ length: 2 }, (_, i) => i + 10), "12 Pass"]
-    : [...Array.from({ length: 5 }, (_, i) => i + 6
-    )];
-
-
-  let subjectOptions = ["Foundation", "Engineering", "Medical"];
-  const convertToRoman = (num) => {
-    const romanNumerals = {
-      6: "VI",
-      7: "VII",
-      8: "VIII",
-      9: "IX",
-      10: "X",
-      11: "XI",
-      12: "XII",
-    };
-    return romanNumerals[num];
-  };
-
-  useEffect(() => {
-    console.log("userData", userData);
-  }, [userData]);
   // Define form fields
   const formFields = [
+  
     {
-      name: "studentName",
-      type: "text",
-      placeholder: "*Student Name",
-      required: true,
-      validation: validateName,
-    },
-    {
-      name: "aadharID",
-      type: "text",
-      placeholder: "*Aadher ID",
-      required: true,
-      validation: validateAadhaar,
-    },
-    // { name: "email", type: "email", placeholder: "Email ID", required: false },
-    {
-      name: "studentContactNumber",
+      name: "parentsContactNumber",
       type: "number",
       placeholder: "Enter Your Contact Number",
       required: true,
@@ -110,45 +57,7 @@ const SignupForm = () => {
     },
   ];
 
-  const selectFields = [
-    {
-      name: "gender",
-      label: "Select Gender",
-      options: ["Male", "Female"],
-      value: userData.gender,
-      onChange: { handleChange },
-      error: errors.gender,
-      required: true,
-    },
-
-    {
-      name: "category",
-      label: "Select Category",
-      options: ["General", "OBC", "SC", "ST", "ETS"],
-      value: userData.category,
-      onChange: { handleChange },
-      error: errors.category,
-      required: true,
-    },
-    {
-      name: "program",
-      label: "Select Program",
-      options: subjectOptions,
-      value: userData.program,
-      onChange: { handleChange },
-      error: errors.program,
-      required: true,
-    },
-    {
-      name: "studentClass",
-      label: "Select Class",
-      options:subjectOptionsForClass, // Add "12 Pass"
-      value: convertToRoman(userData?.class),
-      onChange: handleChange, // Remove curly braces around handleChange
-      error: errors.class,
-      required: true,
-    },
-  ];
+ 
 
   const validateForm = () => {
     const formErrors = {};
@@ -165,17 +74,8 @@ const SignupForm = () => {
         isValid = false;
       }
     });
-    selectFields.forEach(({ name, required }) => {
-      if (required && !userData[name]?.trim()) {
-        formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
-        isValid = false;
-      }
-    });
+  
 
-    // if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-    //   formErrors.email = "Email must be valid";
-    //   isValid = false;
-    // }
 
                         
     console.log("formErrors", formErrors);
@@ -264,39 +164,29 @@ const SignupForm = () => {
             />
           ))}
 
-          {selectFields?.map((field) => (
-            <SelectField
-              key={field.name}
-              name={field.name}
-              value={userData?.[field.name] || ""}
-              onChange={handleChange}
-              options={field.options}
-              error={errors[field.name]}
-              label={field.label}
-            />
-          ))}
+      
 
           {/* Phone Verification */}
-          <div className="flex gap-3 w-full">
-            <input
-              type="text"
-              id="verificationCode"
-              name="verificationCode"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="*Verification Code"
-              className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
-            />
-            {showCodeBox && (
-              <button
-                type="button"
-                onClick={checkVerificationCode}
-                className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-              >
-                Verify
-              </button>
-            )}
-          </div>
+          {showCodeBox && (
+  <div className="flex gap-3 w-full">
+    <input
+      type="text"
+      id="verificationCode"
+      name="verificationCode"
+      value={code}
+      onChange={(e) => setCode(e.target.value)}
+      placeholder="*Verification Code"
+      className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
+    />
+    <button
+      type="button"
+      onClick={checkVerificationCode}
+      className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+    >
+      Verify
+    </button>
+  </div>
+)}
 
           {!showCodeBox && !codeVerified && (
             <button
@@ -315,62 +205,6 @@ const SignupForm = () => {
           )}
         </div>
 
-        {/* Phone Verification */}
-        {/* <div className="flex gap-3 w-2/3">
-            <input
-              type="text"
-              id="verificationCode"
-              name="verificationCode"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="*Verification Code"
-              className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
-            />
-            {showCodeBox && (
-              <button
-                type="button"
-                onClick={checkVerificationCode}
-                className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-              >
-                Verify
-              </button>
-            )}
-          </div> */}
-
-        {!showCodeBox && !codeVerified && (
-          <button
-            type="button"
-            onClick={verifyPhoneNo}
-            className="px-4 py-2 border-2 text-white hover:bg-[#ffdd00] hover:text-black rounded-full"
-          >
-            Send OTP
-          </button>
-        )}
-
-        {submitMessage && (
-          <p className="text-sm text-[#ffdd00] text-center">{submitMessage}</p>
-        )}
-
-        {/* <div className="flex gap-1 justify-center items-center">
-          <input
-            type="checkbox"
-            name="termsAndCondition"
-            value={Boolean(userData?.termsAndCondition)}
-            checked={Boolean(userData?.termsAndCondition)} // Ensure it's a boolean
-            onChange={handleChange}
-            className="cursor-pointer"
-          />
-          <label className="p-1">
-            I agree to{" "}
-            <Link to="/termsAndConditions" className="text-[#ffdd00] underline">
-              Terms & Conditions
-            </Link>
-          </label>
-        </div>
-        {errors.termsAndCondition && (
-          <span className="text-white text-sm">{errors.termsAndCondition}</span>
-        )} */}
-
         <button
           type="submit"
           className="w-2/5 py-2 border-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black mt-2"
@@ -378,11 +212,9 @@ const SignupForm = () => {
           Next
         </button>
       </form>
-      {/* <div className="w-24">
-          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
-        </div> */}
+      
     </div>
   );
 };
 
-export default SignupForm;
+export default VerificationPage;

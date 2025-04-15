@@ -51,7 +51,6 @@ const FamilyDetails = () => {
         {
           name: "fatherOccupations",
           type: "select",
-          label: "Occupation",
           options: occupationOptions,
           required: true,
           label: "Father Occupation"
@@ -83,7 +82,6 @@ const FamilyDetails = () => {
         {
           name: "motherOccupations",
           type: "select",
-          label: "Occupation",
           options: occupationOptions,
           required: true,
           label : "Mother Occupation"
