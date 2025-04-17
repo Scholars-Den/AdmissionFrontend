@@ -277,7 +277,7 @@ const BankRefundForm = () => {
           </div>
           <div className="col-span-3 text-center">
             {errors.documents && (
-              <p className="text-black text-xs">{errors.documents}</p>
+              <p className="text-[#ffdd00] text-xs">{errors.documents}</p>
             )}{" "}
             {/* Display error */}
           </div>

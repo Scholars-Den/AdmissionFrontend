@@ -121,7 +121,7 @@ const FamilyDetails = () => {
     const formErrors = {};
     let isValid = true;
     familySections.forEach(({ fields }) => {
-      fields.forEach(({ name, required, validation = "" }) => {
+      fields?.forEach(({ name, required, validation = "" }) => {
         if (validation === "") {
           if (required && !userData[name]?.trim()) {
             formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;

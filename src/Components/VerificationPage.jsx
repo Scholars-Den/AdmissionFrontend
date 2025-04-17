@@ -7,11 +7,14 @@ import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
+
 import {
   validateAadhaar,
   validateName,
   validatePhoneNo,
 } from "../../utils/validation/inputValidation";
+import SignupDetailsPage from "./SignupDetailsPage";
 
 const VerificationPage = () => {
   const navigate = useNavigate();
@@ -34,8 +37,6 @@ const VerificationPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
-  
 
     dispatch(updateUserDetails({ [name]: value }));
 
@@ -44,20 +45,16 @@ const VerificationPage = () => {
     }
   };
 
-
   // Define form fields
   const formFields = [
-  
     {
-      name: "parentsContactNumber",
+      name: "fatherContactNumber",
       type: "number",
       placeholder: "Enter Your Contact Number",
       required: true,
       validation: validatePhoneNo,
     },
   ];
-
- 
 
   const validateForm = () => {
     const formErrors = {};
@@ -74,10 +71,7 @@ const VerificationPage = () => {
         isValid = false;
       }
     });
-  
 
-
-                        
     console.log("formErrors", formErrors);
     setErrors(formErrors);
     return isValid;
@@ -86,7 +80,7 @@ const VerificationPage = () => {
   const verifyPhoneNo = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.post("/user/sendVerification", {
+      const response = await axios.post("/admissions/sendVerification", {
         mobileNumber: userData.fatherContactNumber,
       });
       if (response.status === 200) {
@@ -94,6 +88,7 @@ const VerificationPage = () => {
         setSubmitMessage("OTP sent successfully");
       }
     } catch (error) {
+      console.log("error", error);
       setSubmitMessage(error.response?.data?.message || "Error sending OTP");
     } finally {
       dispatch(setLoading(false));
@@ -103,7 +98,7 @@ const VerificationPage = () => {
   const checkVerificationCode = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.post("/user/verifyNumber", {
+      const response = await axios.post("/admissions/verifyNumber", {
         mobileNumber: userData.fatherContactNumber,
         otp: code,
       });
@@ -133,7 +128,7 @@ const VerificationPage = () => {
 
       await dispatch(submitFormData(userData));
       if (document.cookie) {
-        navigate("/familyDetails");
+        navigate("/basicDetails");
       }
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -143,76 +138,85 @@ const VerificationPage = () => {
   };
 
   return (
-    <div className="w-full">
-      {loading && <Spinner />}
-      <form
-        className="flex flex-col px-4 items-center gap-2 py-2 text-white"
-        onSubmit={onSubmit}
-      >
-        <h2 className="text-4xl text-white">Admission Form</h2>
-
-        <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
-          {formFields?.map((field) => (
-            <InputField
-              key={field.name}
-              name={field.name}
-              value={userData?.[field.name] || ""}
-              onChange={handleChange}
-              error={errors[field.name]}
-              type={field.type}
-              placeholder={field.placeholder}
-            />
-          ))}
-
-      
-
-          {/* Phone Verification */}
-          {showCodeBox && (
-  <div className="flex gap-3 w-full">
-    <input
-      type="text"
-      id="verificationCode"
-      name="verificationCode"
-      value={code}
-      onChange={(e) => setCode(e.target.value)}
-      placeholder="*Verification Code"
-      className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
-    />
-    <button
-      type="button"
-      onClick={checkVerificationCode}
-      className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-    >
-      Verify
-    </button>
-  </div>
-)}
-
-          {!showCodeBox && !codeVerified && (
-            <button
-              type="button"
-              onClick={verifyPhoneNo}
-              className="px-4 py-2 border-2 text-white   rounded-full"
-            >
-              Send OTP
-            </button>
-          )}
-
-          {submitMessage && (
-            <p className="text-sm text-[#ffdd00] text-center">
-              {submitMessage}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          className="w-2/5 py-2 border-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black mt-2"
+    <div className="w-full min-h-screen flex flex-col  bg-[#c61d23]">
+      <div className="flex-grow">
+        <SignupDetailsPage />
+      </div>
+      <div className="flex-grow text-center w-full flex flex-col  items-center">
+        {loading && <Spinner />}
+        <form
+          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl max-w-2xl  space-y-6 text-white"
+          onSubmit={onSubmit}
         >
-          Next
-        </button>
-      </form>
-      
+          <h2 className="text-center text-2xl md:text-3xl font-semibold">
+            Phone Number Verification
+          </h2>
+
+          {/* <h2 className="text-4xl text-white">Admission Form</h2> */}
+
+          <div className="flex flex-col justify-center w-full  gap-4 items-center">
+            {formFields?.map((field) => (
+              <InputField
+                key={field.name}
+                name={field.name}
+                value={userData?.[field.name] || ""}
+                onChange={handleChange}
+                error={errors[field.name]}
+                type={field.type}
+                placeholder={field.placeholder}
+              />
+            ))}
+
+            {/* Phone Verification */}
+            {showCodeBox && (
+              <div className="flex gap-3 w-full">
+                <input
+                  type="text"
+                  id="verificationCode"
+                  name="verificationCode"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="*Verification Code"
+                  className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
+                />
+                <button
+                  type="button"
+                  onClick={checkVerificationCode}
+                  className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+                >
+                  Verify
+                </button>
+              </div>
+            )}
+
+            {!showCodeBox && !codeVerified && (
+              <button
+                type="button"
+                onClick={verifyPhoneNo}
+                className="px-4 py-2 border-2 text-white   rounded-full"
+              >
+                Send OTP
+              </button>
+            )}
+
+            {submitMessage && (
+              <p className="text-sm text-[#ffdd00] text-center">
+                {submitMessage}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-2/5 py-2 border-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black mt-2"
+          >
+            Next
+          </button>
+        </form>
+      </div>
+      <div className="flex justify-center items-center py-4">
+        <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
+      </div>
     </div>
   );
 };

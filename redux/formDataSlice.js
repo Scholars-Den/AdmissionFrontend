@@ -281,6 +281,7 @@ export const submitSiblingsDetails = createAsyncThunk(
             console.log("response from submitSiblingsDetails", response);
             return response.data;
         } catch (error) {
+            console.log("error form submitSiblingsDetails", error);
             return rejectWithValue(error.response.data);
         }
     }

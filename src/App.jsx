@@ -25,11 +25,10 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-      <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
-      {/* Signup Details Page (Top Section) */}
+      {/* <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
       <div className="flex-grow">
         <SignupDetailsPage />
-      </div>
+      </div> */}
 
       {/* Signup Form (Middle Section) */}
       <div className="flex-grow">
@@ -50,12 +49,12 @@ function App() {
           </Routes>
         </div>
 
-         <div className="flex justify-center items-center py-4">
+         {/* <div className="flex justify-center items-center py-4">
               <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
-            </div>
+            </div> */}
 
 
-       </div>
+       {/* </div> */}
       </Router>
     </Provider>
   );

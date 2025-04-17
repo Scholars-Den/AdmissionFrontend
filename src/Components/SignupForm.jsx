@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
-import { updateUserDetails, submitFormData } from "../../redux/formDataSlice";
+import { updateUserDetails, submitFormData, putFormData } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
@@ -61,25 +61,53 @@ const SignupForm = () => {
 
 
   let subjectOptionsForClass =
-  (userData?.program === "Engineering"  || userData?.program === "Engineering" )
-    ?  [...Array.from({ length: 2 }, (_, i) => i + 10), "12 Pass"]
-    : [...Array.from({ length: 5 }, (_, i) => i + 6
-    )];
+  userData?.program === "Engineering"
+    ? [...Array.from({ length: 2 }, (_, i) => i + 10), "12 Pass"]
+    : [...Array.from({ length: 5 }, (_, i) => i + 6)];
+
+const convertToRoman = (num) => {
+  const romanNumerals = {
+    6: "VI",
+    7: "VII",
+    8: "VIII",
+    9: "IX",
+    10: "X",
+    11: "XI",
+    12: "XII",
+  };
+  return romanNumerals[num] || num;
+};
+
+let subjectOptionsRoman = subjectOptionsForClass.flatMap((item) => {
+  if (typeof item === "number") {
+    return convertToRoman(item);
+  } else if (typeof item === "string") {
+    const match = item.match(/^(\d+)\s+(.*)/);
+    if (match) {
+      const roman = convertToRoman(parseInt(match[1]));
+      return [roman, `${roman} ${match[2]}`]; // Now in correct order
+    }
+  }
+  return item; // fallback
+});
+
+
+console.log(subjectOptionsRoman);
 
 
   let subjectOptions = ["Foundation", "Engineering", "Medical"];
-  const convertToRoman = (num) => {
-    const romanNumerals = {
-      6: "VI",
-      7: "VII",
-      8: "VIII",
-      9: "IX",
-      10: "X",
-      11: "XI",
-      12: "XII",
-    };
-    return romanNumerals[num];
-  };
+  // const convertToRoman = (num) => {
+  //   const romanNumerals = {
+  //     6: "VI",
+  //     7: "VII",
+  //     8: "VIII",
+  //     9: "IX",
+  //     10: "X",
+  //     11: "XI",
+  //     12: "XII",
+  //   };
+  //   return romanNumerals[num];
+  // };
 
   useEffect(() => {
     console.log("userData", userData);
@@ -101,13 +129,13 @@ const SignupForm = () => {
       validation: validateAadhaar,
     },
     // { name: "email", type: "email", placeholder: "Email ID", required: false },
-    {
-      name: "studentContactNumber",
-      type: "number",
-      placeholder: "Enter Your Contact Number",
-      required: true,
-      validation: validatePhoneNo,
-    },
+    // {
+    //   name: "studentContactNumber",
+    //   type: "number",
+    //   placeholder: "Enter Your Contact Number",
+    //   required: true,
+    //   validation: validatePhoneNo,
+    // },
   ];
 
   const selectFields = [
@@ -142,7 +170,7 @@ const SignupForm = () => {
     {
       name: "studentClass",
       label: "Select Class",
-      options:subjectOptionsForClass, // Add "12 Pass"
+      options:subjectOptionsRoman, // Add "12 Pass"
       value: convertToRoman(userData?.class),
       onChange: handleChange, // Remove curly braces around handleChange
       error: errors.class,
@@ -231,7 +259,7 @@ const SignupForm = () => {
       }
       console.log("userData in onSumit ", userData);
 
-      await dispatch(submitFormData(userData));
+      await dispatch(putFormData(userData));
       if (document.cookie) {
         navigate("/familyDetails");
       }
@@ -277,7 +305,7 @@ const SignupForm = () => {
           ))}
 
           {/* Phone Verification */}
-          <div className="flex gap-3 w-full">
+          {/* <div className="flex gap-3 w-full">
             <input
               type="text"
               id="verificationCode"
@@ -296,7 +324,7 @@ const SignupForm = () => {
                 Verify
               </button>
             )}
-          </div>
+          </div> */}
 
           {!showCodeBox && !codeVerified && (
             <button

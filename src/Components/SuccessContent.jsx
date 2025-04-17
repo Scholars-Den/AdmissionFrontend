@@ -21,19 +21,19 @@ const SuccessContent = () => {
     navigate("/");
   };
 
-    useEffect(() => {
+    // useEffect(() => {
     
 
-      const interval = setInterval(async () => {
+    //   const interval = setInterval(async () => {
         
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-        await dispatch(updateUserDetails(userdata));
-        navigate("/");
+    //     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    //     await dispatch(updateUserDetails(userdata));
+    //     navigate("/");
 
-      }, 3000);
+    //   }, 3000);
 
-      return () => clearInterval(interval); // Clean up the interval on component unmount
-    }, [navigate]);
+    //   return () => clearInterval(interval); // Clean up the interval on component unmount
+    // }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchUserDetails());
@@ -78,12 +78,12 @@ const SuccessContent = () => {
     {/* <p>{`Redirecting to Home in ${time} second${
         time !== 1 ? "s" : ""
       }`}</p> */}
-    {/* <button
+    <button
         onClick={clickHandler}
-        className="bg-[#c61d23] text-white font-semibold py-2 px-6 rounded-full hover:bg-[#a31a1d] transition duration-200"
+        className=" text-black shadow-md bg-[#ffdd00] font-semibold py-2 px-6 rounded-full hover:bg-[#fff000] transition duration-200"
       >
         Go Back to Home
-      </button> */}
+      </button>
   </div>
   </div>
   )

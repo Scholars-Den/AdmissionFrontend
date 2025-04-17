@@ -231,7 +231,7 @@ const validateForm = () => {
                     onChange={handleChange}
                     className="w-full border p-2 rounded-md text-black"
                   />
-                  {errors[field.name] && <p className="text-red-500 text-sm">{errors[field.name]}</p>}
+                  {errors[field.name] && <p className="text-[#ffdd00] text-sm">{errors[field.name]}</p>}
                 </div>
               ))}
             </div>
@@ -325,7 +325,7 @@ const validateForm = () => {
                 </button>
               </div>
               {errors[key] && (
-                <p className="text-red-500 text-sm">{errors[key]}</p>
+                <p className="text-[#ffdd00] text-sm">{errors[key]}</p>
               )}
             </div>
           ))}
