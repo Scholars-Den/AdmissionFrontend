@@ -19,6 +19,7 @@ import Spinner from "../api/Spinner";
 import SuccessComponent from "./Components/SuccessComponent";
 import SignupDetailsPage from "./Components/SignupDetailsPage";
 import scholarsDenLogo from "./assets/scholarsdenLogo.png";
+import DocumentUpload from "./Components/DocumentUpload";
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
             <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
             <Route path="/bankRefund" element={<BankRefundComponents/>} />
             <Route path="/admissionComplete" element={<SuccessComponent/>} />
+            <Route path="/documentUpload" element={<DocumentUpload/>} />
 
             {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
             {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
