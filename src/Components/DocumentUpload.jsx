@@ -107,15 +107,15 @@ const DocumentUpload = ({ documentRequired }) => {
     }
   };
 
-  // const allUploaded = documentRequired.every(
-  //   (doc) =>
-  //     uploads[doc.name] ||
-  //     userDetails[doc.name] ||
-  //     userDetails.documents[doc.name]
-  // );
+  const allUploaded = documentRequired.every(
+    (doc) =>
+      uploads[doc.name] ||
+      userDetails[doc.name] ||
+      userDetails?.documents[doc?.name]
+  );
 
-  // const activeDocLabel =
-  //   documentRequired.find((doc) => doc.name === activeDoc)?.label || activeDoc;
+  const activeDocLabel =
+    documentRequired.find((doc) => doc.name === activeDoc)?.label || activeDoc;
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
@@ -156,7 +156,7 @@ const DocumentUpload = ({ documentRequired }) => {
                 )}
               </div>
 
-              {uploadedImage ? (
+              {uploadedImage !== "" ? (
                 <>
                   <img
                     src={uploadedImage}

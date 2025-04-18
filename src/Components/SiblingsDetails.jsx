@@ -11,6 +11,7 @@ import {
 } from "../../redux/formDataSlice";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "../../api/Spinner";
+import SelectField from "../../utils/SelectField";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
@@ -37,6 +38,10 @@ const SiblingsDetails = () => {
 
   const handleSiblingChange = (index, event) => {
     const { name, value, type, checked } = event.target;
+
+
+    console.log("name", name)
+    console.log("name", value)
     setSiblings((prevSiblings) =>
       prevSiblings.map((sibling, i) =>
         i === index
@@ -48,6 +53,7 @@ const SiblingsDetails = () => {
       )
     );
   };
+
 
   const [signatures, setSignatures] = useState({
     student: "",
@@ -72,16 +78,25 @@ const SiblingsDetails = () => {
     setSiblings(newSiblings);
   };
 
-  const [siblings, setSiblings] = useState(userData.siblings? userData.siblings :[
-    { relation: "", name: "", occupation: "", studyingIn: "" },
-  ]);
+  const [siblings, setSiblings] = useState(
+    userData.siblings
+      ? userData.siblings
+      : [{ relation: "", name: "", occupation: "", studyingIn: "" }]
+  );
 
-
-  useEffect(()=>{
+  useEffect(() => {
     console.log("userSiblings", userData.siblings);
-    setSiblings(userData.siblings)
-    console.log()
-  },[userData])
+    setSiblings(userData.siblings);
+    console.log();
+  }, [userData]);
+
+
+  
+useEffect(()=>{
+  console.log("Siblings",siblings);
+},[siblings])
+
+
 
   const siblingsData = [
     {
@@ -103,8 +118,6 @@ const SiblingsDetails = () => {
       required: true,
     },
   ];
-
- 
 
   const validateForm = () => {
     const formErrors = {};
@@ -172,6 +185,10 @@ const SiblingsDetails = () => {
     }
   };
 
+  useEffect(()=>{
+    console.log("userData", userData);
+  }, [userData])
+
   const handleSignatureEnd = (key) => {
     setSignatures((prev) => ({
       ...prev,
@@ -224,18 +241,24 @@ const SiblingsDetails = () => {
 
         {/* Siblings Count Inputs */}
         <div className="flex justify-center gap-4">
-          {siblingsData.map((field) => (
+          {siblingsData.map((field, fieldIndex) => (
             <div key={field.name} className="w-full md:w-auto">
-              <label className="block mb-1 text-sm font-medium">
+              {/* <label className="block mb-1 text-sm font-medium">
                 {field.label}
-              </label>
-              <input
-                type={field.type}
-                name={field.name}
-                value={userData?.[field.name] || ""}
+              </label> */}
+
+
+
+              <SelectField
+                key={fieldIndex}
+                name={field?.name}
+                label={field.label}
+                options={["1", "2", "3", "4","5"]}
+                value={ userData?.[field.name] ? userData?.[field.name] :  field.name}
                 onChange={handleChange}
-                className="w-full border p-2 rounded-md text-black"
               />
+
+
               {errors[field.name] && (
                 <p className="text-[#ffdd00] text-sm">{errors[field.name]}</p>
               )}
@@ -263,7 +286,7 @@ const SiblingsDetails = () => {
                   <th className="border p-2">Relation</th>
                   <th className="border p-2">Name</th>
                   <th className="border p-2">Current Occupation</th>
-                  <th className="border p-2">Studying In</th>
+                  <th className="border p-2">Studying In / Working In</th>
                 </tr>
               </thead>
               <tbody>
@@ -271,12 +294,13 @@ const SiblingsDetails = () => {
                   <tr key={index}>
                     <td className="border p-2">{index + 1}</td>
                     <td className="border p-2">
-                      <input
-                        type="text"
-                        name="relation"
+                      <SelectField
+                        key={index}
+                        name={"relation"}
+                        label={"Select Relation"}
+                        options={["Brother", "Sister"]}
                         value={sibling.relation}
                         onChange={(e) => handleSiblingChange(index, e)}
-                        className="w-full p-1 text-black"
                       />
                     </td>
                     <td className="border p-2">

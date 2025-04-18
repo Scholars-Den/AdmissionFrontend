@@ -58,22 +58,22 @@ export const fetchUserDetails = createAsyncThunk(
             accountNumber: data?.accountNumber || "",
             ifscCode: data?.ifscCode || "",
             relationWithStudent: data?.relationWithStudent || "",
-            cancelledCheque: data?.cancelledCheque || false,
-            passbook: data?.passbook || false,
-            studentAadhar: data?.studentAadhar || false,
-            parentAadhar: data?.parentAadhar || false,
-            passportPhotos: data?.passportPhotos || false,
+            cancelledCheque: data?.cancelledCheque || "",
+            passbook: data?.passbook || "",
+            studentAadhar: data?.studentAadhar || "",
+            parentAadhar: data?.parentAadhar || "",
+            passportPhotos: data?.passportPhotos || "",
             admissionOfficer: data?.admissionOfficer || "",
             parent: data?.parent || "",
 
-            studentPhoto: data?.studentPhoto || false,
+            studentPhoto: data?.studentPhoto || "",
 
             documents: {
-              cancelledCheque: data?.documents?.cancelledCheque || false,
-              passbook: data?.documents?.passbook || false,
-              studentAadhar: data?.documents?.studentAadhar || false,
-              parentAadhar: data?.documents?.parentAadhar || false,
-              passportPhotos: data?.documents?.passportPhotos || false,
+              cancelledCheque: data?.documents?.cancelledCheque || "",
+              passbook: data?.documents?.passbook || "",
+              studentAadhar: data?.documents?.studentAadhar || "",
+              parentAadhar: data?.documents?.parentAadhar || "",
+              passportPhotos: data?.documents?.passportPhotos || "",
             },
           },
         };
@@ -183,11 +183,11 @@ export const submitFormData = createAsyncThunk(
 
 
 
-            cancelledCheque: data?.cancelledCheque || false,
-            passbook: data?.passbook || false,
-            studentAadhar: data?.studentAadhar || false,
-            parentAadhar: data?.parentAadhar || false,
-            passportPhotos: data?.passportPhotos || false,
+            cancelledCheque: data?.cancelledCheque || "",
+            passbook: data?.passbook || "",
+            studentAadhar: data?.studentAadhar || "",
+            parentAadhar: data?.parentAadhar || "",
+            passportPhotos: data?.passportPhotos || "",
           
           },
         };
@@ -246,11 +246,11 @@ export const putFormData = createAsyncThunk(
             studentPhoto : data?.newAdmission?.studentPhoto || "",
 
 
-            cancelledCheque: data?.cancelledCheque || false,
-            passbook: data?.passbook || false,
-            studentAadhar: data?.studentAadhar || false,
-            parentAadhar: data?.parentAadhar || false,
-            passportPhotos: data?.passportPhotos || false,
+            cancelledCheque: data?.cancelledCheque || "",
+            passbook: data?.passbook || "",
+            studentAadhar: data?.studentAadhar || "",
+            parentAadhar: data?.parentAadhar || "",
+            passportPhotos: data?.passportPhotos || "",
           },
         };
       } else {
