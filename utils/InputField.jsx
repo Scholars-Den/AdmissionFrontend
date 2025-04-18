@@ -30,7 +30,7 @@ const InputField = ({
           value={value || ""}
           onChange={onChange}
           placeholder={placeholder}
-          className="border-b-2 border-gray-300  py-2  w-full p-1 bg-[#c61d23] focus:outline-none placeholder-white  appearance-none"
+          className="border-b-2 text-black  p-2  w-full  bg-white focus:outline-none placeholder-black rounded-lg appearance-none"
         />
         {error && <span className="text-[#ffdd00] text-sm mt-1">{error}</span>}
       </div>

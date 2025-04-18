@@ -14,7 +14,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
           name={name}
           value={value || ""}
           onChange={onChange}
-          className="border border-gray-300 text-black rounded-lg p-2 focus:ring-2 w-full focus:ring-indigo-400 focus:outline-none "
+          className="border border-gray-300 text-black rounded-lg p-2 focus:ring-2 w-full focus:ring-yellow-400 focus:outline-none "
           style={{
             appearance: "none",
             WebkitAppearance: "none",
@@ -39,7 +39,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
             </option>
           ))}
         </select>
-        {error && <span className="text-white text-sm mt-1">{error}</span>}
+        {error && <span className="text-[#ffdd00] text-sm mt-1">{error}</span>}
       {/* </div> */}
     </div>
   );

@@ -311,7 +311,7 @@ const BankRefundForm = () => {
         <div className="flex w-full justify-between ">
           <button
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={() => navigate("/siblingsDetails")}
+            onClick={() => navigate(-1)}
           >
             Back
           </button>

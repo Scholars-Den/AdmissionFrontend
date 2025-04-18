@@ -109,7 +109,7 @@ const FamilyDetails = () => {
       console.log("userData in onSumit ", userData);
 
       await dispatch(putFormData(userData));
-      navigate("/siblingsDetails");
+      // navigate("/siblingsDetails");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -155,7 +155,7 @@ const FamilyDetails = () => {
 
   return (
     <div className="w-full ">
-      {loading && <Spinner />}
+      {/* {loading && <Spinner />} */}
       <form
         className="flex flex-col px-4 items-center gap-2 w-full py-2 text-white"
         onSubmit={onSubmit}
@@ -251,21 +251,23 @@ const FamilyDetails = () => {
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" onClick={() => navigate("/")}>Back</button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" type="submit">Next</button>
         </div> */}
+         <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+            <button
+              onClick={() => navigate(-1)}
+              type="button"
+              className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+            >
+              Next
+            </button>
+          </div>
 
-        <div className="flex justify-center ">
-          {/* <button
-            className="mt-6 bg-blue-500  text-white px-4 py-2 rounded"
-            onClick={() => navigate("/familyDetails")}
-          >
-            Back
-          </button> */}
-          <button
-            className="mt-6 border-2 text-white hover:bg-[#ffdd00] hover:text-black px-4 py-2 rounded"
-            onClick={onSubmit}
-          >
-            Next
-          </button>
-        </div>
+       
       </form>
     </div>
   );

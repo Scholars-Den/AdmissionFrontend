@@ -21,6 +21,7 @@ const VerificationPage = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.userDetails);
   const { loading } = useSelector((state) => state.loadingDetails);
+  const [showReloading, setShowReloading] = useState(false);
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
@@ -38,11 +39,18 @@ const VerificationPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    if (name === "fatherContactNumber") {
+      if (value.length > 10) {
+        return;
+      }
+    }
+
     dispatch(updateUserDetails({ [name]: value }));
 
-    if (value.trim()) {
-      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value ? "" : `${name} is required`,
+    }));
   };
 
   // Define form fields
@@ -79,6 +87,16 @@ const VerificationPage = () => {
 
   const verifyPhoneNo = async () => {
     try {
+      if (userData?.fatherContactNumber.length != 10) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          fatherContactNumber: `The length must be exactly 10.`,
+        }));
+        return;
+      }
+
+      setShowReloading(true);
+
       dispatch(setLoading(true));
       const response = await axios.post("/admissions/sendVerification", {
         mobileNumber: userData.fatherContactNumber,
@@ -92,38 +110,82 @@ const VerificationPage = () => {
       setSubmitMessage(error.response?.data?.message || "Error sending OTP");
     } finally {
       dispatch(setLoading(false));
+      setShowReloading(false);
     }
   };
 
+  // const checkVerificationCode = async () => {
+  //   try {
+  //     dispatch(setLoading(true));
+  //     const response = await axios.post("/admissions/verifyNumber", {
+  //       mobileNumber: userData.fatherContactNumber,
+  //       otp: code,
+  //     });
+  //     if (response.status === 200) {
+  //       setSubmitMessage("Phone number verified successfully!");
+  //       setCodeVerified(true);
+  //       setShowCodeBox(false);
+  //     }
+  //   } catch (error) {
+  //     setSubmitMessage("Error verifying phone number");
+  //   } finally {
+  //     dispatch(setLoading(false));
+  //   }
+  // };
+
+
+
+
   const checkVerificationCode = async () => {
     try {
-      dispatch(setLoading(true));
       const response = await axios.post("/admissions/verifyNumber", {
         mobileNumber: userData.fatherContactNumber,
         otp: code,
       });
       if (response.status === 200) {
-        setSubmitMessage("Phone number verified successfully!");
+        // setSubmitMessage("Phone number verified successfully!");
+
+        console.log("ITs working ,,,,,,,,,,,,,");
         setCodeVerified(true);
         setShowCodeBox(false);
       }
+      console.log("ITs working ,,,,,,,,,,,,,");
+
+      console.log("codeVerified form checkVerification", codeVerified);
+      // setCodeVerified(true);
+      // setShowCodeBox(false);
+      return true;
     } catch (error) {
       setSubmitMessage("Error verifying phone number");
-    } finally {
-      dispatch(setLoading(false));
+      console.log("Error verifying phone number", error);
+      return false;
     }
   };
+
+
 
   const onSubmit = async (e) => {
     console.log("onsUBMIT click");
     e.preventDefault();
+    let codeChecked = await checkVerificationCode();
+
+    console.log("codeChecked", codeChecked);
+    if (codeChecked === false) {
+      setShowCodeBox(false);
+
+      // Remove OTP
+      setCodeVerified(false);
+      setSubmitMessage("Please Verify Your Phone Number");
+      // setIsSubmittingForm(false); // ⬅️ reset if verification fails
+      return;
+    }
+
     if (!validateForm()) return;
+
     console.log("userData in onSumit ", userData);
     try {
       dispatch(setLoading(true));
-      if (!codeVerified) {
-        return setSubmitMessage("Please Verify Your Phone Number");
-      }
+    
       console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
@@ -142,78 +204,101 @@ const VerificationPage = () => {
       <div className="flex-grow">
         <SignupDetailsPage />
       </div>
-      <div className="flex-grow text-center w-full flex flex-col  items-center">
-        {loading && <Spinner />}
+
+      <div className="w-full bg-[#c61d23] flex items-center justify-center px-4 py-1 min-h-screen">
+        {/* {loading && <Spinner />} */}
         <form
-          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl max-w-2xl  space-y-6 text-white"
           onSubmit={onSubmit}
+          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
         >
           <h2 className="text-center text-2xl md:text-3xl font-semibold">
             Phone Number Verification
           </h2>
 
-          {/* <h2 className="text-4xl text-white">Admission Form</h2> */}
-
-          <div className="flex flex-col justify-center w-full  gap-4 items-center">
-            {formFields?.map((field) => (
-              <InputField
-                key={field.name}
-                name={field.name}
-                value={userData?.[field.name] || ""}
+          {/* Phone Field */}
+          <div className="space-y-4">
+            <label
+              htmlFor="fatherContactNumber"
+              className="block text-sm font-medium"
+            >
+              *Contact Number (Parent)
+            </label>
+            <div className="flex flex-col md:flex-row gap-2">
+              <input
+                type="number"
+                name="fatherContactNumber"
+                value={userData.fatherContactNumber || ""}
                 onChange={handleChange}
-                error={errors[field.name]}
-                type={field.type}
-                placeholder={field.placeholder}
+                placeholder="Phone"
+                className="border-b-2 py-2 focus:outline-none w-full"
+                style={{ backgroundColor: "#c61d23" }}
+                maxLength={10}
+                inputMode="numeric"
               />
-            ))}
-
-            {/* Phone Verification */}
-            {showCodeBox && (
-              <div className="flex gap-3 w-full">
-                <input
-                  type="text"
-                  id="verificationCode"
-                  name="verificationCode"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="*Verification Code"
-                  className="border-b-2 border-gray-300 py-2 focus:outline-none w-4/5 bg-[#c61d23] placeholder-white"
-                />
+              {!showCodeBox && !codeVerified && (
                 <button
                   type="button"
-                  onClick={checkVerificationCode}
-                  className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
+                  onClick={verifyPhoneNo}
+                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                 >
-                  Verify
+                  Send OTP
                 </button>
-              </div>
-            )}
-
-            {!showCodeBox && !codeVerified && (
-              <button
-                type="button"
-                onClick={verifyPhoneNo}
-                className="px-4 py-2 border-2 text-white   rounded-full"
-              >
-                Send OTP
-              </button>
-            )}
-
-            {submitMessage && (
-              <p className="text-sm text-[#ffdd00] text-center">
-                {submitMessage}
+              )}
+            </div>
+            {errors.fatherContactNumber && (
+              <p className="text-[#ffdd00] mt-1">
+                {errors.fatherContactNumber}
               </p>
             )}
           </div>
 
+          {/* OTP Field */}
+          {showCodeBox && (
+            <div className="space-y-2">
+              <label htmlFor="otp" className="block text-sm font-medium">
+                *Verification Code
+              </label>
+              <input
+                type="text"
+                id="otp"
+                name="otp"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter OTP"
+                className="w-full bg-white/5 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
+              />
+              {/* <button
+              type="button"
+              onClick={checkVerificationCode}
+              className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md text-white"
+            >
+              Verify
+            </button> */}
+            </div>
+          )}
+          {showReloading && (
+            <div className="flex justify-center items-center">
+              <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+            </div>
+          )}
+
+          {/* Submit Message */}
+          {submitMessage && (
+            <p className="text-sm text-center text-[#ffdd00]">
+              {submitMessage}
+            </p>
+          )}
+
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-2/5 py-2 border-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black mt-2"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
           >
             Next
           </button>
         </form>
       </div>
+
       <div className="flex justify-center items-center py-4">
         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
       </div>

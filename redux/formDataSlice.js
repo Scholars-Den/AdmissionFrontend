@@ -30,7 +30,7 @@ export const fetchUserDetails = createAsyncThunk(
                         aadharID: data?.aadharID || '',
                         studentContactNumber: data?.studentContactNumber || '',
                         gender: data?.gender || '',
-                        category: data?.Category || '',
+                        category: data?.category || '',
                         studentClass: data?.studentClass || '',
                         program: data?.program || '',
                         dob: data?.dob || '',
