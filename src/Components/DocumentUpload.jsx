@@ -1,25 +1,32 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// import { submitUserDetails } from "../redux/slices/userDeailsSlice";
-// import FormHeader from "./LoginSugnup/FormHeader";
+import {
+  fetchUserDetails,
+  updateUserDetails,
+  putFormData,
+} from "../../redux/formDataSlice";
 
-const DocumentUpload = () => {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const [capturedImage, setCapturedImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadedUrl, setUploadedUrl] = useState("");
-  const [showError, setShowError] = useState("");
-  const [cameraFacing, setCameraFacing] = useState("user"); // 'user' or 'environment'
-
+const DocumentUpload = ({ documentRequired }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData: userDetails } = useSelector((state) => state.userDetails);
-  const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    profilePicture: userDetails?.profilePicture || null,
-  });
+  const [uploads, setUploads] = useState({});
+  const [uploading, setUploading] = useState({});
+  const [showError, setShowError] = useState("");
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [activeDoc, setActiveDoc] = useState(null);
+  const [cameraFacing, setCameraFacing] = useState("user");
+
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (activeDoc) getCamera();
+  }, [cameraFacing, activeDoc]);
 
   const getCamera = async () => {
     try {
@@ -30,172 +37,246 @@ const DocumentUpload = () => {
         videoRef.current.srcObject = stream;
       }
     } catch (err) {
-      console.error("Error accessing camera:", err);
       setShowError("Could not access camera.");
     }
   };
 
-  useEffect(() => {
-    getCamera();
-  }, [cameraFacing]);
-
   const handleCapture = async () => {
+    if (!activeDoc) return;
     const canvas = canvasRef.current;
     const video = videoRef.current;
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const context = canvas.getContext("2d");
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const image = canvas.toDataURL("image/png");
-
-    setCapturedImage(image);
-    uploadToCloudinary(image);
+    await uploadToCloudinary(image, activeDoc);
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e, docType) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCapturedImage(reader.result);
-        // uploadToCloudinary(reader.result);
+        uploadToCloudinary(reader.result, docType);
       };
       reader.readAsDataURL(file);
     }
   };
 
-//   const uploadToCloudinary = async (dataUrl) => {
-//     setUploading(true);
-//     try {
-//       const blob = await (await fetch(dataUrl)).blob();
-//       const formDataToSend = new FormData();
-//       formDataToSend.append(
-//         "file",
-//         blob,
-//         userDetails.name + "_" + userDetails.StudentsId + ".png"
-//       );
-//       formDataToSend.append("upload_preset", "ProfilePictures");
-//       formDataToSend.append("cloud_name", "dtytgoj3f");
-//       formDataToSend.append("folder", "SDAT270425Image");
+  const uploadToCloudinary = async (dataUrl, docType) => {
+    setUploading((prev) => ({ ...prev, [docType]: true }));
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const formData = new FormData();
+      formData.append("file", blob, `${userDetails.name}_${docType}.png`);
+      formData.append("upload_preset", "ProfilePictures");
+      formData.append("cloud_name", "dtytgoj3f");
+      formData.append("folder", "SDAT270425Image");
 
-//       const response = await fetch(
-//         `https://api.cloudinary.com/v1_1/dtytgoj3f/image/upload`,
-//         {
-//           method: "POST",
-//           body: formDataToSend,
-//         }
-//       );
+      const oldImageUrl = userDetails[docType];
 
-//       const data = await response.json();
-//       if (data.secure_url) {
-//         const updatedFormData = {
-//           ...formData,
-//           profilePicture: data.secure_url,
-//         };
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dtytgoj3f/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-//         setFormData(updatedFormData);
-//         dispatch(submitUserDetails(updatedFormData));
-//         setUploadedUrl(data.secure_url);
-//       } else {
-//         setShowError("Upload failed. Please try again.");
-//       }
-//     } catch (error) {
-//       console.error("Error uploading to Cloudinary:", error);
-//       setShowError("Something went wrong");
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
+      const data = await response.json();
+
+      if (data.secure_url) {
+        const updated = { ...uploads, [docType]: data.secure_url };
+        setUploads(updated);
+
+        await dispatch(updateUserDetails({ [docType]: data.secure_url }));
+        await dispatch(
+          putFormData({ ...userDetails, [docType]: data.secure_url })
+        );
+      } else {
+        setShowError("Upload failed. Try again.");
+      }
+    } catch (err) {
+      console.log("error in uploading", err);
+      setShowError("Error uploading. Please try again.");
+    } finally {
+      setUploading((prev) => ({ ...prev, [docType]: false }));
+      setActiveDoc(null);
+    }
+  };
+
+  // const allUploaded = documentRequired.every(
+  //   (doc) =>
+  //     uploads[doc.name] ||
+  //     userDetails[doc.name] ||
+  //     userDetails.documents[doc.name]
+  // );
+
+  // const activeDocLabel =
+  //   documentRequired.find((doc) => doc.name === activeDoc)?.label || activeDoc;
 
   return (
-    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto">
-      <div className="flex flex-col justify-center items-center gap-6 max-w-screen-md mx-auto">
-        <div>
-          {/* <FormHeader /> */}
-        </div>
+    <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
+      <h2 className="text-white text-2xl mb-6 font-semibold">
+        Upload Required Documents
+      </h2>
 
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-4">
-          {!capturedImage ? (
-            <>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="rounded-xl w-full aspect-square object-cover"
-              />
+      <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        {documentRequired.map((doc) => {
+          const uploadedImage =
+            uploads[doc.name] ||
+            userDetails[doc.name] ||
+            userDetails.documents[doc.name];
 
-              <div className="flex flex-col gap-2 mt-4">
-                <button
-                  onClick={handleCapture}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition"
-                >
-                  Capture the student's selfie
-                </button>
-
-                <button
-                  onClick={() =>
-                    setCameraFacing((prev) =>
-                      prev === "user" ? "environment" : "user"
-                    )
-                  }
-                  className="w-full bg-gray-600 text-white py-2 px-4 rounded-xl hover:bg-gray-700 transition"
-                >
-                  Switch Camera
-                </button>
-
-                <label className="w-full text-center cursor-pointer bg-gray-200 py-2 rounded-xl text-black hover:bg-gray-300 transition">
-                  Upload from device
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                </label>
+          return (
+            <div key={doc.name} className="bg-white rounded-xl p-4 shadow">
+              <div className="w-1/2">
+                {doc.label.length > 10 ? (
+                  <h3 className="text-lg font-semibold text-[#c61d23] mb-2">
+                    {doc.label.split(" ").map((item, index) => {
+                      return index < 3 ? (
+                        <span
+                          key={index}
+                          className="text-xl"
+                        >{`${item} `}</span>
+                      ) : (
+                        <span
+                          key={index}
+                          className="text-sm"
+                        >{`${item} `}</span>
+                      );
+                    })}
+                  </h3>
+                ) : (
+                  <h3 className="text-lg font-semibold text-[#c61d23] mb-2">
+                    {doc.label}
+                  </h3>
+                )}
               </div>
-            </>
-          ) : (
-            <>
-              <img
-                src={capturedImage}
-                alt="Captured selfie"
-                className="rounded-xl w-full aspect-square object-cover"
-              />
-              {uploading ? (
-                <p className="text-center text-gray-500 mt-2">Uploading...</p>
-              ) : uploadedUrl ? (
-                <div className="text-center mt-2">
-                  <p className="text-green-600">Upload successful!</p>
-                  <button
-                    className="mt-4 w-full bg-[#ffdd00] hover:bg-[#e2e242] text-black py-2 px-4 rounded-xl transition"
-                    onClick={() => navigate("/registration/payment")}
-                  >
-                    Continue
-                  </button>
-                </div>
-              ) : (
-                <p className="text-center text-red-500 mt-2">Upload failed.</p>
-              )}
-              <button
-                onClick={() => {
-                  setCapturedImage(null);
-                  setUploadedUrl("");
-                  getCamera();
-                }}
-                className="mt-4 w-full bg-[#ffdd00] text-black py-2 px-4 rounded-xl hover:bg-[#e2e242] transition"
-              >
-                Retake
-              </button>
-            </>
-          )}
-          <canvas ref={canvasRef} className="hidden" />
-        </div>
 
-        {showError && (
-          <p className="text-xl mt-5 text-[#c61d23]">{showError}</p>
-        )}
+              {uploadedImage ? (
+                <>
+                  <img
+                    src={uploadedImage}
+                    alt={doc.label}
+                    className="w-full aspect-video object-cover rounded"
+                  />
+                  <p className="text-green-600 mt-2 text-sm">
+                    Uploaded successfully
+                  </p>
+
+                  <div className="flex gap-2 mt-3">
+                    <label className="flex-1 bg-yellow-400 text-center py-2 rounded cursor-pointer hover:bg-yellow-300 transition text-sm font-medium">
+                      📁 Change from Device
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, doc.name)}
+                        className="hidden"
+                      />
+                    </label>
+
+                    <button
+                      onClick={() => setActiveDoc(doc.name)}
+                      className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition text-sm font-medium"
+                    >
+                      📸 Retake Photo
+                    </button>
+                  </div>
+                </>
+              ) : uploading[doc.name] ? (
+                <p className="text-gray-600 text-sm">Uploading...</p>
+              ) : (
+                <>
+                  <label className="block w-full cursor-pointer bg-yellow-400 text-center py-2 rounded hover:bg-yellow-300 transition">
+                    📁 Upload from device
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, doc.name)}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    className="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                    onClick={() => setActiveDoc(doc.name)}
+                  >
+                    📸 Capture via Camera
+                  </button>
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
+
+      {allUploaded && (
+        <div className="flex w-full justify-between ">
+          <button
+            type="button"
+            className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
+          <button
+            className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+            type="button"
+            onClick={() => navigate("/bankRefund")}
+          >
+            Submit
+          </button>
+        </div>
+      )}
+
+      {/* Camera Modal */}
+      {activeDoc && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col justify-center items-center z-50 p-4">
+          <div className="bg-white rounded-xl p-4 w-full max-w-md">
+            <h3 className="text-center text-lg font-bold text-[#c61d23] mb-2">
+              Capture {activeDocLabel}
+            </h3>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className="rounded w-full aspect-video object-cover"
+            />
+            <div className="flex flex-col gap-3 mt-4">
+              <button
+                onClick={handleCapture}
+                className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
+              >
+                ✅ Capture
+              </button>
+              <button
+                onClick={() =>
+                  setCameraFacing((prev) =>
+                    prev === "user" ? "environment" : "user"
+                  )
+                }
+                className="bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+              >
+                🔄 Switch Camera ({cameraFacing})
+              </button>
+              <button
+                onClick={() => setActiveDoc(null)}
+                className="bg-red-500 text-white py-2 rounded hover:bg-red-600"
+              >
+                ❌ Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showError && (
+        <p className="text-center text-red-500 text-sm mt-4">{showError}</p>
+      )}
+
+      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 };

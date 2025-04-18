@@ -201,11 +201,11 @@ const VerificationPage = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col  bg-[#c61d23]">
-      <div className="flex-grow">
+      <div className="mb-5">
         <SignupDetailsPage />
       </div>
 
-      <div className="w-full bg-[#c61d23] flex items-center justify-center px-4 py-1 min-h-screen">
+      <div className=" flex-grow w-full bg-[#c61d23] flex flex-col items-center justify-between   px-4 py-1">
         {/* {loading && <Spinner />} */}
         <form
           onSubmit={onSubmit}
@@ -214,7 +214,7 @@ const VerificationPage = () => {
           <h2 className="text-center text-2xl md:text-3xl font-semibold">
             Phone Number Verification
           </h2>
-
+                                                                                                 
           {/* Phone Field */}
           <div className="space-y-4">
             <label
@@ -230,7 +230,7 @@ const VerificationPage = () => {
                 value={userData.fatherContactNumber || ""}
                 onChange={handleChange}
                 placeholder="Phone"
-                className="border-b-2 py-2 focus:outline-none w-full"
+                className="border-b-2 py-2 focus:outline-none w-full p-4  "
                 style={{ backgroundColor: "#c61d23" }}
                 maxLength={10}
                 inputMode="numeric"
@@ -297,11 +297,11 @@ const VerificationPage = () => {
             Next
           </button>
         </form>
-      </div>
-
       <div className="flex justify-center items-center py-4">
         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
       </div>
+      </div>
+
     </div>
   );
 };

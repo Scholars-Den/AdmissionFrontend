@@ -109,7 +109,7 @@ const FamilyDetails = () => {
       console.log("userData in onSumit ", userData);
 
       await dispatch(putFormData(userData));
-      // navigate("/siblingsDetails");
+      navigate("/siblingsDetails");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -253,7 +253,7 @@ const FamilyDetails = () => {
         </div> */}
          <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/basicDetails")}
               type="button"
               className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
             >

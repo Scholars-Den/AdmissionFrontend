@@ -14,7 +14,41 @@ import Spinner from "../../api/Spinner";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
+
+  const [siblingsTable, setSiblingsTable] = useState(0);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (siblingsTable > 0) {
+      const newSiblings = Array.from(
+        { length: siblingsTable },
+        (_, i) =>
+          siblings[i] || {
+            relation: "",
+            name: "",
+            isStudent: false,
+            isWorking: false,
+            studyingIn: "",
+          }
+      );
+      setSiblings(newSiblings);
+    }
+  }, [siblingsTable]);
+
+  const handleSiblingChange = (index, event) => {
+    const { name, value, type, checked } = event.target;
+    setSiblings((prevSiblings) =>
+      prevSiblings.map((sibling, i) =>
+        i === index
+          ? {
+              ...sibling,
+              [name]: type === "checkbox" ? checked : value,
+            }
+          : sibling
+      )
+    );
+  };
+
   const [signatures, setSignatures] = useState({
     student: "",
     parent: "",
@@ -30,6 +64,24 @@ const SiblingsDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.userDetails);
+
+  const handleSiblingOccupationChange = (index, event) => {
+    const { value } = event.target;
+    const newSiblings = [...siblings];
+    newSiblings[index].occupation = value;
+    setSiblings(newSiblings);
+  };
+
+  const [siblings, setSiblings] = useState(userData.siblings? userData.siblings :[
+    { relation: "", name: "", occupation: "", studyingIn: "" },
+  ]);
+
+
+  useEffect(()=>{
+    console.log("userSiblings", userData.siblings);
+    setSiblings(userData.siblings)
+    console.log()
+  },[userData])
 
   const siblingsData = [
     {
@@ -52,94 +104,63 @@ const SiblingsDetails = () => {
     },
   ];
 
-  const siblingsTable = Array(4).fill(null);
+ 
 
-//   const validateForm = () => {
-//     const formErrors = {};
-//     let isValid = true;
+  const validateForm = () => {
+    const formErrors = {};
+    let isValid = true;
+    const newSignatures = { ...signatures };
 
-//     siblingsData.forEach(({ name, label, required }) => {
-//       if (required && !userData[name]) {
-//         formErrors[name] = `${label} is required`;
-//         isValid = false;
-//       }
-//     });
+    // Validate text fields
+    siblingsData.forEach(({ name, label, required }) => {
+      if (required && !userData[name]) {
+        formErrors[name] = `${label} is required`;
+        isValid = false;
+      }
+    });
 
-//     console.log("signatures", signatures);
+    // Ensure all signatures are captured
+    Object.keys(signatureRefs).forEach((key) => {
+      const signatureData = signatureRefs[key]?.current?.toDataURL();
 
-//     Object.keys(signatures).forEach((key) => {
+      console.log(`Signature data for ${key}:`, signatureData);
 
-//       console.log("signatures[key]", signatures[key]);
-//       if (!signatures[key]) {
-//         formErrors[key] = "Signature is required";
-//         isValid = false;
-//       }
-//     });
-// console.log("formErrors", formErrors);
-//     setErrors(formErrors);
-//     return isValid;
-//   };
+      if (
+        !signatureData ||
+        signatureData === "data:," ||
+        signatureData.length < 100
+      ) {
+        formErrors[key] = "Signature is required";
+        isValid = false;
+      } else {
+        newSignatures[key] = signatureData;
+      }
+    });
 
+    console.log("Updated signatures:", newSignatures);
 
+    setSignatures(newSignatures); // Update the state with extracted signatures
+    setErrors(formErrors);
 
-
-
-
-
-const validateForm = () => {
-  const formErrors = {};
-  let isValid = true;
-  const newSignatures = { ...signatures };
-
-  // Validate text fields
-  siblingsData.forEach(({ name, label, required }) => {
-    if (required && !userData[name]) {
-      formErrors[name] = `${label} is required`;
-      isValid = false;
-    }
-  });
-
-  // Ensure all signatures are captured
-  Object.keys(signatureRefs).forEach((key) => {
-    const signatureData = signatureRefs[key]?.current?.toDataURL();
-
-    console.log(`Signature data for ${key}:`, signatureData);
-
-    if (!signatureData || signatureData === "data:," || signatureData.length < 100) {
-      formErrors[key] = "Signature is required";
-      isValid = false;
-    } else {
-      newSignatures[key] = signatureData;
-    }
-  });
-
-  console.log("Updated signatures:", newSignatures);
-  
-  setSignatures(newSignatures); // Update the state with extracted signatures
-  setErrors(formErrors);
-  
-  return isValid;
-};
+    return isValid;
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       dispatch(setLoading(true));
-      const formData = { ...userData, signatures };
+      const formData = { ...userData, signatures, siblings };
       await dispatch(submitSiblingsDetails(formData));
-      navigate("/bankRefund");
+      navigate("/documentUpload");
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
       dispatch(setLoading(false));
     }
   };
-
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -159,9 +180,6 @@ const validateForm = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
 
-
-
-
   const clearSignature = (key) => {
     signatureRefs[key]?.current?.clear();
     setSignatures((prev) => ({ ...prev, [key]: "" }));
@@ -169,29 +187,18 @@ const validateForm = () => {
 
   useEffect(() => {
     if (!userData?.siblings || userData.siblings.length === 0) {
-      dispatch(updateUserDetails({ siblings: Array(4).fill({}) }));
+      dispatch(updateUserDetails({ siblings: Array(siblingsTable).fill({}) }));
     }
-  }, [userData, dispatch]);
-
-  const handleSiblingChange = (index, e) => {
-    const { name, value, type, checked } = e.target;
-
-    dispatch(
-      updateSiblingDetails({
-        index,
-        name,
-        value: type === "checkbox" ? checked : value,
-      })
-    );
-  };
-
-
+  }, [siblingsTable, dispatch]);
 
   useEffect(() => {
     dispatch(fetchUserDetails()).then((action) => {
       console.log("action.payload", action.payload);
       const fetchedUserData = action.payload; // Extract payload from Redux action
-      console.log("userData in useEffect", fetchedUserData?.userData?.signatures);
+      console.log(
+        "userData in useEffect",
+        fetchedUserData?.userData?.signatures
+      );
       if (fetchedUserData?.userData?.signatures) {
         setSignatures(fetchedUserData?.userData?.signatures);
       }
@@ -208,84 +215,120 @@ const validateForm = () => {
       }
     });
   }, [signatures]);
-  
-  
-
-
 
   return (
     <div className="w-full px-4 sm:px-8 py-6 text-center bg-[#c61d23] text-white">
-           {loading && <Spinner />}
-           <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
-             <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
-    
-             {/* Siblings Count Inputs */}
-             <div className="flex flex-wrap justify-center gap-4">
-               {siblingsData.map((field) => (
-                <div key={field.name} className="w-full md:w-auto">
-                  <label className="block mb-1 font-medium">{field.label}</label>
-                  <input
-                    type={field.type}
-                    name={field.name}
-                    value={userData?.[field.name] || ""}
-                    onChange={handleChange}
-                    className="w-full border p-2 rounded-md text-black"
-                  />
-                  {errors[field.name] && <p className="text-[#ffdd00] text-sm">{errors[field.name]}</p>}
-                </div>
-              ))}
+      {loading && <Spinner />}
+      <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
+
+        {/* Siblings Count Inputs */}
+        <div className="flex justify-center gap-4">
+          {siblingsData.map((field) => (
+            <div key={field.name} className="w-full md:w-auto">
+              <label className="block mb-1 text-sm font-medium">
+                {field.label}
+              </label>
+              <input
+                type={field.type}
+                name={field.name}
+                value={userData?.[field.name] || ""}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-md text-black"
+              />
+              {errors[field.name] && (
+                <p className="text-[#ffdd00] text-sm">{errors[field.name]}</p>
+              )}
             </div>
-    
- {/* Siblings Table */}
-         <div className="overflow-x-auto mt-6">
-           <table className="w-full border-collapse border border-gray-400 text-sm">
-             <thead>
-               <tr>
-                 <th className="border p-2">S.No</th>
-                 <th className="border p-2">Relation</th>
-                 <th className="border p-2">Name</th>
-                 <th className="border p-2">Current Occupation</th>
-                 <th className="border p-2">Studying In</th>
-               </tr>
-             </thead>
-             <tbody>
-               {userData?.siblings?.map((sibling, index) => (
-                 <tr key={index}>
-                   <td className="border p-2">{index + 1}</td>
-                   <td className="border p-2">
-                     <input
-                       type="text"
-                       name="relation"
-                       value={sibling?.relation || ""}
-                       onChange={(e) => handleSiblingChange(index, e)}
-                       className="w-full p-1 text-black"
-                     />
-                   </td>
-                   <td className="border p-2">
-                     <input
-                       type="text"
-                       name="name"
-                       value={sibling?.name || ""}
-                       onChange={(e) => handleSiblingChange(index, e)}
-                       className="w-full p-1 text-black"
-                     />
-                   </td>
-                   <td className="border p-2 flex flex-wrap justify-center gap-2">
-                     <label className="flex items-center">
-                       <input type="checkbox" name="isStudent" checked={sibling?.isStudent || false} onChange={(e) => handleSiblingChange(index, e)} /> Student
-                     </label>
-                     <label className="flex items-center">
-                       <input type="checkbox" name="isWorking" checked={sibling?.isWorking || false} onChange={(e) => handleSiblingChange(index, e)} /> Working
-                     </label>
-                   </td>
-                   <td className="border p-2">
-                     <input type="text" name="studyingIn" value={sibling?.studyingIn || ""} onChange={(e) => handleSiblingChange(index, e)} className="w-full p-1 text-black" />
-                   </td>
-                 </tr>
-               ))}
-             </tbody>
-           </table>
-         </div>
+          ))}
+        </div>
+
+        {/* Siblings Table */}
+        <div className="flex justify-end m-6 ">
+          <button
+            type="button"
+            onClick={() => setSiblingsTable((prev) => prev + 1)}
+            className="text-[#ffdd00]"
+          >
+            Add Siblings
+          </button>
+        </div>
+
+        {siblings.length > 0 && (
+          <div className="overflow-x-auto mt-6">
+            <table className="w-full border-collapse border border-gray-400 text-sm">
+              <thead>
+                <tr>
+                  <th className="border p-2">S.No</th>
+                  <th className="border p-2">Relation</th>
+                  <th className="border p-2">Name</th>
+                  <th className="border p-2">Current Occupation</th>
+                  <th className="border p-2">Studying In</th>
+                </tr>
+              </thead>
+              <tbody>
+                {siblings.map((sibling, index) => (
+                  <tr key={index}>
+                    <td className="border p-2">{index + 1}</td>
+                    <td className="border p-2">
+                      <input
+                        type="text"
+                        name="relation"
+                        value={sibling.relation}
+                        onChange={(e) => handleSiblingChange(index, e)}
+                        className="w-full p-1 text-black"
+                      />
+                    </td>
+                    <td className="border p-2">
+                      <input
+                        type="text"
+                        name="name"
+                        value={sibling.name}
+                        onChange={(e) => handleSiblingChange(index, e)}
+                        className="w-full p-1 text-black"
+                      />
+                    </td>
+                    <td className="border p-2 flex flex-wrap justify-center gap-2">
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name={`occupation-${index}`}
+                          value="student"
+                          checked={sibling.occupation === "student"}
+                          onChange={(e) =>
+                            handleSiblingOccupationChange(index, e)
+                          }
+                        />
+                        Student
+                      </label>
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name={`occupation-${index}`}
+                          value="working"
+                          checked={sibling.occupation === "working"}
+                          onChange={(e) =>
+                            handleSiblingOccupationChange(index, e)
+                          }
+                        />
+                        Working
+                      </label>
+                    </td>
+                    <td className="border p-2">
+                      <input
+                        type="text"
+                        name="studyingIn"
+                        value={sibling.studyingIn}
+                        onChange={(e) => handleSiblingChange(index, e)}
+                        className="w-full p-1 text-black"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Digital Signature Fields */}
         <div className="flex flex-col md:flex-row justify-center items-center w-full text-center ">
@@ -350,5 +393,3 @@ const validateForm = () => {
 };
 
 export default SiblingsDetails;
-
-

@@ -141,22 +141,22 @@ const BankRefundForm = () => {
     });
 
     // Check if at least one document is checked
-    const requiredDocuments = [
-      "cancelledCheque",
-      "passbook",
-      "studentAadhar",
-      "parentAadhar",
-      "passportPhotos",
-    ];
+    // const requiredDocuments = [
+    //   "cancelledCheque",
+    //   "passbook",
+    //   "studentAadhar",
+    //   "parentAadhar",
+    //   "passportPhotos",
+    // ];
 
-    const documentsChecked = requiredDocuments.every(
-      (doc) => userData.documents[doc]
-    );
+    // const documentsChecked = requiredDocuments.every(
+    //   (doc) => userData.documents[doc]
+    // );
 
-    if (!documentsChecked) {
-      formErrors.documents = "All required documents must be selected";
-      isValid = false;
-    }
+    // if (!documentsChecked) {
+    //   formErrors.documents = "All required documents must be selected";
+    //   isValid = false;
+    // }
 
     Object.keys(signatures).forEach((key) => {
       if (!signatures[key]) {
@@ -258,7 +258,7 @@ const BankRefundForm = () => {
      
           ))}
           <h3 className="mt-4">Document Checklist (Please Tick)</h3>
-          <div className="grid grid-cols-3 gap-2">
+          {/* <div className="grid grid-cols-3 gap-2">
           {[
             { label: "Cancelled Cheque", name: "cancelledCheque" },
             { label: "Photocopy of Passbook", name: "passbook" },
@@ -274,7 +274,7 @@ const BankRefundForm = () => {
               label={label}
             />
           ))}
-          </div>
+          </div> */}
           <div className="col-span-3 text-center">
             {errors.documents && (
               <p className="text-[#ffdd00] text-xs">{errors.documents}</p>

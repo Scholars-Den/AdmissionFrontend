@@ -240,52 +240,57 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full p-6">
       {/* {loading && <Spinner />} */}
-      <form
-        className="flex flex-col px-8 items-center gap-2 py-2 text-white w-full"
-        onSubmit={onSubmit}
-      >
-        <div className="flex flex-col w-full gap-4 items-center">
-          {formFields?.map((field) => (
-            <InputField
-              key={field.name}
-              name={field.name}
-              value={userData?.[field.name] || ""}
-              onChange={handleChange}
-              error={errors[field.name]}
-              type={field.type}
-              placeholder={field.placeholder}
-              label={field.label}
-            />
-          ))}
+     
 
-          {selectFields?.map(
-            (field) => (
-              console.log("field.name", field.name),
-              console.log("field.name", userData?.[field.name]),
-              (
-                <SelectField
-                  key={field.name}
-                  name={field.name}
-                  value={userData?.[field.name] || ""}
-                  onChange={handleChange}
-                  options={field.options}
-                  error={errors[field.name]}
-                  label={field.label}
-                />
+        <form
+          className="flex flex-col px-8 items-center gap-2 py-2 text-white w-full"
+          onSubmit={onSubmit}
+        >
+           <fieldset className="text-white border-2 w-full px-6 py-4 pb-7">
+           <legend> Student Details </legend>
+          <div className="flex flex-col w-full gap-4 items-center">
+            {formFields?.map((field) => (
+              <InputField
+                key={field.name}
+                name={field.name}
+                value={userData?.[field.name] || ""}
+                onChange={handleChange}
+                error={errors[field.name]}
+                type={field.type}
+                placeholder={field.placeholder}
+                label={field.label}
+              />
+            ))}
+
+            {selectFields?.map(
+              (field) => (
+                console.log("field.name", field.name),
+                console.log("field.name", userData?.[field.name]),
+                (
+                  <SelectField
+                    key={field.name}
+                    name={field.name}
+                    value={userData?.[field.name] || ""}
+                    onChange={handleChange}
+                    options={field.options}
+                    error={errors[field.name]}
+                    label={field.label}
+                  />
+                )
               )
-            )
-          )}
+            )}
 
-          {submitMessage && (
-            <p className="text-sm text-[#ffdd00] text-center">
-              {submitMessage}
-            </p>
-          )}
-        </div>
+            {submitMessage && (
+              <p className="text-sm text-[#ffdd00] text-center">
+                {submitMessage}
+              </p>
+            )}
+          </div>
+          </fieldset>
 
-        {/* <div className="flex gap-1 justify-center items-center">
+          {/* <div className="flex gap-1 justify-center items-center">
           <input
             type="checkbox"
             name="termsAndCondition"
@@ -305,25 +310,24 @@ const SignupForm = () => {
           <span className="text-white text-sm">{errors.termsAndCondition}</span>
         )} */}
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
-          <button
-            onClick={() => navigate(-1)}
-            type="button"
-            className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
-            disabled
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
-          >
-            Next
-          </button>
-        </div>
+          <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+            <button
+              onClick={() => navigate(-1)}
+              type="button"
+              className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+              disabled
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+            >
+              Next
+            </button>
+          </div>
+        </form>
 
-     
-      </form>
       {/* <div className="w-24">
           <img src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div> */}
