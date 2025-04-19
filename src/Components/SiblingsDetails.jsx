@@ -36,12 +36,19 @@ const SiblingsDetails = () => {
     }
   }, [siblingsTable]);
 
+  const handleRemoveSibling = (indexToRemove) => {
+    setSiblings((prevSiblings) => {
+      const newSiblings = prevSiblings.filter((_, index) => index !== indexToRemove);
+      setSiblingsTable(newSiblings.length);
+      return newSiblings;
+    });
+  }
+
   const handleSiblingChange = (index, event) => {
     const { name, value, type, checked } = event.target;
 
-
-    console.log("name", name)
-    console.log("name", value)
+    console.log("name", name);
+    console.log("name", value);
     setSiblings((prevSiblings) =>
       prevSiblings.map((sibling, i) =>
         i === index
@@ -53,7 +60,6 @@ const SiblingsDetails = () => {
       )
     );
   };
-
 
   const [signatures, setSignatures] = useState({
     student: "",
@@ -90,13 +96,9 @@ const SiblingsDetails = () => {
     console.log();
   }, [userData]);
 
-
-  
-useEffect(()=>{
-  console.log("Siblings",siblings);
-},[siblings])
-
-
+  useEffect(() => {
+    console.log("Siblings", siblings);
+  }, [siblings]);
 
   const siblingsData = [
     {
@@ -185,9 +187,9 @@ useEffect(()=>{
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("userData", userData);
-  }, [userData])
+  }, [userData]);
 
   const handleSignatureEnd = (key) => {
     setSignatures((prev) => ({
@@ -247,17 +249,16 @@ useEffect(()=>{
                 {field.label}
               </label> */}
 
-
-
               <SelectField
                 key={fieldIndex}
                 name={field?.name}
                 label={field.label}
-                options={["1", "2", "3", "4","5"]}
-                value={ userData?.[field.name] ? userData?.[field.name] :  field.name}
+                options={["1", "2", "3", "4", "5"]}
+                value={
+                  userData?.[field.name] ? userData?.[field.name] : field.name
+                }
                 onChange={handleChange}
               />
-
 
               {errors[field.name] && (
                 <p className="text-[#ffdd00] text-sm">{errors[field.name]}</p>
@@ -339,13 +340,46 @@ useEffect(()=>{
                       </label>
                     </td>
                     <td className="border p-2">
-                      <input
-                        type="text"
-                        name="studyingIn"
-                        value={sibling.studyingIn}
-                        onChange={(e) => handleSiblingChange(index, e)}
-                        className="w-full p-1 text-black"
-                      />
+                      {sibling.occupation === "working" ? (
+                        <input
+                          type="text"
+                          name="studyingIn"
+                          value={sibling.studyingIn}
+                          onChange={(e) => handleSiblingChange(index, e)}
+                          className="w-full p-1 text-black"
+                        />
+                      ) : (
+                        <SelectField
+                          key={index}
+                          name={"studyingIn"}
+                          label={"Select Class"}
+                          options={[
+                            "I",
+                            "II",
+                            "III",
+                            "IV",
+                            "V",
+                            "VI",
+                            "VII",
+                            "VIII",
+                            "IX",
+                            "X",
+                            "XI",
+                            "XII",
+                          ]}
+                          value={sibling.studyingIn}
+                          onChange={(e) => handleSiblingChange(index, e)}
+                        />
+                      )}
+                    </td>
+
+                    <td className="border p-2 text-center">
+                      <button
+                        onClick={() => handleRemoveSibling(index)}
+                        className="text-red-500 font-bold"
+                      >
+                        X
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -355,7 +389,7 @@ useEffect(()=>{
         )}
 
         {/* Digital Signature Fields */}
-        <div className="flex flex-col md:flex-row justify-center items-center w-full text-center ">
+        <div className="flex flex-col md:flex-row justify-between items-center w-full text-center ">
           {[
             { key: "student", label: "Signature of Student" },
             {
@@ -369,7 +403,7 @@ useEffect(()=>{
           ].map(({ key, label }) => (
             <div
               key={key}
-              className="m-2 flex flex-col justify-center items-center w-full md:w-1/3"
+              className="m-2 flex flex-col justify-between items-center w-full md:w-1/3"
             >
               <h3 className="flex items-center text-lg font-semibold h-16">
                 {label}

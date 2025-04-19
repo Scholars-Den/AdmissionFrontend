@@ -9,7 +9,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
       {/* <div className="w-full"> */}
 
 
-      {label !== "Select Relation" && (
+      {label !== "Select Relation" && label !== "Select Class"                                                                                                                                                                                                                                                                                                                                                    && (
         <label htmlFor={name} className="text-sm font-semibold mb-1">
           {label}
         </label>
@@ -28,7 +28,7 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
           backgroundSize: "16px",
         }}
       >
-        <option value=" " className=" " disabled>
+        <option value=" " className=" " >
           {label}
         </option>
         {options.map((option) => (

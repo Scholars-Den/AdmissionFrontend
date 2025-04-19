@@ -9,6 +9,8 @@ import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
 
+import AlreadyExistStudent from "./Components/AlreadyExistStudent";
+
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
 import BankRefundComponents from "./Components/BankRefundComponents";
@@ -36,6 +38,7 @@ function App() {
       <div className="flex-grow">
           <Routes>
             <Route path="/" element={<VerificationPage />} />
+            <Route path="/alredyExist" element={<AlreadyExistStudent />} />
             <Route path="/basicDetails" element={<Signup />} />
             <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />

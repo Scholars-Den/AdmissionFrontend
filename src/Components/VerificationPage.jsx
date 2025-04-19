@@ -15,6 +15,7 @@ import {
   validatePhoneNo,
 } from "../../utils/validation/inputValidation";
 import SignupDetailsPage from "./SignupDetailsPage";
+import { updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice";
 
 const VerificationPage = () => {
   const navigate = useNavigate();
@@ -25,8 +26,11 @@ const VerificationPage = () => {
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
-  // const [codeVerified, setCodeVerified] = useState(true);
-  const [codeVerified, setCodeVerified] = useState(false);
+
+  // For enable OTP
+  const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
+
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -133,9 +137,6 @@ const VerificationPage = () => {
   //   }
   // };
 
-
-
-
   const checkVerificationCode = async () => {
     try {
       const response = await axios.post("/admissions/verifyNumber", {
@@ -162,35 +163,50 @@ const VerificationPage = () => {
     }
   };
 
-
-
   const onSubmit = async (e) => {
     console.log("onsUBMIT click");
     e.preventDefault();
-    let codeChecked = await checkVerificationCode();
 
-    console.log("codeChecked", codeChecked);
-    if (codeChecked === false) {
-      setShowCodeBox(false);
+    // For enable OTP
+    // let codeChecked = await checkVerificationCode();
 
-      // Remove OTP
-      setCodeVerified(false);
-      setSubmitMessage("Please Verify Your Phone Number");
-      // setIsSubmittingForm(false); // ⬅️ reset if verification fails
-      return;
-    }
+    // console.log("codeChecked", codeChecked);
+    // if (codeChecked === false) {
+    //   setShowCodeBox(false);
+
+    //   // Remove OTP
+    //   setCodeVerified(false);
+    //   setSubmitMessage("Please Verify Your Phone Number");
+    //   // setIsSubmittingForm(false); // ⬅️ reset if verification fails
+    //   return;
+    // }
 
     if (!validateForm()) return;
 
     console.log("userData in onSumit ", userData);
     try {
       dispatch(setLoading(true));
-    
+
       console.log("userData in onSumit ", userData);
 
       await dispatch(submitFormData(userData));
       if (document.cookie) {
-        navigate("/basicDetails");
+        // const alreadyExistStudent = await axios.post(
+        //   "/user/getStudentByPhone",
+        //   { fatherContactNumber: userData.fatherContactNumber }
+        // );
+
+        // console.log("fatherContactNumber", alreadyExistStudent);
+
+        // if (alreadyExistStudent.length === 0) {
+        //   navigate("/basicDetails");
+        // } else {
+        //   dispatch(
+        //     updateAlreadyExistStudent(alreadyExistStudent.data.data )
+        //   );
+
+        // }
+        navigate("/alredyExist");
       }
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -214,7 +230,7 @@ const VerificationPage = () => {
           <h2 className="text-center text-2xl md:text-3xl font-semibold">
             Phone Number Verification
           </h2>
-                                                                                                 
+
           {/* Phone Field */}
           <div className="space-y-4">
             <label
@@ -297,11 +313,10 @@ const VerificationPage = () => {
             Next
           </button>
         </form>
-      <div className="flex justify-center items-center py-4">
-        <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
+        <div className="flex justify-center items-center py-4">
+          <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
+        </div>
       </div>
-      </div>
-
     </div>
   );
 };

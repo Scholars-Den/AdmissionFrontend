@@ -257,7 +257,7 @@ const BankRefundForm = () => {
 
      
           ))}
-          <h3 className="mt-4">Document Checklist (Please Tick)</h3>
+          {/* <h3 className="mt-4">Document Checklist (Please Tick)</h3> */}
           {/* <div className="grid grid-cols-3 gap-2">
           {[
             { label: "Cancelled Cheque", name: "cancelledCheque" },

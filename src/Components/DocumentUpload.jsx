@@ -272,9 +272,9 @@ const DocumentUpload = ({ documentRequired }) => {
         </div>
       )}
 
-      {showError && (
+      {/* {showError && (
         <p className="text-center text-red-500 text-sm mt-4">{showError}</p>
-      )}
+      )} */}
 
       <canvas ref={canvasRef} className="hidden" />
     </div>
