@@ -27,6 +27,7 @@ export const fetchUserDetails = createAsyncThunk(
             studentName: data?.studentName || "",
             admissionRollNo: data?.admissionRollNo || "",
             enrollmentNumber: data?.enrollmentNumber || "",
+            acknowledgementNumber : data?.acknowledgementNumber || "",
 
             aadharID: data?.aadharID || "",
             studentContactNumber: data?.studentContactNumber || "",
@@ -48,7 +49,7 @@ export const fetchUserDetails = createAsyncThunk(
             motherDob: data?.motherDob || "",
             motherBloodGroup: data?.motherBloodGroup || "",
             motherOccupations: data?.motherOccupations || "",
-            siblings: data?.siblings || "", 
+            siblings: data?.siblings || "",
             signatures: data?.signatures || {},
             noOfBrother: data?.noOfBrother || 0,
             noOfSister: data?.noOfSister || 0,
@@ -110,6 +111,7 @@ export const submitBankRefundForm = createAsyncThunk(
           dataExist: true, // Indicate data exists
           userData: {
             accountHolder: data?.accountHolder || "",
+            acknowledgementNumber: data?.acknowledgementNumber || "",
             admissionRollNo: data?.admissionRollNo || "",
             enrollmentNumber: data?.enrollmentNumber || "",
             studentClass: data?.studentClass || "",
@@ -182,14 +184,11 @@ export const submitFormData = createAsyncThunk(
             motherBloodGroup: data?.newAdmission?.motherBloodGroup || "",
             motherOccupations: data?.newAdmission?.motherOccupations || "",
 
-
-
             cancelledCheque: data?.cancelledCheque || "",
             passbook: data?.passbook || "",
             studentAadhar: data?.studentAadhar || "",
             parentAadhar: data?.parentAadhar || "",
             passportPhotos: data?.passportPhotos || "",
-          
           },
         };
       } else {
@@ -244,8 +243,7 @@ export const putFormData = createAsyncThunk(
             motherDob: data?.motherDob || "",
             motherBloodGroup: data?.motherBloodGroup || "",
             motherOccupations: data?.motherOccupations || "",
-            studentPhoto : data?.newAdmission?.studentPhoto || "",
-
+            studentPhoto: data?.newAdmission?.studentPhoto || "",
 
             cancelledCheque: data?.cancelledCheque || "",
             passbook: data?.passbook || "",

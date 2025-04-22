@@ -61,8 +61,8 @@ const SignupForm = () => {
   //     : ["Engineering", "Medical"];
 
   let subjectOptionsForClass =
-    userData?.program === "Engineering"
-      ? [...Array.from({ length: 2 }, (_, i) => i + 10), "12 Pass"]
+    userData?.program === "Engineering" || userData?.program === "Medical"
+      ? [...Array.from({ length: 1 }, (_, i) => i + 11), "12 Pass"]
       : [...Array.from({ length: 5 }, (_, i) => i + 6)];
 
   const convertToRoman = (num) => {
@@ -80,7 +80,12 @@ const SignupForm = () => {
 
   let subjectOptionsRoman = subjectOptionsForClass.flatMap((item) => {
     if (typeof item === "number") {
+      
+      console.log("item", item);
       return convertToRoman(item);
+
+
+
     } else if (typeof item === "string") {
       const match = item.match(/^(\d+)\s+(.*)/);
       if (match) {
@@ -242,14 +247,13 @@ const SignupForm = () => {
   return (
     <div className="w-full p-6">
       {/* {loading && <Spinner />} */}
-     
 
-        <form
-          className="flex flex-col px-8 items-center gap-2 py-2 text-white w-full"
-          onSubmit={onSubmit}
-        >
-           <fieldset className="text-white border-2 w-full px-6 py-4 pb-7">
-           <legend> Student Details </legend>
+      <form
+        className="flex flex-col px-8 items-center gap-2 py-2 text-white w-full"
+        onSubmit={onSubmit}
+      >
+        <fieldset className="text-white border-2 w-full px-6 py-4 pb-7">
+          <legend> Student Details </legend>
           <div className="flex flex-col w-full gap-4 items-center">
             {formFields?.map((field) => (
               <InputField
@@ -288,9 +292,9 @@ const SignupForm = () => {
               </p>
             )}
           </div>
-          </fieldset>
+        </fieldset>
 
-          {/* <div className="flex gap-1 justify-center items-center">
+        {/* <div className="flex gap-1 justify-center items-center">
           <input
             type="checkbox"
             name="termsAndCondition"
@@ -310,23 +314,23 @@ const SignupForm = () => {
           <span className="text-white text-sm">{errors.termsAndCondition}</span>
         )} */}
 
-          <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
-            <button
-              onClick={() => navigate(-1)}
-              type="button"
-              className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
-              disabled
-            >
-              Back
-            </button>
-            <button
-              type="submit"
-              className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
-            >
-              Next
-            </button>
-          </div>
-        </form>
+        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+          <button
+            onClick={() => navigate(-1)}
+            type="button"
+            className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+            disabled
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+          >
+            Next
+          </button>
+        </div>
+      </form>
 
       {/* <div className="w-24">
           <img src={scholarsDenLogo} alt="Scholars Den Logo" />

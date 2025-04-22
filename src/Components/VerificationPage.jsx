@@ -206,7 +206,9 @@ const VerificationPage = () => {
         //   );
 
         // }
-        navigate("/alredyExist");
+        // navigate("/alredyExist");
+                  navigate("/basicDetails");
+
       }
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -306,6 +308,8 @@ const VerificationPage = () => {
           )}
 
           {/* Submit Button */}
+
+          
           <button
             type="submit"
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"

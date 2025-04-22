@@ -108,10 +108,7 @@ const DocumentUpload = ({ documentRequired }) => {
   };
 
   const allUploaded = documentRequired.every(
-    (doc) =>
-      uploads[doc.name] ||
-      userDetails[doc.name] ||
-      userDetails?.documents[doc?.name]
+    (doc) => uploads[doc.name] || userDetails[doc.name]
   );
 
   const activeDocLabel =
@@ -125,10 +122,7 @@ const DocumentUpload = ({ documentRequired }) => {
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
-          const uploadedImage =
-            uploads[doc.name] ||
-            userDetails[doc.name] ||
-            userDetails.documents[doc.name];
+          const uploadedImage = uploads[doc.name] || userDetails[doc.name];
 
           return (
             <div key={doc.name} className="bg-white rounded-xl p-4 shadow">
@@ -163,9 +157,12 @@ const DocumentUpload = ({ documentRequired }) => {
                     alt={doc.label}
                     className="w-full aspect-video object-cover rounded"
                   />
-                  <p className="text-green-600 mt-2 text-sm">
-                    Uploaded successfully
-                  </p>
+
+                  {uploads[doc.name] && (
+                    <p className="text-green-600 mt-2 text-sm">
+                      Uploaded successfully
+                    </p>
+                  )}
 
                   <div className="flex gap-2 mt-3">
                     <label className="flex-1 bg-yellow-400 text-center py-2 rounded cursor-pointer hover:bg-yellow-300 transition text-sm font-medium">
@@ -212,24 +209,24 @@ const DocumentUpload = ({ documentRequired }) => {
         })}
       </div>
 
-      {allUploaded && (
-        <div className="flex w-full justify-between ">
-          <button
-            type="button"
-            className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={() => navigate(-1)}
-          >
-            Back
-          </button>
-          <button
-            className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            type="button"
-            onClick={() => navigate("/bankRefund")}
-          >
-            Submit
-          </button>
-        </div>
-      )}
+      {/* {allUploaded && ( */}
+      <div className="flex w-full justify-between ">
+        <button
+          type="button"
+          className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </button>
+        <button
+          className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+          type="button"
+          onClick={() => navigate("/bankRefund")}
+        >
+          Next
+        </button>
+      </div>
+      {/* )} */}
 
       {/* Camera Modal */}
       {activeDoc && (

@@ -69,11 +69,11 @@ const SuccessContent = () => {
       Your form has been submitted successfully!
     </p>
     <p className="text-2xl font-extralight text-center">
-      {`Your Admission Roll No. is. ${userData.admissionRollNo}`}
+      {`Your Acknowledgement Number is. ${userData.acknowledgementNumber}`}
     </p>
-    <p className="text-2xl font-extralight text-center">
+    {/* <p className="text-2xl font-extralight text-center">
       {`Your Enrollment No. is. ${userData.enrollmentNumber}`}
-    </p>
+    </p> */}
 
     {/* <p>{`Redirecting to Home in ${time} second${
         time !== 1 ? "s" : ""

@@ -100,25 +100,25 @@ const BankRefundForm = () => {
     }
   };
 
-  const handleSignatureEnd = (key) => {
-    console.log("key", key);
-    setSignatures((prev) => ({
-      ...prev,
-      [key]: signatureRefs[key].current.toDataURL(),
-    }));
-    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
-  };
+  // const handleSignatureEnd = (key) => {
+  //   console.log("key", key);
+  //   setSignatures((prev) => ({
+  //     ...prev,
+  //     [key]: signatureRefs[key].current.toDataURL(),
+  //   }));
+  //   setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
+  // };
 
-  const clearSignature = (key) => {
-    signatureRefs[key]?.current?.clear();
-    setFormData((prev) => ({
-      ...prev,
-      signatures: {
-        ...prev.signatures,
-        [key]: "",
-      },
-    }));
-  };
+  // const clearSignature = (key) => {
+  //   signatureRefs[key]?.current?.clear();
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     signatures: {
+  //       ...prev.signatures,
+  //       [key]: "",
+  //     },
+  //   }));
+  // };
 
   const validateForm = () => {
     let formErrors = {};
@@ -158,12 +158,12 @@ const BankRefundForm = () => {
     //   isValid = false;
     // }
 
-    Object.keys(signatures).forEach((key) => {
-      if (!signatures[key]) {
-        formErrors[key] = "Signature is required";
-        isValid = false;
-      }
-    });
+    // Object.keys(signatures).forEach((key) => {
+    //   if (!signatures[key]) {
+    //     formErrors[key] = "Signature is required";
+    //     isValid = false;
+    //   }
+    // });
 
     // Check if signatures are provided
     // const requiredSignatures = ["admissionHead", "parent"];
@@ -198,15 +198,15 @@ const BankRefundForm = () => {
   }, [userData]);
 
   // After fetching, load the signature data into the canvas
-  useEffect(() => {
-    Object.keys(signatures).forEach((key) => {
-      if (signatures[key] && signatureRefs[key]?.current) {
-        setTimeout(() => {
-          signatureRefs[key]?.current?.fromDataURL(signatures[key]);
-        }, 300); // Delay ensures canvas is ready
-      }
-    });
-  }, [signatures]);
+  // useEffect(() => {
+  //   Object.keys(signatures).forEach((key) => {
+  //     if (signatures[key] && signatureRefs[key]?.current) {
+  //       setTimeout(() => {
+  //         signatureRefs[key]?.current?.fromDataURL(signatures[key]);
+  //       }, 300); // Delay ensures canvas is ready
+  //     }
+  //   });
+  // }, [signatures]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -282,7 +282,7 @@ const BankRefundForm = () => {
             {/* Display error */}
           </div>
         </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          {/* <div className="grid md:grid-cols-2 gap-4">
             {["admissionHead", "parent"].map((key) => (
               <div key={key} className="flex flex-col items-center">
                 <h3 className="text-md font-semibold mb-2">
@@ -307,7 +307,7 @@ const BankRefundForm = () => {
                 </button>
               </div>
             ))}
-          </div>
+          </div> */}
         <div className="flex w-full justify-between ">
           <button
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"

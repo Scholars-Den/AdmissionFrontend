@@ -64,13 +64,12 @@ const SiblingsDetails = () => {
   const [signatures, setSignatures] = useState({
     student: "",
     parent: "",
-    admissionOfficer: "",
   });
 
   const signatureRefs = {
     student: useRef(null),
     parent: useRef(null),
-    admissionOfficer: useRef(null),
+
   };
 
   const dispatch = useDispatch();
@@ -274,7 +273,7 @@ const SiblingsDetails = () => {
             onClick={() => setSiblingsTable((prev) => prev + 1)}
             className="text-[#ffdd00]"
           >
-            Add Siblings
+            Add Siblings Details
           </button>
         </div>
 
@@ -396,10 +395,7 @@ const SiblingsDetails = () => {
               key: "parent",
               label: "Signature of Parent (Should match with PAN)",
             },
-            {
-              key: "admissionOfficer",
-              label: "Admission Formalities Completed by",
-            },
+           
           ].map(({ key, label }) => (
             <div
               key={key}
