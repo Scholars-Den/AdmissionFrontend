@@ -31,7 +31,7 @@ const SignupForm = () => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Aadhar example: 835824268440
+  // Aadhaar example: 835824268440
 
   useEffect(() => {
     console.log("userData", userData);
@@ -39,8 +39,8 @@ const SignupForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "studentContactNumber") {
-      if (value.length > 10) return;
+    if (name === "aadharID") {
+      if (value.length > 12) return;
     }
     console.log("name", name, "value", value);
     if (name === "termsAndCondition") {
@@ -132,10 +132,10 @@ const SignupForm = () => {
     {
       name: "aadharID",
       type: "text",
-      placeholder: "*Aadher ID",
+      placeholder: "*Aadhaar ID",
       required: true,
       validation: validateAadhaar,
-      label: "*Aadhar ID",
+      label: "*Aadhaar ID",
     },
     // { name: "email", type: "email", placeholder: "Email ID", required: false },
     // {
