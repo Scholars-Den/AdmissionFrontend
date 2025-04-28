@@ -245,14 +245,14 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="w-full p-6">
+    <div className="w-full p-2 sm:p-6">
       {/* {loading && <Spinner />} */}
 
       <form
-        className="flex flex-col px-8 items-center gap-2 py-2 text-white w-full"
+        className="flex flex-col sm:px-8 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
-        <fieldset className="text-white border-2 w-full px-6 py-4 pb-7">
+        <fieldset className="text-white border-2 w-full px-2 py-2 sm:px-6 sm:py-4 pb-7">
           <legend> Student Details </legend>
           <div className="flex flex-col w-full gap-4 items-center">
             {formFields?.map((field) => (
