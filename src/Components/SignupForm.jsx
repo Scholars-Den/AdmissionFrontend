@@ -249,7 +249,7 @@ const SignupForm = () => {
       {/* {loading && <Spinner />} */}
 
       <form
-        className="flex flex-col sm:px-8 items-center gap-2 sm:py-2 text-white w-full"
+        className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
         <fieldset className="text-white border-2 w-full px-2 py-2 sm:px-6 sm:py-4 pb-7">

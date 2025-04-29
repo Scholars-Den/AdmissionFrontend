@@ -157,7 +157,8 @@ const FamilyDetails = () => {
     <div className="w-full ">
       {/* {loading && <Spinner />} */}
       <form
-        className="flex flex-col px-4 items-center gap-2 w-full py-2 text-white"
+        // className="flex flex-col px-8 items-center gap-2 w-full py-2 text-white"
+        className="flex flex-col sm:px-8 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">

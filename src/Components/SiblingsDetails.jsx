@@ -252,7 +252,7 @@ const SiblingsDetails = () => {
                 key={fieldIndex}
                 name={field?.name}
                 label={field.label}
-                options={["1", "2", "3", "4", "5"]}
+                options={["0","1", "2", "3", "4", "5"]}
                 value={
                   userData?.[field.name] ? userData?.[field.name] : field.name
                 }

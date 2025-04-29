@@ -26,6 +26,8 @@ const VerificationPage = () => {
 
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
+  const [codeEntered, setCodeEntered] = useState(false);
+
 
   // For enable OTP
   const [codeVerified, setCodeVerified] = useState(true);
@@ -217,6 +219,24 @@ const VerificationPage = () => {
     }
   };
 
+
+
+  const handleOTPChange = async (e) => {
+    if (e.target.value.length <= 4) {
+      setCode(e.target.value);
+    }
+
+    if (e.target.value.length >= 4) {
+      setCodeEntered(true);
+      return;
+    } else {
+      setCodeEntered(false);
+    }
+
+    console.log("e.target.value", e.target.value.length);
+  };
+
+
   return (
     <div className="w-full min-h-screen flex flex-col  bg-[#c61d23]">
       <div className="mb-5">
@@ -281,7 +301,7 @@ const VerificationPage = () => {
                 id="otp"
                 name="otp"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={handleOTPChange}
                 placeholder="Enter OTP"
                 className="w-full bg-white/5 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
@@ -309,13 +329,15 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-          
+          {/* {showCodeBox && ( */}
           <button
             type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+            // disabled={!codeEntered}
           >
             Next
           </button>
+        {/* )} */}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
