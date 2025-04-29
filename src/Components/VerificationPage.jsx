@@ -90,6 +90,12 @@ const VerificationPage = () => {
     return isValid;
   };
 
+
+
+
+
+
+
   const verifyPhoneNo = async () => {
     try {
       if (userData?.fatherContactNumber.length != 10) {

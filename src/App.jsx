@@ -23,6 +23,7 @@ import SignupDetailsPage from "./Components/SignupDetailsPage";
 import scholarsDenLogo from "./assets/scholarsdenLogo.png";
 import DocumentUpload from "./Components/DocumentUpload";
 import DocumentDetails from "./Components/DocumentDetails";
+import AdminSignup from "./Components/AdminView/AdminSignup";
 
 function App() {
 
@@ -46,6 +47,13 @@ function App() {
             <Route path="/bankRefund" element={<BankRefundComponents/>} />
             <Route path="/admissionComplete" element={<SuccessComponent/>} />
             <Route path="/documentUpload" element={<DocumentDetails/>} />
+
+
+
+
+          <Route path="/adminsignup" element={<AdminSignup/>} />
+
+
             {/* <Route path="/documentUpload" element={<DocumentUpload/>} /> */}
             
 
