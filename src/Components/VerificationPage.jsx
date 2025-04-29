@@ -28,10 +28,9 @@ const VerificationPage = () => {
   const [showCodeBox, setShowCodeBox] = useState(false);
   const [codeEntered, setCodeEntered] = useState(false);
 
-
   // For enable OTP
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -170,18 +169,18 @@ const VerificationPage = () => {
     e.preventDefault();
 
     // For enable OTP
-    // let codeChecked = await checkVerificationCode();
+    let codeChecked = await checkVerificationCode();
 
-    // console.log("codeChecked", codeChecked);
-    // if (codeChecked === false) {
-    //   setShowCodeBox(false);
+    console.log("codeChecked", codeChecked);
+    if (codeChecked === false) {
+      setShowCodeBox(false);
 
-    //   // Remove OTP
-    //   setCodeVerified(false);
-    //   setSubmitMessage("Please Verify Your Phone Number");
-    //   // setIsSubmittingForm(false); // ⬅️ reset if verification fails
-    //   return;
-    // }
+      // Remove OTP
+      setCodeVerified(false);
+      setSubmitMessage("Please Verify Your Phone Number");
+      // setIsSubmittingForm(false); // ⬅️ reset if verification fails
+      return;
+    }
 
     if (!validateForm()) return;
 
@@ -209,8 +208,7 @@ const VerificationPage = () => {
 
         // }
         // navigate("/alredyExist");
-                  navigate("/basicDetails");
-
+        navigate("/basicDetails");
       }
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -218,8 +216,6 @@ const VerificationPage = () => {
       dispatch(setLoading(false));
     }
   };
-
-
 
   const handleOTPChange = async (e) => {
     if (e.target.value.length <= 4) {
@@ -235,7 +231,6 @@ const VerificationPage = () => {
 
     console.log("e.target.value", e.target.value.length);
   };
-
 
   return (
     <div className="w-full min-h-screen flex flex-col  bg-[#c61d23]">
@@ -329,15 +324,15 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-          {/* {showCodeBox && ( */}
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-            // disabled={!codeEntered}
-          >
-            Next
-          </button>
-        {/* )} */}
+          {showCodeBox && (
+            <button
+              type="submit"
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+              disabled={!codeEntered}
+            >
+              Next
+            </button>
+          )}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
