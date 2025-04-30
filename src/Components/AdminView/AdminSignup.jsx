@@ -139,6 +139,10 @@ const AdminSignup = () => {
 
       await dispatch(submitAdminDetails(adminDetails));
       if (document.cookie) {
+
+         
+
+
         // const alreadyExistStudent = await axios.post(
         //   "/user/getStudentByPhone",
         //   { contactNumber: adminDetails.contactNumber }
@@ -155,7 +159,7 @@ const AdminSignup = () => {
 
         // }
         // navigate("/alredyExist");
-        // navigate("/basicDetails");
+        navigate("/adminDashboard");
       }
     } catch (error) {
       console.log("Error submitting form:", error);

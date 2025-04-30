@@ -122,7 +122,7 @@ const DocumentUpload = ({ documentRequired }) => {
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
-          const uploadedImage = uploads[doc.name] || userDetails[doc.name];
+          const uploadedImage = uploads[doc.name] || userDetails[doc.name] || userDetails?.documents?.[doc.name];
 
           return (
             <div key={doc.name} className="bg-white rounded-xl p-4 shadow">
@@ -214,7 +214,7 @@ const DocumentUpload = ({ documentRequired }) => {
         <button
           type="button"
           className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/siblingsDetails")}
         >
           Back
         </button>

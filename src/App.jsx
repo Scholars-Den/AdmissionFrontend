@@ -24,6 +24,7 @@ import scholarsDenLogo from "./assets/scholarsdenLogo.png";
 import DocumentUpload from "./Components/DocumentUpload";
 import DocumentDetails from "./Components/DocumentDetails";
 import AdminSignup from "./Components/AdminView/AdminSignup";
+import AdminDashboard from "./Components/AdminView/AdminDashboard";
 
 function App() {
 
@@ -47,6 +48,11 @@ function App() {
             <Route path="/bankRefund" element={<BankRefundComponents/>} />
             <Route path="/admissionComplete" element={<SuccessComponent/>} />
             <Route path="/documentUpload" element={<DocumentDetails/>} />
+
+
+
+
+            <Route path="/adminDashboard" element={<AdminDashboard/>} />
 
 
 
