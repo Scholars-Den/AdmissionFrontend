@@ -10,7 +10,7 @@ const DocumentDetails = () => {
       label: "Aadhar Of One Of The Parents/Guardian Mentined In Student Aadher",
       name: "parentAadhar",
     },
-    { label: "Passbook", name: "passportPhotos" },
+    { label: "Passbook", name: "passbook" },
     { label: "Cancelled Cheque", name: "cancelledCheque" },
   ];
 
