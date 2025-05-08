@@ -25,6 +25,8 @@ import DocumentUpload from "./Components/DocumentUpload";
 import DocumentDetails from "./Components/DocumentDetails";
 import AdminSignup from "./Components/AdminView/AdminSignup";
 import AdminDashboard from "./Components/AdminView/AdminDashboard";
+import ApprovalComplete from "./Components/AdminView/ApprovalComplete";
+import ApprovalRejected from "./Components/AdminView/ApprovalRejected";
 
 function App() {
 
@@ -53,6 +55,8 @@ function App() {
 
 
             <Route path="/adminDashboard" element={<AdminDashboard/>} />
+            <Route path="/approvalComplete" element={<ApprovalComplete/>} />
+            <Route path="/approvalRejected" element={<ApprovalRejected/>} />
 
 
 

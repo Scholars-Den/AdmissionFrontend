@@ -1,21 +1,24 @@
+
+
 import { useDispatch } from "react-redux";
 import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
 
-const AdminComponent = () => {
+const ApprovalCompleteComponent = () => {
   const [pendingApproval, setPendingApproval] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null); // for popup content
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const [showMessagePopup, setShowMessagePopup] = useState("");
 
   // const dispatch = useDispatch
 
-  const fetchApprovalRemaining = async () => {
+  const fetchApprovedData = async () => {
     try {
-      const response = await axios.get("/approval/pendingApproval");
+      const response = await axios.get("/approval/completedApproval");
+
+
+
+      console.log("response data from fetchApprovedData", response);
       setPendingApproval(response.data.data);
     } catch (error) {
       console.error("Error fetching pending approval data:", error);
@@ -25,7 +28,6 @@ const AdminComponent = () => {
   const fetchDetailsByAcknowledgement = async (ackNumber) => {
     try {
       const response = await axios.get(`/approval/details/${ackNumber}`);
-      console.log("response from fetchDetailsByAcknowledge", response);
 
       console.log("response data data", response.data.data);
 
@@ -41,46 +43,15 @@ const AdminComponent = () => {
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
   };
 
-  const submitMessage = async () => {
-    console.log("selectedItem", selectedItem);
-    console.log("message", message);  
-    let response = "";
-    if (showMessagePopup === "approval") {
-      response = await axios.post("/approval/editAdmissionApproval", {
-        status: "approved",
-        acknowledgementNumber: selectedItem.acknowledgementNumber,
-        message
-      });
-    } else {
-      response = await axios.post("/approval/editAdmissionApproval", {
-        status: "rejected",
-        acknowledgementNumber: selectedItem.acknowledgementNumber,
-        message
-      });
-
-
-    }
-    console.log("Response FOR SUBMITmESSAGE", response);
-    setShowMessagePopup("");
-    setMessage("");
-
-    await fetchApprovalRemaining();
-
-    setSelectedItem(null);
-    setPopupData(null);
-    setShowPopup(false);
-
-    console.log("handleClickApproved response", response);
-  };
-  const handleClickRejected = async () => {
+  const handleClickApproved = async() => {
     console.log("selectedItem", selectedItem);
 
     const response = await axios.post("/approval/editAdmissionApproval", {
-      status: "rejected",
+      status: "approved",
       acknowledgementNumber: selectedItem.acknowledgementNumber,
     });
 
-    await fetchApprovalRemaining();
+    await fetchApprovedData();
 
     setSelectedItem(null);
     setPopupData(null);
@@ -96,12 +67,12 @@ const AdminComponent = () => {
   };
 
   useEffect(() => {
-    fetchApprovalRemaining();
+    fetchApprovedData();
   }, []);
 
   return (
     <div className="flex h-screen justify-center bg-gray-100">
-      <div className="p-6 rounded w-full max-w-md min-h-screen overflow-auto">
+      <div className="p-6 rounded w-full min-h-screen overflow-auto ">
         {pendingApproval.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
@@ -117,6 +88,9 @@ const AdminComponent = () => {
               </div>
               <div>
                 <strong>Status:</strong> {item.status}
+              </div>
+              <div>
+                <strong>Message:</strong> {item.message}
               </div>
             </div>
           ))
@@ -317,20 +291,6 @@ const AdminComponent = () => {
                   </div>
                 </section>
 
-                <div className="w-full flex justify-between">
-                  <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => setShowMessagePopup("approval")}
-                  >
-                    Approved
-                  </button>
-                  <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => setShowMessagePopup("rejected")}
-                  >
-                    Rejected
-                  </button>
-                </div>
               </div>
             ) : (
               <p>Loading...</p>
@@ -338,30 +298,8 @@ const AdminComponent = () => {
           </div>
         </div>
       )}
-
-      {showMessagePopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg max-w-md w-full relative">
-            <button
-              onClick={()=> setShowMessagePopup("")}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-            >
-              ✕
-            </button>
-            <h2 className="text-xl font-bold mb-4">Add Message </h2>
-            <label htmlFor="message">Message</label>
-            <input
-              type="text"
-              placeholder="Enter Mesage"
-              className="border-2 w-full p-2 my-3 text-black outline-none"
-              onChange={(e)=>setMessage(e.target.value)}
-            />
-            <button onClick={submitMessage} className="p-3 hover:bg[#ffdd00] bg-[#f1df68] rounded-xl"> Submit Message</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default AdminComponent;
+export default ApprovalCompleteComponent;

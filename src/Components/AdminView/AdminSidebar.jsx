@@ -30,9 +30,9 @@ const AdminSidebar = () => {
             {/* </div> */}
           </Link>
           <Link
-            to={"/sdatForm"}
+            to={"/approvalComplete"}
             className={`flex gap-3 w-5/6 items-end rounded-l-full p-3 ${
-              location.pathname === "/sdatForm"
+              location.pathname === "/approvalComplete"
                 ? "text-red-600 bg-white "
                 : "text-white"
             } `}
@@ -41,9 +41,9 @@ const AdminSidebar = () => {
             {/* </div> */}
           </Link>
           <Link
-            to={"/sdatForm"}
+            to={"/approvalRejected"}
             className={`flex gap-3 w-5/6 items-end rounded-l-full p-3 ${
-              location.pathname === "/sdatForm"
+              location.pathname === "/approvalRejected"
                 ? "text-red-600 bg-white "
                 : "text-white"
             } `}

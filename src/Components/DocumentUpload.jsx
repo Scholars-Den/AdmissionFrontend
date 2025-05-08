@@ -122,7 +122,7 @@ const DocumentUpload = ({ documentRequired }) => {
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
-          const uploadedImage = uploads[doc.name] || userDetails[doc.name] || userDetails?.documents?.[doc.name];
+          const uploadedImage = uploads[doc.name] || userDetails[doc.name];
 
           return (
             <div key={doc.name} className="bg-white rounded-xl p-4 shadow">

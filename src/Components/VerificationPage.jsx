@@ -20,7 +20,7 @@ import { updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice"
 const VerificationPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userData } = useSelector((state) => state.userDetails);
+  const { userData, message } = useSelector((state) => state.userDetails);
   const { loading } = useSelector((state) => state.loadingDetails);
   const [showReloading, setShowReloading] = useState(false);
 
@@ -89,12 +89,6 @@ const VerificationPage = () => {
     setErrors(formErrors);
     return isValid;
   };
-
-
-
-
-
-
 
   const verifyPhoneNo = async () => {
     try {
@@ -213,8 +207,17 @@ const VerificationPage = () => {
         //   );
 
         // }
+
         // navigate("/alredyExist");
-        navigate("/basicDetails");
+
+        console.log("UserData from verification", userData);
+        console.log("UserData from verification", message);
+
+        // if (userData) {
+        //   navigate("/alreadyExist");
+        // } else {
+        //   navigate("/basicDetails");
+        // }
       }
     } catch (error) {
       console.log("Error submitting form:", error);
@@ -331,13 +334,13 @@ const VerificationPage = () => {
           {/* Submit Button */}
 
           {/* {showCodeBox && ( */}
-            <button
-              type="submit"
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              // disabled={!codeEntered}
-            >
-              Next
-            </button>
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+            // disabled={!codeEntered}
+          >
+            Next
+          </button>
           {/* )} */}
         </form>
         <div className="flex justify-center items-center py-4">

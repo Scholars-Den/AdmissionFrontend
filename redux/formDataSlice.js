@@ -64,19 +64,13 @@ export const fetchUserDetails = createAsyncThunk(
             passbook: data?.passbook || "",
             studentAadhar: data?.studentAadhar || "",
             parentAadhar: data?.parentAadhar || "",
-            passportPhotos: data?.passportPhotos || "",
+            passbookPhoto: data?.passbookPhoto || "",
             admissionOfficer: data?.admissionOfficer || "",
             parent: data?.parent || "",
 
             studentPhoto: data?.studentPhoto || "",
 
-            documents: {
-              cancelledCheque: data?.documents?.cancelledCheque || "",
-              passbook: data?.documents?.passbook || "",
-              studentAadhar: data?.documents?.studentAadhar || "",
-              parentAadhar: data?.documents?.parentAadhar || "",
-              passportPhotos: data?.documents?.passportPhotos || "",
-            },
+       
           },
         };
       } else {
@@ -120,13 +114,7 @@ export const submitBankRefundForm = createAsyncThunk(
             accountNumber: data?.accountNumber || "",
             ifscCode: data?.ifscCode || "",
             relationWithStudent: data?.relationWithStudent || "",
-            documents: {
-              cancelledCheque: data?.documents?.cancelledCheque || "",
-              passbook: data?.documents?.passbook || "",
-              studentAadhar: data?.documents?.studentAadhar || "",
-              parentAadhar: data?.documents?.parentAadhar || "",
-              passportPhotos: data?.documents?.passportPhotos || "",
-            },
+         
             signatures: {
               admissionOfficer: data?.accountNumber || "",
               parent: data?.accountNumber || "",
@@ -150,15 +138,19 @@ export const submitFormData = createAsyncThunk(
         formData
       );
 
+    
+      
       document.cookie = `token=${response.data.token}`;
-
+      
       console.log("response from submitsuserDetails", response);
 
       const data = response.data;
+      console.log("Message from submitFormData", data.message);
 
       if (data.length !== 0) {
         return {
           dataExist: true, // Indicate data exists
+          message: data?.message || "",
           userData: {
             studentName: data?.newAdmission?.studentName || "",
             aadharID: data?.newAdmission?.aadharID || "",
@@ -188,13 +180,15 @@ export const submitFormData = createAsyncThunk(
             passbook: data?.passbook || "",
             studentAadhar: data?.studentAadhar || "",
             parentAadhar: data?.parentAadhar || "",
-            passportPhotos: data?.passportPhotos || "",
+            passbookPhoto: data?.passbookPhoto || "",
           },
         };
       } else {
         return {
           dataExist: false, // Indicate no data exists
           formData: {}, // Default empty data
+          message: "",
+
         };
       }
     } catch (error) {
@@ -249,7 +243,7 @@ export const putFormData = createAsyncThunk(
             passbook: data?.passbook || "",
             studentAadhar: data?.studentAadhar || "",
             parentAadhar: data?.parentAadhar || "",
-            passportPhotos: data?.passportPhotos || "",
+            passbookPhoto: data?.passbookPhoto || "",
           },
         };
       } else {
@@ -292,6 +286,7 @@ const formDataSlice = createSlice({
   name: "userDetails",
   initialState: {
     userData: {},
+    message: "",
     loading: false,
     userDataError: null,
     dataExist: false, // New flag to indicate if data exists in the database
@@ -317,6 +312,7 @@ const formDataSlice = createSlice({
       })
       .addCase(submitFormData.fulfilled, (state, action) => {
         state.loading = false;
+        state.message = action.payload.message;
         state.userData = action.payload.userData;
         state.dataExist = action.payload.dataExist; // Update `dataExist`
       })
@@ -332,7 +328,7 @@ const formDataSlice = createSlice({
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.userData = action.payload.userData;
-        state.dataExist = action.payload.dataExist; // Update `dataExist`
+        state.dataExist = action.payload.dataExist;
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.loading = false;
