@@ -9,6 +9,12 @@ const AdminComponent = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
 
+  const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
+  const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
+  const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
+  const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState(false);
+  const [signatureDetailsStatus, setSignatureDetailsStatus] = useState(false);
+
   const [showMessagePopup, setShowMessagePopup] = useState("");
 
   // const dispatch = useDispatch
@@ -43,22 +49,25 @@ const AdminComponent = () => {
 
   const submitMessage = async () => {
     console.log("selectedItem", selectedItem);
-    console.log("message", message);  
+    console.log("message", message);
     let response = "";
     if (showMessagePopup === "approval") {
       response = await axios.post("/approval/editAdmissionApproval", {
         status: "approved",
         acknowledgementNumber: selectedItem.acknowledgementNumber,
-        message
+        message,
+        studentDetails: {},
+        parentDetails,
+        documentsDetails,
+        signatureDetails,
+        bankDetails,
       });
     } else {
       response = await axios.post("/approval/editAdmissionApproval", {
         status: "rejected",
         acknowledgementNumber: selectedItem.acknowledgementNumber,
-        message
+        message,
       });
-
-
     }
     console.log("Response FOR SUBMITmESSAGE", response);
     setShowMessagePopup("");
@@ -126,7 +135,7 @@ const AdminComponent = () => {
       {/* Modal */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg max-w-md w-full relative">
+          <div className="bg-white p-3 rounded shadow-lg max-w-md w-full relative">
             <button
               onClick={closePopup}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -137,9 +146,22 @@ const AdminComponent = () => {
             {popupData ? (
               <div className="space-y-4 overflow-y-auto max-h-[70vh] text-sm text-gray-800">
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">
-                    Student Details
-                  </h3>
+                  <div className="flex justify-around">
+                    <h3 className="text-lg font-semibold mb-1">
+                      Student Details
+                    </h3>
+                    <div className="flex gap-2 items-center">
+                      <label htmlFor="">Approved </label>
+                      <input
+                        className="hover:cursor-pointer "
+                        checked={studentDetailsStatus}
+                        type="checkbox"
+                        onChange={() =>
+                          setStudentDetailsStatus((prev) => !prev)
+                        }
+                      />
+                    </div>
+                  </div>
                   <p>
                     <strong>Acknowledgement Number:</strong>{" "}
                     {popupData.acknowledgementNumber}
@@ -169,7 +191,22 @@ const AdminComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Parent Details</h3>
+                  <div className="flex justify-around">
+                    <h3 className="text-lg font-semibold mb-1">
+                      Parent Details
+                    </h3>
+
+                    <div className="flex gap-2 items-center">
+                      <label htmlFor="">Approved </label>
+                      <input
+                        className="hover:cursor-pointer "
+                        checked={parentDetailsStatus}
+                        type="checkbox"
+                        onChange={() => setParentDetailsStatus((prev) => !prev)}
+                      />
+                    </div>
+                  </div>
+
                   <p>
                     <strong>Father's Name:</strong> {popupData.fatherName}
                   </p>
@@ -195,7 +232,20 @@ const AdminComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                  <div className="flex justify-around">
+                    <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+
+                    <div className="flex gap-2 items-center">
+                      <label htmlFor="">Approved </label>
+                      <input
+                        className="hover:cursor-pointer "
+                        checked={bankDetailsStatus}
+                        type="checkbox"
+                        onChange={() => setBankDetailsStatus((prev) => !prev)}
+                      />
+                    </div>
+                  </div>
+
                   <p>
                     <strong>Bank Name:</strong> {popupData.bankName}
                   </p>
@@ -226,7 +276,22 @@ const AdminComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Documents</h3>
+                  <div className="flex justify-around">
+                    <h3 className="text-lg font-semibold mb-1">Documents</h3>
+
+                    <div className="flex gap-2 items-center">
+                      <label htmlFor="">Approved </label>
+                      <input
+                        className="hover:cursor-pointer "
+                        checked={documentsDetailsStatus}
+                        type="checkbox"
+                        onChange={() =>
+                          setDocumentsDetailsStatus((prev) => !prev)
+                        }
+                      />
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     {popupData.cancelledCheque && (
                       <div>
@@ -296,12 +361,27 @@ const AdminComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Signatures</h3>
+                  <div className="flex justify-around">
+                    <h3 className="text-lg font-semibold mb-1">Signatures</h3>
+
+                    <div className="flex gap-2 items-center">
+                      <label htmlFor="">Approved </label>
+                      <input
+                        className="hover:cursor-pointer "
+                        checked={signatureDetailsStatus}
+                        type="checkbox"
+                        onChange={() =>
+                          setSignatureDetailsStatus((prev) => !prev)
+                        }
+                      />
+                    </div>
+                  </div>
+
                   <div className="flex space-x-4">
                     <div>
                       <p className="font-medium">Student</p>
                       <img
-                        src={popupData.signatures.student}
+                        src={popupData?.signatures?.student}
                         alt="Student Signature"
                         className="w-28 h-12 border rounded object-contain"
                       />
@@ -317,19 +397,29 @@ const AdminComponent = () => {
                   </div>
                 </section>
 
-                <div className="w-full flex justify-between">
+                <div className="w-full flex justify-center">
                   <button
                     className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => setShowMessagePopup("approval")}
+                    onClick={() =>
+                      setShowMessagePopup(
+                        parentDetailsStatus &&
+                          studentDetailsStatus &&
+                          bankDetailsStatus &&
+                          signatureDetailsStatus &&
+                          documentsDetailsStatus
+                          ? "approval"
+                          : "rejected"
+                      )
+                    }
                   >
-                    Approved
+                    Submit
                   </button>
-                  <button
+                  {/* <button
                     className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
                     onClick={() => setShowMessagePopup("rejected")}
                   >
                     Rejected
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ) : (
@@ -343,7 +433,7 @@ const AdminComponent = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-md w-full relative">
             <button
-              onClick={()=> setShowMessagePopup("")}
+              onClick={() => setShowMessagePopup("")}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
             >
               ✕
@@ -354,9 +444,15 @@ const AdminComponent = () => {
               type="text"
               placeholder="Enter Mesage"
               className="border-2 w-full p-2 my-3 text-black outline-none"
-              onChange={(e)=>setMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
             />
-            <button onClick={submitMessage} className="p-3 hover:bg[#ffdd00] bg-[#f1df68] rounded-xl"> Submit Message</button>
+            <button
+              onClick={submitMessage}
+              className="p-3 hover:bg[#ffdd00] bg-[#f1df68] rounded-xl"
+            >
+              {" "}
+              Submit Message
+            </button>
           </div>
         </div>
       )}

@@ -42,7 +42,7 @@ function App() {
       <div className="flex-grow">
           <Routes>
             <Route path="/" element={<VerificationPage />} />
-            <Route path="/alredyExist" element={<AlreadyExistStudent />} />
+            <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
             <Route path="/basicDetails" element={<Signup />} />
             <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
             <Route path="/familyDetails" element = {< FamilyComponents />} />

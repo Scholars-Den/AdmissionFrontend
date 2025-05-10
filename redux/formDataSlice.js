@@ -9,7 +9,7 @@ export const fetchUserDetails = createAsyncThunk(
       console.log("Fetching user details...");
       const response = await axios.get("/admissions/getUserbyToken");
 
-      const data = response.data;
+      const data = response.data[0];
 
       console.log("Fetched user data from fetchDetails function:", data);
       if (data) {
@@ -27,7 +27,7 @@ export const fetchUserDetails = createAsyncThunk(
             studentName: data?.studentName || "",
             admissionRollNo: data?.admissionRollNo || "",
             enrollmentNumber: data?.enrollmentNumber || "",
-            acknowledgementNumber : data?.acknowledgementNumber || "",
+            acknowledgementNumber: data?.acknowledgementNumber || "",
 
             aadharID: data?.aadharID || "",
             studentContactNumber: data?.studentContactNumber || "",
@@ -69,8 +69,6 @@ export const fetchUserDetails = createAsyncThunk(
             parent: data?.parent || "",
 
             studentPhoto: data?.studentPhoto || "",
-
-       
           },
         };
       } else {
@@ -114,7 +112,7 @@ export const submitBankRefundForm = createAsyncThunk(
             accountNumber: data?.accountNumber || "",
             ifscCode: data?.ifscCode || "",
             relationWithStudent: data?.relationWithStudent || "",
-         
+
             signatures: {
               admissionOfficer: data?.accountNumber || "",
               parent: data?.accountNumber || "",
@@ -138,19 +136,17 @@ export const submitFormData = createAsyncThunk(
         formData
       );
 
-    
-      
       document.cookie = `token=${response.data.token}`;
-      
+
       console.log("response from submitsuserDetails", response);
 
       const data = response.data;
       console.log("Message from submitFormData", data.message);
-
-      if (data.length !== 0) {
+      console.log("Data.length", data);
+      if (data) {
         return {
           dataExist: true, // Indicate data exists
-          message: data?.message || "",
+          message: data.message || "",
           userData: {
             studentName: data?.newAdmission?.studentName || "",
             aadharID: data?.newAdmission?.aadharID || "",
@@ -188,7 +184,6 @@ export const submitFormData = createAsyncThunk(
           dataExist: false, // Indicate no data exists
           formData: {}, // Default empty data
           message: "",
-
         };
       }
     } catch (error) {
@@ -207,6 +202,9 @@ export const putFormData = createAsyncThunk(
     try {
       console.log("formData from submitFormData", formData);
       const response = await axios.patch("/admissions/putFormData", formData);
+
+
+
 
       console.log("response from submitsuserDetails", response);
 
@@ -311,10 +309,11 @@ const formDataSlice = createSlice({
         state.userDataError = null;
       })
       .addCase(submitFormData.fulfilled, (state, action) => {
+        console.log("action.payload", action.payload.message);
         state.loading = false;
         state.message = action.payload.message;
         state.userData = action.payload.userData;
-        state.dataExist = action.payload.dataExist; // Update `dataExist`
+        state.dataExist = action.payload.dataExist;
       })
       .addCase(submitFormData.rejected, (state, action) => {
         state.loading = false;

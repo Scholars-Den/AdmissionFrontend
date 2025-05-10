@@ -190,41 +190,61 @@ const VerificationPage = () => {
 
       console.log("userData in onSumit ", userData);
 
-      await dispatch(submitFormData(userData));
-      if (document.cookie) {
-        // const alreadyExistStudent = await axios.post(
-        //   "/user/getStudentByPhone",
-        //   { fatherContactNumber: userData.fatherContactNumber }
-        // );
+      const resultAction = await dispatch(submitFormData(userData));
 
-        // console.log("fatherContactNumber", alreadyExistStudent);
+      // Check if the action was successful
+      if (submitFormData.fulfilled.match(resultAction)) {
+        const { message } = resultAction.payload;
 
-        // if (alreadyExistStudent.length === 0) {
-        //   navigate("/basicDetails");
-        // } else {
-        //   dispatch(
-        //     updateAlreadyExistStudent(alreadyExistStudent.data.data )
-        //   );
-
-        // }
-
-        // navigate("/alredyExist");
-
-        console.log("UserData from verification", userData);
-        console.log("UserData from verification", message);
-
-        // if (userData) {
-        //   navigate("/alreadyExist");
-        // } else {
-        //   navigate("/basicDetails");
-        // }
+        if (message) {
+          console.log("message k..................", message);
+          navigate("/alreadyExist");
+        } else {
+          navigate("/basicDetails");
+        }
+      } else {
+        console.error("Form submission failed:", resultAction.payload);
       }
+      //       if (document.cookie) {
+      //   // const alreadyExistStudent = await axios.post(
+      //   //   "/user/getStudentByPhone",
+      //   //   { fatherContactNumber: userData.fatherContactNumber }
+      //   // );
+
+      //   // console.log("fatherContactNumber", alreadyExistStudent);
+
+      //   // if (alreadyExistStudent.length === 0) {
+      //   //   navigate("/basicDetails");
+      //   // } else {
+      //   //   dispatch(
+      //   //     updateAlreadyExistStudent(alreadyExistStudent.data.data )
+      //   //   );
+
+      //   // }
+
+      //   // navigate("/alredyExist");
+
+      //   console.log("UserData from verification", userData);
+      //   console.log("UserData from verification", message);
+
+      //   if (message != "") {
+      //     navigate("/alreadyExist");
+      //   } else {
+      //     navigate("/basicDetails");
+      //   }
+      // }
     } catch (error) {
       console.log("Error submitting form:", error);
     } finally {
       dispatch(setLoading(false));
     }
   };
+
+  useEffect(() => {
+    console.log("message from already exist", message);
+
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }, []);
 
   const handleOTPChange = async (e) => {
     if (e.target.value.length <= 4) {
@@ -269,7 +289,7 @@ const VerificationPage = () => {
               <input
                 type="number"
                 name="fatherContactNumber"
-                value={userData.fatherContactNumber || ""}
+                value={userData?.fatherContactNumber || ""}
                 onChange={handleChange}
                 placeholder="Enter Contact Number"
                 className="border-b-2 py-2 focus:outline-none w-full p-4  "

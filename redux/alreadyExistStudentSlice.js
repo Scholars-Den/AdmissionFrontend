@@ -4,22 +4,25 @@ import { useSelector } from "react-redux";
 
 export const fetchAlreadyExistingStudent = createAsyncThunk(
   "alreadyExistStudent/fetchExistStudent",
-  async (fatherContactNumber, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      console.log("FatherContactNuber", fatherContactNumber);
-      const alreadyExistStudent = await axios.post("/user/getStudentByPhone", {
-        fatherContactNumber,
-      });
+      const alreadyExistStudent = await axios.post(
+        "/admissions/getStudentByPhone"
+      );
 
+      console.log(
+        "AlreadyExistingStudent from fetchExistStduent",
+        alreadyExistStudent
+      );
 
-        // const alreadyExistStudent = await axios.post(
-        //         "/user/getStudentByPhone",
-        //         { fatherContactNumber: userData.fatherContactNumber }
-        //       );
-      
-
+      // const alreadyExistStudent = await axios.post(
+      //         "/user/getStudentByPhone",
+      //         { fatherContactNumber: userData.fatherContactNumber }
+      //       );
 
       console.log("fatherContactNumber", alreadyExistStudent);
+
+      console.log("alreadyExistStudent", alreadyExistStudent.data.data);
 
       if (alreadyExistStudent) {
         return {
@@ -43,7 +46,7 @@ export const fetchAlreadyExistingStudent = createAsyncThunk(
 const alreadyExistStudentSlice = createSlice({
   name: "alreadyExistStudent",
   initialState: {
-    existingStudent: {},
+    existingStudent: [],
   },
   reducers: {
     updateAlreadyExistStudent(state, action) {
