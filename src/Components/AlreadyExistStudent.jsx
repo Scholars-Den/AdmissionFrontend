@@ -1,11 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SignupDetailsPage from "./SignupDetailsPage"; // You can reuse this if it suits your full view
+import SignupDetailsPage from "./SignupDetailsPage";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import { fetchAlreadyExistingStudent } from "../../redux/alreadyExistStudentSlice";
+import axios from "../../api/axios";
 
 const AlreadyExistStudent = () => {
   const { existingStudent } = useSelector((state) => state.alreadyExistStudent);
+  const [admissionStatusMap, setAdmissionStatusMap] = useState({});
+
+  const [admisionStatus, setAdmissionStatus] = useState(null);
+
+  // const fetchAdmissionMessage = async () => {
+  //   console.log("selectedStudent from fetchAdmissionMessage", selectedStudent);
+  //   console.log(
+  //     "selectedStudent from fetchAdmissionMessage",
+  //     selectedStudent.acknowledgementNumber
+  //   );
+
+  //   const response = await axios.post(
+  //     "/approval/getAdmissionApprovalByAcknowledgementNumber",
+  //     { acknowledgementNumber: selectedStudent.acknowledgementNumber }
+  //   );
+  //   console.log("resoponse from fetchAdmissionMessage", response);
+  // };
+
+  const fetchAdmissionMessage = async (ackNumber) => {
+    try {
+      console.log("AckNumber", ackNumber);
+      const response = await axios.post(
+        "/approval/getAdmissionApprovalByAcknowledgementNumber",
+        { acknowledgementNumber: ackNumber }
+      );
+
+      console.log("RESPONSE FETCHaDMISSIONmEWSSAGE", response);
+      setAdmissionStatus(response.data);
+    } catch (error) {
+      setAdmissionStatusMap((prev) => ({
+        ...prev,
+        [ackNumber]: "Error fetching status",
+      }));
+    }
+  };
+
+  useEffect(() => {
+    console.log("admissionStatus", admisionStatus);
+  }, [admisionStatus]);
+
+  useEffect(() => {
+    console.log("admissionStatusMap ", admissionStatusMap);
+  }, [admissionStatusMap]);
+
+  // useEffect(()=>{
+
+  //   console.log("Testdata fro admissionStatusMap");
+  //   fetchAdmissionMessage(admissionStatusMap);
+
+  // },[admissionStatusMap])
+
   const { userData } = useSelector((state) => state.userDetails);
   const dispatch = useDispatch();
 
@@ -15,17 +67,27 @@ const AlreadyExistStudent = () => {
     dispatch(fetchAlreadyExistingStudent(userData.parentsContactNumber));
   }, []);
 
+  // useEffect(() => {
+  //   console.log("existing Student ", existingStudent);
+  //   fetchAdmissionMessage();
+  // }, [selectedStudent]);
+
+  // const handleCardClick = (student) => {
+  //   setSelectedStudent(student);
+  // };
+
   const handleCardClick = (student) => {
     setSelectedStudent(student);
+
+    if (!admissionStatusMap[student.acknowledgementNumber]) {
+      console.log("If condition working ");
+      fetchAdmissionMessage(student.acknowledgementNumber);
+    }
   };
 
   const closeModal = () => {
     setSelectedStudent(null);
   };
-
-  useEffect(() => {
-    console.log("existingStudent", existingStudent);
-  }, [existingStudent]);
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
@@ -51,6 +113,11 @@ const AlreadyExistStudent = () => {
               <p className="text-center text-sm text-gray-600">
                 {student.acknowledgementNumber}
               </p>
+              {/* <p className="text-center text-sm text-gray-600">
+                Status:{" "}
+                {admissionStatusMap[student.acknowledgementNumber] ||
+                  "Loading..."}
+              </p> */}
             </div>
           ))
         ) : (
@@ -95,9 +162,18 @@ const AlreadyExistStudent = () => {
 
               {/* Section: Student Info */}
               <section>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  Student Details
-                </h3>
+                <div className="flex justify-between">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Student Details
+                  </h3>
+                  <div className="flex">
+                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                      <strong className="mr-3">Status :</strong>{" "}
+                      {admisionStatus?.data[0]?.studentDetails.message}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
                   <p>
                     <strong>Class:</strong> {selectedStudent.studentClass}
@@ -143,9 +219,18 @@ const AlreadyExistStudent = () => {
 
               {/* Section: Parent Info */}
               <section>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  Parent Details
-                </h3>
+                <div className="flex justify-between">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Parent Details
+                  </h3>
+                  <div className="flex">
+                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                      <strong className="mr-3">Status :</strong>{" "}
+                      {admisionStatus?.data[0]?.parentDetails.message}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
                   <p>
                     <strong>Father's Name:</strong> {selectedStudent.fatherName}
@@ -195,6 +280,19 @@ const AlreadyExistStudent = () => {
                 <h3 className="text-lg font-semibold text-gray-700 mb-2">
                   Bank Details
                 </h3>
+
+                <div className="flex justify-between">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Bank Details
+                  </h3>
+                  <div className="flex">
+                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                      <strong className="mr-3">Status :</strong>{" "}
+                      {admisionStatus?.data[0]?.bankDetails.message}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
                   <p>
                     <strong>Account Holder:</strong>{" "}
@@ -215,7 +313,27 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.relationWithStudent}
                   </p>
                 </div>
+
+                <div>
+
+
+                  <div className="flex justify-between">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Documents Detail
+                  </h3>
+                  <div className="flex">
+                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                      <strong className="mr-3">Status :</strong> {admisionStatus?.data[0]?.documentsDetails.message}
+                    </p>
+                  </div>
+                </div>
+
+
+
                 <div className="flex gap-4 mt-3">
+                  
+
+
                   <div className="flex items-center gap-4 text-2xl">
                     <p className="mb-1 font-medium">Cancelled Cheque</p>
                     <a
@@ -245,8 +363,17 @@ const AlreadyExistStudent = () => {
                     </a>
                   </div>
                 </div>
+                </div>
               </section>
+
+
+
+
+               <button>
+        Edit
+      </button>
             </div>
+
           </div>
         </div>
       )}
@@ -254,6 +381,7 @@ const AlreadyExistStudent = () => {
       <div className="flex justify-center items-center py-4">
         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
       </div>
+     
     </div>
   );
 };

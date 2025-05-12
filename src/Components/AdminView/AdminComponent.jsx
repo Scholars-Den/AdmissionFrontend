@@ -56,16 +56,74 @@ const AdminComponent = () => {
         status: "approved",
         acknowledgementNumber: selectedItem.acknowledgementNumber,
         message,
-        studentDetails: {},
-        parentDetails,
-        documentsDetails,
-        signatureDetails,
-        bankDetails,
+        studentDetails: {
+          status: studentDetailsStatus,
+          message: studentDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        parentDetails: {
+          status: parentDetailsStatus,
+          message: parentDetailsStatus
+            ? "Parent info verified"
+            : "Parent info not verified",
+        },
+        bankDetails: {
+          status: bankDetailsStatus,
+          message: bankDetailsStatus
+            ? "Bank info verified"
+            : "Bank info not verified",
+        },
+        documentDetails: {
+          status: documentsDetailsStatus,
+          message: documentsDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        signatureDetails: {
+          status: signatureDetailsStatus,
+          message: signatureDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
       });
-    } else {
+    } else { 
+
+
+      console.log("testdat fo rejwcted ")
       response = await axios.post("/approval/editAdmissionApproval", {
         status: "rejected",
         acknowledgementNumber: selectedItem.acknowledgementNumber,
+        studentDetails: {
+          status: studentDetailsStatus,
+          message: studentDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        parentDetails: {
+          status: parentDetailsStatus,
+          message: parentDetailsStatus
+            ? "Parent info verified"
+            : "Parent info not verified",
+        },
+        bankDetails: {
+          status: bankDetailsStatus,
+          message: bankDetailsStatus
+            ? "Bank info verified"
+            : "Bank info not verified",
+        },
+        documentDetails: {
+          status: documentsDetailsStatus,
+          message: documentsDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        signatureDetails: {
+          status: signatureDetailsStatus,
+          message: signatureDetailsStatus
+            ? "Student info verified"
+            : "Student info not verified",
+        },
         message,
       });
     }
@@ -184,10 +242,7 @@ const AdminComponent = () => {
                   <p>
                     <strong>Category:</strong> {popupData.category}
                   </p>
-                  <p>
-                    <strong>Parent's Contact:</strong>{" "}
-                    {popupData.parentsContactNumber}
-                  </p>
+                 
                 </section>
 
                 <section>
@@ -206,6 +261,10 @@ const AdminComponent = () => {
                       />
                     </div>
                   </div>
+                   <p>
+                    <strong>Parent's Contact:</strong>{" "}
+                    {popupData.parentsContactNumber}
+                  </p>
 
                   <p>
                     <strong>Father's Name:</strong> {popupData.fatherName}
