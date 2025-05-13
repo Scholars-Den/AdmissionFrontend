@@ -4,11 +4,15 @@ import SignupDetailsPage from "./SignupDetailsPage";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import { fetchAlreadyExistingStudent } from "../../redux/alreadyExistStudentSlice";
 import axios from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const AlreadyExistStudent = () => {
   const { existingStudent } = useSelector((state) => state.alreadyExistStudent);
   const [admissionStatusMap, setAdmissionStatusMap] = useState({});
 
+
+
+  const navigate = useNavigate();
   const [admisionStatus, setAdmissionStatus] = useState(null);
 
   // const fetchAdmissionMessage = async () => {
@@ -89,6 +93,18 @@ const AlreadyExistStudent = () => {
     setSelectedStudent(null);
   };
 
+  const handleEditClick = async () => {
+    const response = await axios.post("/admissions/editAdmissionDetails", {
+      acknowledgementNumber: selectedStudent.acknowledgementNumber,
+    });
+
+    document.cookie = response.data.token;
+    navigate("/basicDetails");
+    
+
+    console.log("response from handleEditClick", response);
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
       <div className="flex flex-wrap justify-center p-4 gap-4">
@@ -166,12 +182,15 @@ const AlreadyExistStudent = () => {
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
                     Student Details
                   </h3>
-                  <div className="flex">
-                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                      <strong className="mr-3">Status :</strong>{" "}
-                      {admisionStatus?.data[0]?.studentDetails.message}
-                    </p>
-                  </div>
+
+                  {!admisionStatus?.data[0]?.studentDetails.status && (
+                    <div className="flex">
+                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                        <strong className="mr-3">Status :</strong>{" "}
+                        {admisionStatus?.data[0]?.studentDetails.message}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -200,20 +219,6 @@ const AlreadyExistStudent = () => {
                   <p>
                     <strong>Sisters:</strong> {selectedStudent.noOfSister}
                   </p>
-                  <div className="flex items-center gap-4 text-2xl">
-                    <p className="mb-1 font-medium">Student Aadhar</p>
-                    <a
-                      href={selectedStudent.studentAadhar}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={selectedStudent.studentAadhar}
-                        alt="Student Aadhar"
-                        className="w-32 h-auto border rounded shadow-md hover:scale-105 transition"
-                      />
-                    </a>
-                  </div>
                 </div>
               </section>
 
@@ -223,12 +228,14 @@ const AlreadyExistStudent = () => {
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
                     Parent Details
                   </h3>
-                  <div className="flex">
-                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                      <strong className="mr-3">Status :</strong>{" "}
-                      {admisionStatus?.data[0]?.parentDetails.message}
-                    </p>
-                  </div>
+                  {!admisionStatus?.data[0]?.parentDetails.status && (
+                    <div className="flex">
+                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                        <strong className="mr-3">Status :</strong>{" "}
+                        {admisionStatus?.data[0]?.parentDetails.message}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -259,20 +266,6 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.parentsContactNumber}
                   </p>
                 </div>
-                <div className="flex items-center gap-4 text-2xl">
-                  <p className="mb-1 font-medium">Parent Aadhar</p>
-                  <a
-                    href={selectedStudent.parentAadhar}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={selectedStudent.parentAadhar}
-                      alt="Parent Aadhar"
-                      className="w-32 h-auto border rounded shadow-md hover:scale-105 transition"
-                    />
-                  </a>
-                </div>
               </section>
 
               {/* Section: Bank Info */}
@@ -285,12 +278,15 @@ const AlreadyExistStudent = () => {
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
                     Bank Details
                   </h3>
-                  <div className="flex">
-                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                      <strong className="mr-3">Status :</strong>{" "}
-                      {admisionStatus?.data[0]?.bankDetails.message}
-                    </p>
-                  </div>
+
+                  {!admisionStatus?.data[0]?.bankDetails.status && (
+                    <div className="flex">
+                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                        <strong className="mr-3">Status :</strong>{" "}
+                        {admisionStatus?.data[0]?.bankDetails.message}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -313,67 +309,90 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.relationWithStudent}
                   </p>
                 </div>
+              </section>
 
-                <div>
-
-
+              <section>
+                <div className="">
                   <div className="flex justify-between">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    Documents Detail
-                  </h3>
-                  <div className="flex">
-                    <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                      <strong className="mr-3">Status :</strong> {admisionStatus?.data[0]?.documentsDetails.message}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                      Documents Detail
+                    </h3>
+
+                    {!admisionStatus?.data[0]?.documentsDetails.status && (
+                      <div className="flex">
+                        <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                          <strong className="mr-3">Status :</strong>{" "}
+                          {admisionStatus?.data[0]?.documentsDetails.message}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                </div>
 
-
-
-                <div className="flex gap-4 mt-3">
-                  
-
-
-                  <div className="flex items-center gap-4 text-2xl">
-                    <p className="mb-1 font-medium">Cancelled Cheque</p>
-                    <a
-                      href={selectedStudent.cancelledCheque}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={selectedStudent.cancelledCheque}
-                        alt="Cancelled Cheque"
-                        className="w-32 h-auto border rounded shadow-md hover:scale-105 transition"
-                      />
-                    </a>
+                  <div className="flex flex-wrap justify-around gap-4 mt-3">
+                    <div className="flex items-center gap-4 text-xl">
+                      <p className="mb-1 font-medium">Cancelled Cheque</p>
+                      <a
+                        href={selectedStudent.cancelledCheque}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={selectedStudent.cancelledCheque}
+                          alt="Cancelled Cheque"
+                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                        />
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-4 text-xl">
+                      <p className="mb-1 font-medium">Passbook Photo</p>
+                      <a
+                        href={selectedStudent.passbookPhoto}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={selectedStudent.passbookPhoto}
+                          alt="Passbook"
+                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                        />
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-4 text-xl">
+                      <p className="mb-1 font-medium">Student Aadhar</p>
+                      <a
+                        href={selectedStudent.studentAadhar}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={selectedStudent.studentAadhar}
+                          alt="Student Aadhar"
+                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                        />
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-4 text-xl">
+                      <p className="mb-1 font-medium">Parent Aadhar</p>
+                      <a
+                        href={selectedStudent.parentAadhar}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={selectedStudent.parentAadhar}
+                          alt="Parent Aadhar"
+                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                        />
+                      </a>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-2xl">
-                    <p className="mb-1 font-medium">Passbook Photo</p>
-                    <a
-                      href={selectedStudent.passbookPhoto}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={selectedStudent.passbookPhoto}
-                        alt="Passbook"
-                        className="w-32 h-auto border rounded shadow-md hover:scale-105 transition"
-                      />
-                    </a>
-                  </div>
-                </div>
                 </div>
               </section>
 
-
-
-
-               <button>
-        Edit
-      </button>
+              <button className="p-3 bg-[#c61d23] rounded-xl text-white" onClick={handleEditClick}>
+                Edit
+              </button>
             </div>
-
           </div>
         </div>
       )}
@@ -381,7 +400,6 @@ const AlreadyExistStudent = () => {
       <div className="flex justify-center items-center py-4">
         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
       </div>
-     
     </div>
   );
 };
