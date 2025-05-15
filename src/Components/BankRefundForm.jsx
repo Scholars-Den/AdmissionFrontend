@@ -216,10 +216,11 @@ const BankRefundForm = () => {
     if (!validateForm()) return;
     try {
       const formData = { ...userData, signatures };
-
-      await dispatch(submitBankRefundForm(formData));
-
+      
+      const testdata = await dispatch(submitBankRefundForm(formData));
+      console.log("Test Data", testdata)
       navigate("/admissionComplete");
+
     } catch (error) {
       console.log("Error submitting form:", error);
     }

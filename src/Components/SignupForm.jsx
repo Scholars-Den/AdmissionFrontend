@@ -60,10 +60,22 @@ const SignupForm = () => {
   //     ? ["Foundation"]
   //     : ["Engineering", "Medical"];
 
-  let subjectOptionsForClass =
-    userData?.program === "Engineering" || userData?.program === "Medical"
-      ? [...Array.from({ length: 1 }, (_, i) => i + 11), "12 Pass"]
-      : [...Array.from({ length: 5 }, (_, i) => i + 6)];
+  let subjectOptionsForClass = {
+    "Foundation": ["VI", "VII", "VIII", "IX", "X"],
+    "JEE(Main & Adv)": [
+      "XI Engineering",
+      "XII Engineering",
+      "XII Passed Engineering",
+    ],
+
+    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
+  };
+
+
+
+  // userData?.program === "Engineering" || userData?.program === "Medical"
+  //   ? [...Array.from({ length: 1 }, (_, i) => i + 11), "12 Passed"]
+  //   : [...Array.from({ length: 5 }, (_, i) => i + 6)];
 
   const convertToRoman = (num) => {
     const romanNumerals = {
@@ -78,27 +90,23 @@ const SignupForm = () => {
     return romanNumerals[num] || num;
   };
 
-  let subjectOptionsRoman = subjectOptionsForClass.flatMap((item) => {
-    if (typeof item === "number") {
-      
-      console.log("item", item);
-      return convertToRoman(item);
+  // let subjectOptionsRoman = subjectOptionsForClass.flatMap((item) => {
+  //   if (typeof item === "number") {
+  //     console.log("item", item);
+  //     return convertToRoman(item);
+  //   } else if (typeof item === "string") {
+  //     const match = item.match(/^(\d+)\s+(.*)/);
+  //     if (match) {
+  //       const roman = convertToRoman(parseInt(match[1]));
+  //       return [roman, `${roman} ${match[2]}`]; // Now in correct order
+  //     }
+  //   }
+  //   return item; // fallback
+  // });
 
+  // console.log(subjectOptionsRoman);
 
-
-    } else if (typeof item === "string") {
-      const match = item.match(/^(\d+)\s+(.*)/);
-      if (match) {
-        const roman = convertToRoman(parseInt(match[1]));
-        return [roman, `${roman} ${match[2]}`]; // Now in correct order
-      }
-    }
-    return item; // fallback
-  });
-
-  console.log(subjectOptionsRoman);
-
-  let subjectOptions = ["Foundation", "Engineering", "Medical"];
+  let subjectOptions = ["Foundation", "JEE(Main & Adv)", "NEET(UG)"];
   // const convertToRoman = (num) => {
   //   const romanNumerals = {
   //     6: "VI",
@@ -179,8 +187,7 @@ const SignupForm = () => {
     {
       name: "studentClass",
       label: "*Select Class",
-      options: subjectOptionsRoman, // Add "12 Pass"
-      value: convertToRoman(userData?.class),
+      options: subjectOptionsForClass[userData?.program] || [],
       onChange: handleChange, // Remove curly braces around handleChange
       error: errors.class,
       required: true,

@@ -119,9 +119,14 @@ export const submitBankRefundForm = createAsyncThunk(
             },
           },
         };
+      }else{
+
+        console.log("Testdata from redux", data);
+        return;
       }
     } catch (error) {
-      console.log("error ", error);
+      console.log("error .,.....,,,,,,,,,", error);
+      return;
     }
   }
 );
