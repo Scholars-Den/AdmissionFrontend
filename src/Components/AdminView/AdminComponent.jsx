@@ -12,7 +12,13 @@ const AdminComponent = () => {
   const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
   const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
-  const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState(false);
+  const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
+    cancelledCheque: false,
+    passbookPhoto: false,
+    studentAadhar: false,
+    parentAadhar: false,
+    studentPhoto: false,
+  });
   const [signatureDetailsStatus, setSignatureDetailsStatus] = useState(false);
 
   const [showMessagePopup, setShowMessagePopup] = useState("");
@@ -75,10 +81,36 @@ const AdminComponent = () => {
             : "Bank info not verified",
         },
         documentDetails: {
-          status: documentsDetailsStatus,
-          message: documentsDetailsStatus
-            ? "Student info verified"
-            : "Student info not verified",
+          cancelledCheque: {
+            status: allDocumentsApproved,
+            message: allDocumentsApproved
+              ? "Student info verified"
+              : "Student info not verified",
+          },
+          passbookPhoto: {
+            status: allDocumentsApproved,
+            message: allDocumentsApproved
+              ? "Student info verified"
+              : "Student info not verified",
+          },
+          studentAadhar: {
+            status: allDocumentsApproved,
+            message: allDocumentsApproved
+              ? "Student info verified"
+              : "Student info not verified",
+          },
+          parentAadhar: {
+            status: allDocumentsApproved,
+            message: allDocumentsApproved
+              ? "Student info verified"
+              : "Student info not verified",
+          },
+          studentPhoto: {
+            status: allDocumentsApproved,
+            message: allDocumentsApproved
+              ? "Student info verified"
+              : "Student info not verified",
+          },
         },
         signatureDetails: {
           status: signatureDetailsStatus,
@@ -87,10 +119,8 @@ const AdminComponent = () => {
             : "Student info not verified",
         },
       });
-    } else { 
-
-
-      console.log("testdat fo rejwcted ")
+    } else {
+      console.log("testdat fo rejwcted ");
       response = await axios.post("/approval/editAdmissionApproval", {
         status: "rejected",
         acknowledgementNumber: selectedItem.acknowledgementNumber,
@@ -165,6 +195,34 @@ const AdminComponent = () => {
   useEffect(() => {
     fetchApprovalRemaining();
   }, []);
+
+  const fetchAdmissionMessage = async (ackNumber) => {
+    try {
+      console.log("AckNumber", ackNumber);
+      const response = await axios.post(
+        "/approval/getAdmissionApprovalByAcknowledgementNumber",
+        { acknowledgementNumber: ackNumber }
+      );
+
+      console.log("Testdata ", response);
+
+      console.log("RESPONSE FETCHaDMISSIONmEWSSAGE", response);
+      setAdmissionStatus(response.data);
+    } catch (error) {
+      // setAdmissionStatusMap((prev) => ({
+      //   ...prev,
+      //   [ackNumber]: "Error fetching status",
+      // }));
+    }
+  };
+
+  useEffect(() => {
+    fetchAdmissionMessage();
+  }, []);
+
+  const allDocumentsApproved = Object.values(documentsDetailsStatus).every(
+    Boolean
+  );
 
   return (
     <div className="flex h-screen justify-center bg-gray-100">
@@ -242,7 +300,6 @@ const AdminComponent = () => {
                   <p>
                     <strong>Category:</strong> {popupData.category}
                   </p>
-                 
                 </section>
 
                 <section>
@@ -261,7 +318,7 @@ const AdminComponent = () => {
                       />
                     </div>
                   </div>
-                   <p>
+                  <p>
                     <strong>Parent's Contact:</strong>{" "}
                     {popupData.parentsContactNumber}
                   </p>
@@ -319,20 +376,7 @@ const AdminComponent = () => {
                   </p>
                 </section>
 
-                <section>
-                  <h3 className="text-lg font-semibold mb-1">Student Photo</h3>
-                  <a
-                    href={popupData.studentPhoto}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img
-                      src={popupData.studentPhoto}
-                      alt="Student"
-                      className="w-28 h-28 object-cover border rounded hover:scale-105 transition"
-                    />
-                  </a>
-                </section>
+                <section></section>
 
                 <section>
                   <div className="flex justify-around">
@@ -341,20 +385,71 @@ const AdminComponent = () => {
                     <div className="flex gap-2 items-center">
                       <label htmlFor="">Approved </label>
                       <input
-                        className="hover:cursor-pointer "
-                        checked={documentsDetailsStatus}
+                        className="hover:cursor-pointer"
+                        checked={allDocumentsApproved}
                         type="checkbox"
                         onChange={() =>
-                          setDocumentsDetailsStatus((prev) => !prev)
+                          setDocumentsDetailsStatus((prev) => {
+                            const shouldUncheck =
+                              Object.values(prev).every(Boolean); // all true?
+                            return {
+                              cancelledCheque: !shouldUncheck,
+                              passbook: !shouldUncheck,
+                              studentAadhar: !shouldUncheck,
+                              parentAadhar: !shouldUncheck,
+                              studentPhoto: !studentPhoto,
+                            };
+                          })
                         }
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
+
+                  {popupData.studentPhoto && (
+                    <div>
+                      <div className="flex justify-between pr-2">
+                        <p className="font-medium">Student Photo</p>
+                        <input
+                          type="checkbox"
+                          checked={documentsDetailsStatus.studentPhoto}
+                          onChange={() =>
+                            setDocumentsDetailsStatus((prev) => ({
+                              ...prev,
+                              studentPhoto: !prev.studentPhoto,
+                            }))
+                          }
+                        />
+                      </div>
+                      <a
+                        href={popupData.studentPhoto}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <img
+                          src={popupData.studentPhoto}
+                          alt="Student"
+                          className="w-28 h-28 object-cover border rounded hover:scale-105 transition"
+                        />
+                      </a>
+                    </div>
+                  )}
                     {popupData.cancelledCheque && (
                       <div>
-                        <p className="font-medium">Cancelled Cheque</p>
+                        <div className="flex justify-between pr-2">
+                          <p className="font-medium">Cancelled Cheque</p>
+                          <input
+                            type="checkbox"
+                            checked={documentsDetailsStatus.cancelledCheque}
+                            onChange={() =>
+                              setDocumentsDetailsStatus((prev) => ({
+                                ...prev,
+                                cancelledCheque: !prev.cancelledCheque,
+                              }))
+                            }
+                          />
+                        </div>
                         <a
                           href={popupData.cancelledCheque}
                           target="_blank"
@@ -368,9 +463,22 @@ const AdminComponent = () => {
                         </a>
                       </div>
                     )}
+
                     {popupData.passbookPhoto && (
                       <div>
-                        <p className="font-medium">Passbook</p>
+                        <div className="flex justify-between pr-2">
+                          <p className="font-medium">Passbook</p>
+                          <input
+                            type="checkbox"
+                            checked={documentsDetailsStatus.passbook}
+                            onChange={() =>
+                              setDocumentsDetailsStatus((prev) => ({
+                                ...prev,
+                                passbook: !prev.passbook,
+                              }))
+                            }
+                          />
+                        </div>
                         <a
                           href={popupData.passbookPhoto}
                           target="_blank"
@@ -384,9 +492,22 @@ const AdminComponent = () => {
                         </a>
                       </div>
                     )}
+
                     {popupData.studentAadhar && (
                       <div>
-                        <p className="font-medium">Student Aadhar</p>
+                        <div className="flex justify-between pr-2">
+                          <p className="font-medium">Student Aadhar</p>
+                          <input
+                            type="checkbox"
+                            checked={documentsDetailsStatus.studentAadhar}
+                            onChange={() =>
+                              setDocumentsDetailsStatus((prev) => ({
+                                ...prev,
+                                studentAadhar: !prev.studentAadhar,
+                              }))
+                            }
+                          />
+                        </div>
                         <a
                           href={popupData.studentAadhar}
                           target="_blank"
@@ -400,9 +521,22 @@ const AdminComponent = () => {
                         </a>
                       </div>
                     )}
+
                     {popupData.parentAadhar && (
                       <div>
-                        <p className="font-medium">Parent Aadhar</p>
+                        <div className="flex justify-between pr-2">
+                          <p className="font-medium">Parent Aadhar</p>
+                          <input
+                            type="checkbox"
+                            checked={documentsDetailsStatus.parentAadhar}
+                            onChange={() =>
+                              setDocumentsDetailsStatus((prev) => ({
+                                ...prev,
+                                parentAadhar: !prev.parentAadhar,
+                              }))
+                            }
+                          />
+                        </div>
                         <a
                           href={popupData.parentAadhar}
                           target="_blank"
