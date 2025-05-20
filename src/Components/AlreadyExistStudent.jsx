@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SignupDetailsPage from "./SignupDetailsPage";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import { fetchAlreadyExistingStudent } from "../../redux/alreadyExistStudentSlice";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import SignatureCanvas from "react-signature-canvas";
 
 const AlreadyExistStudent = () => {
   const { existingStudent } = useSelector((state) => state.alreadyExistStudent);
   const [admissionStatusMap, setAdmissionStatusMap] = useState({});
-
-
+  const [signatures, setSignatures] = useState({
+    student: "",
+    parent: "",
+  });
 
   const navigate = useNavigate();
   const [admisionStatus, setAdmissionStatus] = useState(null);
@@ -38,6 +41,7 @@ const AlreadyExistStudent = () => {
       );
 
       console.log("RESPONSE FETCHaDMISSIONmEWSSAGE", response);
+
       setAdmissionStatus(response.data);
     } catch (error) {
       setAdmissionStatusMap((prev) => ({
@@ -83,6 +87,8 @@ const AlreadyExistStudent = () => {
   const handleCardClick = (student) => {
     setSelectedStudent(student);
 
+    console.log("Student from handleCardClick", student);
+
     if (!admissionStatusMap[student.acknowledgementNumber]) {
       console.log("If condition working ");
       fetchAdmissionMessage(student.acknowledgementNumber);
@@ -100,9 +106,21 @@ const AlreadyExistStudent = () => {
 
     document.cookie = response.data.token;
     navigate("/basicDetails");
-    
 
     console.log("response from handleEditClick", response);
+  };
+
+  const handleSignatureEnd = (key) => {
+    setSignatures((prev) => ({
+      ...prev,
+      [key]: signatureRefs[key]?.current?.toDataURL(),
+    }));
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
+  };
+
+  const signatureRefs = {
+    student: useRef(null),
+    parent: useRef(null),
   };
 
   return (
@@ -173,6 +191,11 @@ const AlreadyExistStudent = () => {
                     Class: {selectedStudent.studentClass} | Gender:{" "}
                     {selectedStudent.gender}
                   </p>
+                </div>
+
+                <div className="bg-[#c61d23] p-3 rounded-xl">
+                  {`Status : 
+                  ${admisionStatus?.data[0]?.message}`}
                 </div>
               </div>
 
@@ -270,10 +293,6 @@ const AlreadyExistStudent = () => {
 
               {/* Section: Bank Info */}
               <section>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  Bank Details
-                </h3>
-
                 <div className="flex justify-between">
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
                     Bank Details
@@ -328,6 +347,8 @@ const AlreadyExistStudent = () => {
                     )}
                   </div>
 
+                  {console.log("test data ", admisionStatus)}
+
                   <div className="flex flex-wrap justify-around gap-4 mt-3">
                     <div className="flex items-center gap-4 text-xl">
                       <p className="mb-1 font-medium">Cancelled Cheque</p>
@@ -336,11 +357,26 @@ const AlreadyExistStudent = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <img
-                          src={selectedStudent.cancelledCheque}
-                          alt="Cancelled Cheque"
-                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
-                        />
+                        <div className="relative w-24">
+                          <img
+                            src={selectedStudent?.cancelledCheque}
+                            alt="Cancelled Cheque"
+                            className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                          />
+                          <div
+                            className={`absolute top-0 left-0 bg-${
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.cancelledCheque?.status
+                                ? "green"
+                                : "red"
+                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                          >
+                            {admisionStatus?.data[0]?.documentsDetails
+                              ?.cancelledCheque?.status
+                              ? "Approved"
+                              : "Rejected"}
+                          </div>
+                        </div>
                       </a>
                     </div>
                     <div className="flex items-center gap-4 text-xl">
@@ -350,11 +386,26 @@ const AlreadyExistStudent = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <img
-                          src={selectedStudent.passbookPhoto}
-                          alt="Passbook"
-                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
-                        />
+                        <div className="relative w-24">
+                          <img
+                            src={selectedStudent.passbookPhoto}
+                            alt="Passbook"
+                            className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                          />
+                          <div
+                            className={`absolute top-1 left-1 bg-${
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.passbookPhoto?.status
+                                ? "green"
+                                : "red"
+                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                          >
+                            {admisionStatus?.data[0]?.documentsDetails
+                              ?.passbookPhoto?.status
+                              ? "Approved"
+                              : "Rejected"}
+                          </div>
+                        </div>
                       </a>
                     </div>
                     <div className="flex items-center gap-4 text-xl">
@@ -364,11 +415,26 @@ const AlreadyExistStudent = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <img
-                          src={selectedStudent.studentAadhar}
-                          alt="Student Aadhar"
-                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
-                        />
+                        <div className="relative w-24">
+                          <img
+                            src={selectedStudent.studentAadhar}
+                            alt="Student Aadhar"
+                            className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                          />
+                          <div
+                            className={`absolute top-1 left-1 bg-${
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.studentAadhar?.status
+                                ? "green"
+                                : "red"
+                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                          >
+                            {admisionStatus?.data[0]?.documentsDetails
+                              ?.studentAadhar?.status
+                              ? "Approved"
+                              : "Rejected"}
+                          </div>
+                        </div>
                       </a>
                     </div>
                     <div className="flex items-center gap-4 text-xl">
@@ -378,18 +444,36 @@ const AlreadyExistStudent = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <img
-                          src={selectedStudent.parentAadhar}
-                          alt="Parent Aadhar"
-                          className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
-                        />
+                        <div className="relative w-24">
+                          <img
+                            src={selectedStudent.parentAadhar}
+                            alt="Parent Aadhar"
+                            className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                          />
+                          <div
+                            className={`absolute top-1 left-1 bg-${
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.parentAadhar?.status
+                                ? "green"
+                                : "red"
+                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                          >
+                            {admisionStatus?.data[0]?.documentsDetails
+                              ?.parentAadhar?.status
+                              ? "Approved"
+                              : "Rejected"}
+                          </div>
+                        </div>
                       </a>
                     </div>
                   </div>
                 </div>
               </section>
-
-              <button className="p-3 bg-[#c61d23] rounded-xl text-white" onClick={handleEditClick}>
+           
+              <button
+                className="p-3 bg-[#c61d23] rounded-xl text-white"
+                onClick={handleEditClick}
+              >
                 Edit
               </button>
             </div>

@@ -29,6 +29,8 @@ const AdminComponent = () => {
     try {
       const response = await axios.get("/approval/pendingApproval");
       setPendingApproval(response.data.data);
+
+      console.log("response dataq data ", response.data.data[0]);
     } catch (error) {
       console.error("Error fetching pending approval data:", error);
     }
@@ -49,6 +51,19 @@ const AdminComponent = () => {
 
   const handleCardClick = (item) => {
     setSelectedItem(item);
+
+    console.log("handleCick", item);
+    console.log("handleCick", item);
+    setBankDetailsStatus(item?.bankDetails?.status);
+    setParentDetailsStatus(item?.parentDetails?.status);
+    setStudentDetailsStatus(item?.studentDetails?.status);
+    setDocumentsDetailsStatus({
+      cancelledCheque: item.documentDetails?.cancelledCheque?.status || false,
+      passbookPhoto: item.documentDetails?.passbookPhoto?.status || false,
+      studentAadhar: item.documentDetails?.studentAadhar?.status || false,
+      parentAadhar: item.documentDetails?.parentAadhar?.status || false,
+      studentPhoto: item.documentDetails?.studentPhoto?.status || false,
+    });
     setShowPopup(true);
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
   };
@@ -57,107 +72,164 @@ const AdminComponent = () => {
     console.log("selectedItem", selectedItem);
     console.log("message", message);
     let response = "";
-    if (showMessagePopup === "approval") {
-      response = await axios.post("/approval/editAdmissionApproval", {
-        status: "approved",
-        acknowledgementNumber: selectedItem.acknowledgementNumber,
-        message,
-        studentDetails: {
-          status: studentDetailsStatus,
-          message: studentDetailsStatus
+
+
+
+
+
+
+    console.log("ShowMessagePopup", showMessagePopup);
+    // Collect unverified document names
+    const unverifiedDocs = [];
+    if (!documentsDetailsStatus.cancelledCheque)
+      unverifiedDocs.push("Cancelled Cheque");
+    if (!documentsDetailsStatus.passbookPhoto)
+      unverifiedDocs.push("Passbook Photo");
+    if (!documentsDetailsStatus.studentAadhar)
+      unverifiedDocs.push("Student Aadhar");
+    if (!documentsDetailsStatus.parentAadhar)
+      unverifiedDocs.push("Parent Aadhar");
+    if (!documentsDetailsStatus.studentPhoto)
+      unverifiedDocs.push("Student Photo");
+
+    console.log("documentDetailsstatus", documentsDetailsStatus);
+
+    const allDocumentsApproved = unverifiedDocs.length === 0;
+    const documentDetailsMessage = allDocumentsApproved
+      ? "The student document has been verified successfully."
+      : `The student document could not be verified: ${unverifiedDocs[0]}.`;
+
+
+    const  documentDetailsStructure =  {
+        cancelledCheque: {
+          status: documentsDetailsStatus.cancelledCheque,
+          message: documentsDetailsStatus.cancelledCheque
             ? "Student info verified"
             : "Student info not verified",
         },
-        parentDetails: {
-          status: parentDetailsStatus,
-          message: parentDetailsStatus
-            ? "Parent info verified"
-            : "Parent info not verified",
-        },
-        bankDetails: {
-          status: bankDetailsStatus,
-          message: bankDetailsStatus
-            ? "Bank info verified"
-            : "Bank info not verified",
-        },
-        documentDetails: {
-          cancelledCheque: {
-            status: allDocumentsApproved,
-            message: allDocumentsApproved
-              ? "Student info verified"
-              : "Student info not verified",
-          },
-          passbookPhoto: {
-            status: allDocumentsApproved,
-            message: allDocumentsApproved
-              ? "Student info verified"
-              : "Student info not verified",
-          },
-          studentAadhar: {
-            status: allDocumentsApproved,
-            message: allDocumentsApproved
-              ? "Student info verified"
-              : "Student info not verified",
-          },
-          parentAadhar: {
-            status: allDocumentsApproved,
-            message: allDocumentsApproved
-              ? "Student info verified"
-              : "Student info not verified",
-          },
-          studentPhoto: {
-            status: allDocumentsApproved,
-            message: allDocumentsApproved
-              ? "Student info verified"
-              : "Student info not verified",
-          },
-        },
-        signatureDetails: {
-          status: signatureDetailsStatus,
-          message: signatureDetailsStatus
+        passbookPhoto: {
+          status: documentsDetailsStatus.passbookPhoto,
+          message: documentsDetailsStatus.passbookPhoto
             ? "Student info verified"
             : "Student info not verified",
         },
-      });
-    } else {
-      console.log("testdat fo rejwcted ");
-      response = await axios.post("/approval/editAdmissionApproval", {
-        status: "rejected",
-        acknowledgementNumber: selectedItem.acknowledgementNumber,
-        studentDetails: {
-          status: studentDetailsStatus,
-          message: studentDetailsStatus
+        studentAadhar: {
+          status: documentsDetailsStatus.studentAadhar,
+          message: documentsDetailsStatus.studentAadhar
             ? "Student info verified"
             : "Student info not verified",
         },
-        parentDetails: {
-          status: parentDetailsStatus,
-          message: parentDetailsStatus
-            ? "Parent info verified"
-            : "Parent info not verified",
-        },
-        bankDetails: {
-          status: bankDetailsStatus,
-          message: bankDetailsStatus
-            ? "Bank info verified"
-            : "Bank info not verified",
-        },
-        documentDetails: {
-          status: documentsDetailsStatus,
-          message: documentsDetailsStatus
+        parentAadhar: {
+          status: documentsDetailsStatus.parentAadhar,
+          message: documentsDetailsStatus.parentAadhar
             ? "Student info verified"
             : "Student info not verified",
         },
-        signatureDetails: {
-          status: signatureDetailsStatus,
-          message: signatureDetailsStatus
+        studentPhoto: {
+          status: documentsDetailsStatus.studentPhoto,
+          message: documentsDetailsStatus.studentPhoto
             ? "Student info verified"
             : "Student info not verified",
         },
-        message,
-      });
-    }
+
+        status: allDocumentsApproved,
+        message: documentDetailsMessage,
+      }
+
+
+      console.log("test documentdetailsData ", documentDetailsStructure)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    response = await axios.post("/approval/editAdmissionApproval", {
+      status: showMessagePopup === "approved" ? "approved" : "rejected",
+      acknowledgementNumber: selectedItem.acknowledgementNumber,
+      message,
+      studentDetails: {
+        status: studentDetailsStatus,
+        message: studentDetailsStatus
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+      parentDetails: {
+        status: parentDetailsStatus,
+        message: parentDetailsStatus
+          ? "Parent info verified"
+          : "Parent info not verified",
+      },
+      bankDetails: {
+        status: bankDetailsStatus,
+        message: bankDetailsStatus
+          ? "Bank info verified"
+          : "Bank info not verified",
+      },
+      documentsDetails: {
+        cancelledCheque: {
+          status: documentsDetailsStatus.cancelledCheque,
+          message: documentsDetailsStatus.cancelledCheque
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        passbookPhoto: {
+          status: documentsDetailsStatus.passbookPhoto,
+          message: documentsDetailsStatus.passbookPhoto
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        studentAadhar: {
+          status: documentsDetailsStatus.studentAadhar,
+          message: documentsDetailsStatus.studentAadhar
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        parentAadhar: {
+          status: documentsDetailsStatus.parentAadhar,
+          message: documentsDetailsStatus.parentAadhar
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+        studentPhoto: {
+          status: documentsDetailsStatus.studentPhoto,
+          message: documentsDetailsStatus.studentPhoto
+            ? "Student info verified"
+            : "Student info not verified",
+        },
+
+        status: allDocumentsApproved,
+        message: documentDetailsMessage,
+      },
+      signatureDetails: {
+        status: signatureDetailsStatus,
+        message: signatureDetailsStatus
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+    });
+
     console.log("Response FOR SUBMITmESSAGE", response);
+
+    console.log(
+      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      studentDetailsStatus,
+      parentDetailsStatus,
+      bankDetailsStatus,
+      documentsDetailsStatus
+    );
+    console.log(
+      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      response
+    );
+
     setShowMessagePopup("");
     setMessage("");
 
@@ -195,6 +267,9 @@ const AdminComponent = () => {
   useEffect(() => {
     fetchApprovalRemaining();
   }, []);
+  useEffect(() => {
+    console.log("selectedItem", selectedItem);
+  }, [selectedItem]);
 
   const fetchAdmissionMessage = async (ackNumber) => {
     try {
@@ -394,10 +469,10 @@ const AdminComponent = () => {
                               Object.values(prev).every(Boolean); // all true?
                             return {
                               cancelledCheque: !shouldUncheck,
-                              passbook: !shouldUncheck,
+                              passbookPhoto: !shouldUncheck,
                               studentAadhar: !shouldUncheck,
                               parentAadhar: !shouldUncheck,
-                              studentPhoto: !studentPhoto,
+                              studentPhoto: !shouldUncheck,
                             };
                           })
                         }
@@ -406,35 +481,34 @@ const AdminComponent = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-
-                  {popupData.studentPhoto && (
-                    <div>
-                      <div className="flex justify-between pr-2">
-                        <p className="font-medium">Student Photo</p>
-                        <input
-                          type="checkbox"
-                          checked={documentsDetailsStatus.studentPhoto}
-                          onChange={() =>
-                            setDocumentsDetailsStatus((prev) => ({
-                              ...prev,
-                              studentPhoto: !prev.studentPhoto,
-                            }))
-                          }
-                        />
+                    {popupData.studentPhoto && (
+                      <div>
+                        <div className="flex justify-between pr-2">
+                          <p className="font-medium">Student Photo</p>
+                          <input
+                            type="checkbox"
+                            checked={documentsDetailsStatus.studentPhoto}
+                            onChange={() =>
+                              setDocumentsDetailsStatus((prev) => ({
+                                ...prev,
+                                studentPhoto: !prev.studentPhoto,
+                              }))
+                            }
+                          />
+                        </div>
+                        <a
+                          href={popupData.studentPhoto}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <img
+                            src={popupData.studentPhoto}
+                            alt="Student"
+                            className="w-28 h-28 object-cover border rounded hover:scale-105 transition"
+                          />
+                        </a>
                       </div>
-                      <a
-                        href={popupData.studentPhoto}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <img
-                          src={popupData.studentPhoto}
-                          alt="Student"
-                          className="w-28 h-28 object-cover border rounded hover:scale-105 transition"
-                        />
-                      </a>
-                    </div>
-                  )}
+                    )}
                     {popupData.cancelledCheque && (
                       <div>
                         <div className="flex justify-between pr-2">
@@ -467,14 +541,14 @@ const AdminComponent = () => {
                     {popupData.passbookPhoto && (
                       <div>
                         <div className="flex justify-between pr-2">
-                          <p className="font-medium">Passbook</p>
+                          <p className="font-medium">Passbook Photo</p>
                           <input
                             type="checkbox"
-                            checked={documentsDetailsStatus.passbook}
+                            checked={documentsDetailsStatus.passbookPhoto}
                             onChange={() =>
                               setDocumentsDetailsStatus((prev) => ({
                                 ...prev,
-                                passbook: !prev.passbook,
+                                passbookPhoto: !prev.passbookPhoto,
                               }))
                             }
                           />
@@ -486,7 +560,7 @@ const AdminComponent = () => {
                         >
                           <img
                             src={popupData.passbookPhoto}
-                            alt="Passbook"
+                            alt="Passbook Photo"
                             className="w-full h-24 object-cover border rounded hover:scale-105 transition"
                           />
                         </a>
@@ -599,7 +673,7 @@ const AdminComponent = () => {
                           studentDetailsStatus &&
                           bankDetailsStatus &&
                           signatureDetailsStatus &&
-                          documentsDetailsStatus
+                          allDocumentsApproved
                           ? "approval"
                           : "rejected"
                       )

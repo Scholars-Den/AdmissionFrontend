@@ -38,6 +38,9 @@ const SignupForm = () => {
   }, [userData]);
 
   const handleChange = (e) => {
+
+
+    
     const { name, value } = e.target;
     if (name === "aadharID") {
       if (value.length > 12) return;

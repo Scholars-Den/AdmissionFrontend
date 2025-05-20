@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserDetails, updateUserDetails } from "../../redux/formDataSlice";
-import axios from "axios";
+import axios from "../../api/axios";
 
 const SuccessContent = () => {
   const navigate = useNavigate();
@@ -60,26 +60,25 @@ const SuccessContent = () => {
   //     tokenNo();
   //   }, []);
 
-  // const createApprovalRequest = async () => {
-  //   try{
+  const createApprovalRequest = async () => {
+    try {
+      console.log("userData admissionRollBo fro create approvalRequest", userData);
 
-  //     const response = await axios.post("/approval/addAdmissionApproval", {
-  //       admissionRollNo: userData.admissionRollNo,
-  //     });
-  
-  //     console.log("response fro createApprovalRequest", response);
-  //   }catch(error){
-  //     console.log("error for createApprovalRequest", error);
-  //   }
+      const response = await axios.post("/approval/addAdmissionApproval", {
+        acknowledgementNumber: userData.acknowledgementNumber,
+      });
 
+      console.log("response fro createApprovalRequest", response);
+    } catch (error) {
+      console.log("error for createApprovalRequest", error);
+    }
+  };
 
-  // };
-
-  // useEffect(() => {
-  //   if (userData) {
-  //     createApprovalRequest();
-  //   }
-  // }, [userData]);
+  useEffect(() => {
+    if (userData) {
+      createApprovalRequest();
+    }
+  }, [userData]);
 
   return (
     <div className="flex flex-col justify-center items-center text-white gap-4 mt-3">
