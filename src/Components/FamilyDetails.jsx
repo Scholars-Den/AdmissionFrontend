@@ -15,11 +15,15 @@ import {
   validateDateOfBirth,
   validateName,
 } from "../../utils/validation/inputValidation";
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 
 const FamilyDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.userDetails);
+    const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const [errors, setErrors] = useState({});
@@ -27,70 +31,75 @@ const FamilyDetails = () => {
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
   const familySections = [
-  [  {
-      title: "Father's Details",
-      fields: [
-        {
-          name: "fatherName",
-          type: "text",
-          placeholder: "*Father’s Name",
-          required: true,
-          validation: validateName,
-          label: "*Father Name"
-        },
-        {
-          name: "fatherAadharId",
-          type: "text",
-          placeholder: "*Father's Aadhar ID",
-          required: true,
-          validation: validateAadhaar,
-          label: "*Father Aadhar Id"
+    [
+      {
+        title: "Father's Details",
+        fields: [
+          {
+            name: "fatherName",
+            type: "text",
+            placeholder: "*Father’s Name",
+            required: true,
+            validation: validateName,
+            label: "*Father Name",
+          },
+          {
+            name: "fatherAadharId",
+            type: "text",
+            placeholder: "*Father's Aadhar ID",
+            required: true,
+            validation: validateAadhaar,
+            label: "*Father Aadhar Id",
+          },
 
-        },
-      
-        {
-          name: "fatherOccupations",
-          type: "select",
-          options: occupationOptions,
-          required: true,
-          label: "Father Occupation"
+          {
+            name: "fatherOccupations",
+            type: "select",
+            options: occupationOptions,
+            required: true,
+            label: "Father Occupation",
+          },
+        ],
+      },
+    ],
+    [
+      {
+        title: "Mother's Details",
+        fields: [
+          {
+            name: "motherName",
+            type: "text",
+            placeholder: "*Mother’s Name",
+            required: true,
+            validation: validateName,
+            label: "Mother Name",
+          },
+          {
+            name: "motherAadharId",
+            type: "text",
+            placeholder: "*Mother's Aadhar ID",
+            required: true,
+            validation: validateAadhaar,
+            label: "Mother Aadhar Id",
+          },
 
-        },
-      ],
-    }],
-    [{
-      title: "Mother's Details",
-      fields: [
-        {
-          name: "motherName",
-          type: "text",
-          placeholder: "*Mother’s Name",
-          required: true,
-          validation: validateName,
-          label: "Mother Name"
-        },
-        {
-          name: "motherAadharId",
-          type: "text",
-          placeholder: "*Mother's Aadhar ID",
-          required: true,
-          validation: validateAadhaar,
-          label : "Mother Aadhar Id"
-        },
-       
-       
-        {
-          name: "motherOccupations",
-          type: "select",
-          options: occupationOptions,
-          required: true,
-          label : "Mother Occupation"
-        },
-      ],
-    }]
+          {
+            name: "motherOccupations",
+            type: "select",
+            options: occupationOptions,
+            required: true,
+            label: "Mother Occupation",
+          },
+        ],
+      },
+    ],
   ];
 
   const handleChange = (e) => {
+
+    if(studentAdmissionApprovalDetails[0]?.parentDetails?.status){
+      return;
+    }
     const { name, value } = e.target;
     console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
@@ -149,8 +158,8 @@ const FamilyDetails = () => {
   }, []);
 
   useEffect(() => {
-    console.log("userData", userData);
-    console.log("userData[]", userData?.fatherOccupations);
+
+    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
   }, [userData]);
 
   return (
@@ -166,109 +175,105 @@ const FamilyDetails = () => {
         </h2>
 
         <div className="flex flex-col w-full gap-4">
+          {studentAdmissionApprovalDetails[0]?.parentDetails?.status && (
+            <div className="flex flex-col w-full gap-4 items-end  ">
+              <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+            </div>
+          )}
 
- 
-        <fieldset className="text-white border-2 w-full px-6">
-          <legend> Father Details </legend>
-          {familySections[0].map((section, sectionIndex) => (
-            <div key={sectionIndex} className="mb-6 w-full">
-              {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
+          <fieldset className="text-white border-2 w-full px-6">
+            <legend> Father Details </legend>
+            {familySections[0].map((section, sectionIndex) => (
+              <div key={sectionIndex} className="mb-6 w-full">
+                {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
                 {section.title}
               </h3> */}
-              <div className="grid grid-cols-1  gap-4">
-                {section.fields.map((field, fieldIndex) =>
-                  field.type === "select" ? (
-                    <SelectField
-                      key={fieldIndex}
-                      name={field.name}
-                      options={field.options}
-                      label={field.label}
-                      error={errors[field.name]}
-                      value={userData?.[field.name] || ""}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <InputField
-                      key={fieldIndex}
-                      name={field.name}
-                      type={field.type}
-                      label={field.label}
-                      value={userData?.[field.name] || ""}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      error={errors[field.name]}
-                    />
-                  )
-                )}
+                <div className="grid grid-cols-1  gap-4">
+                  {section.fields.map((field, fieldIndex) =>
+                    field.type === "select" ? (
+                      <SelectField
+                        key={fieldIndex}
+                        name={field.name}
+                        options={field.options}
+                        label={field.label}
+                        error={errors[field.name]}
+                        value={userData?.[field.name] || ""}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      <InputField
+                        key={fieldIndex}
+                        name={field.name}
+                        type={field.type}
+                        label={field.label}
+                        value={userData?.[field.name] || ""}
+                        onChange={handleChange}
+                        placeholder={field.placeholder}
+                        error={errors[field.name]}
+                      />
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-       
-        </fieldset>
-        <fieldset className="text-white border-2 w-full px-6">
-        <legend>Mother Details</legend>
-
-        {familySections[1].map((section, sectionIndex) => (
-            <div key={sectionIndex} className="mb-6 w-full">
-              {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
-                {section.title}
-              </h3> */}
-              <div className="grid grid-cols-1  gap-4">
-                {section.fields.map((field, fieldIndex) =>
-                  field.type === "select" ? (
-                    <SelectField
-                      key={fieldIndex}
-                      name={field.name}
-                      options={field.options}
-                      label={field.label}
-                      error={errors[field.name]}
-                      value={userData?.[field.name] || ""}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <InputField
-                      key={fieldIndex}
-                      name={field.name}
-                      type={field.type}
-                      label={field.label}
-                      value={userData?.[field.name] || ""}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      error={errors[field.name]}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-          ))
-        }
-
-
-
-
+            ))}
           </fieldset>
-          </div>
+          <fieldset className="text-white border-2 w-full px-6">
+            <legend>Mother Details</legend>
+
+            {familySections[1].map((section, sectionIndex) => (
+              <div key={sectionIndex} className="mb-6 w-full">
+                {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">
+                {section.title}
+              </h3> */}
+                <div className="grid grid-cols-1  gap-4">
+                  {section.fields.map((field, fieldIndex) =>
+                    field.type === "select" ? (
+                      <SelectField
+                        key={fieldIndex}
+                        name={field.name}
+                        options={field.options}
+                        label={field.label}
+                        error={errors[field.name]}
+                        value={userData?.[field.name] || ""}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      <InputField
+                        key={fieldIndex}
+                        name={field.name}
+                        type={field.type}
+                        label={field.label}
+                        value={userData?.[field.name] || ""}
+                        onChange={handleChange}
+                        placeholder={field.placeholder}
+                        error={errors[field.name]}
+                      />
+                    )
+                  )}
+                </div>
+              </div>
+            ))}
+          </fieldset>
+        </div>
         {/* <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" onClick={() => navigate("/")}>Back</button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto" type="submit">Next</button>
         </div> */}
-         <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
-            <button
-              onClick={() => navigate("/basicDetails")}
-              type="button"
-              className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
-            >
-              Back
-            </button>
-            <button
-              type="submit"
-              className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
-            >
-              Next
-            </button>
-          </div>
-
-       
+        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+          <button
+            onClick={() => navigate("/basicDetails")}
+            type="button"
+            className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+          >
+            Next
+          </button>
+        </div>
       </form>
     </div>
   );

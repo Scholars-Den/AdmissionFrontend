@@ -12,12 +12,17 @@ import {
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "../../api/Spinner";
 import SelectField from "../../utils/SelectField";
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 
 const SiblingsDetails = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const [siblingsTable, setSiblingsTable] = useState(0);
   const [errors, setErrors] = useState({});
+
+  const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
 
   useEffect(() => {
     if (siblingsTable > 0) {
@@ -38,27 +43,32 @@ const SiblingsDetails = () => {
 
   const handleRemoveSibling = (indexToRemove) => {
     setSiblings((prevSiblings) => {
-      const newSiblings = prevSiblings.filter((_, index) => index !== indexToRemove);
+      const newSiblings = prevSiblings.filter(
+        (_, index) => index !== indexToRemove
+      );
       setSiblingsTable(newSiblings.length);
       return newSiblings;
     });
-  }
+  };
 
   const handleSiblingChange = (index, event) => {
     const { name, value, type, checked } = event.target;
-
-    console.log("name", name);
-    console.log("name", value);
-    setSiblings((prevSiblings) =>
-      prevSiblings.map((sibling, i) =>
-        i === index
-          ? {
-              ...sibling,
-              [name]: type === "checkbox" ? checked : value,
-            }
-          : sibling
-      )
-    );
+    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+      console.log("name", name);
+      console.log("name", value);
+      return;
+    } else {
+      setSiblings((prevSiblings) =>
+        prevSiblings.map((sibling, i) =>
+          i === index
+            ? {
+                ...sibling,
+                [name]: type === "checkbox" ? checked : value,
+              }
+            : sibling
+        )
+      );
+    }
   };
 
   const [signatures, setSignatures] = useState({
@@ -69,7 +79,6 @@ const SiblingsDetails = () => {
   const signatureRefs = {
     student: useRef(null),
     parent: useRef(null),
-
   };
 
   const dispatch = useDispatch();
@@ -177,6 +186,9 @@ const SiblingsDetails = () => {
   };
 
   const handleChange = (e) => {
+    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+      return;
+    }
     const { name, value } = e.target;
     console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
@@ -188,17 +200,26 @@ const SiblingsDetails = () => {
 
   useEffect(() => {
     console.log("userData", userData);
+    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
   }, [userData]);
 
   const handleSignatureEnd = (key) => {
-    setSignatures((prev) => ({
-      ...prev,
-      [key]: signatureRefs[key]?.current?.toDataURL(),
-    }));
-    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
+    console.log(
+      "signatureDetails",
+      studentAdmissionApprovalDetails[0].signatureDetails.status
+    );
+    if (studentAdmissionApprovalDetails[0]?.signatureDetails?.status) return;
+    else {
+      setSignatures((prev) => ({
+        ...prev,
+        [key]: signatureRefs[key]?.current?.toDataURL(),
+      }));
+      setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
+    }
   };
 
   const clearSignature = (key) => {
+    if (studentAdmissionApprovalDetails[0]?.signatureDetails?.status) return;
     signatureRefs[key]?.current?.clear();
     setSignatures((prev) => ({ ...prev, [key]: "" }));
   };
@@ -238,6 +259,16 @@ const SiblingsDetails = () => {
     <div className="w-full px-4 sm:px-8 py-6 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
+        {studentAdmissionApprovalDetails[0]?.signatureDetails && (
+          <div className="flex flex-col w-full gap-4 items-end  ">
+            <span className="bg-green-500 p-2 rounded-xl">{`${
+              studentAdmissionApprovalDetails[0]?.signatureDetails?.status
+                ? "Approved"
+                : "Rejected"
+            }`}</span>
+          </div>
+        )}
+
         <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
 
         {/* Siblings Count Inputs */}
@@ -252,7 +283,7 @@ const SiblingsDetails = () => {
                 key={fieldIndex}
                 name={field?.name}
                 label={field.label}
-                options={["0","1", "2", "3", "4", "5"]}
+                options={["0", "1", "2", "3", "4", "5"]}
                 value={
                   userData?.[field.name] ? userData?.[field.name] : field.name
                 }
@@ -395,7 +426,6 @@ const SiblingsDetails = () => {
               key: "parent",
               label: "Signature of Parent (Should match with PAN)",
             },
-           
           ].map(({ key, label }) => (
             <div
               key={key}
@@ -408,7 +438,15 @@ const SiblingsDetails = () => {
                 <SignatureCanvas
                   ref={signatureRefs[key]}
                   penColor="black"
-                  canvasProps={{ className: "w-full h-24" }}
+                  canvasProps={{
+                    className: "w-full h-24",
+                    style: {
+                      pointerEvents: studentAdmissionApprovalDetails[0]
+                        ?.signatureDetails?.status
+                        ? "none"
+                        : "auto",
+                    },
+                  }}
                   onEnd={() => handleSignatureEnd(key)}
                 />
               </div>
@@ -416,7 +454,12 @@ const SiblingsDetails = () => {
                 <button
                   type="button"
                   onClick={() => clearSignature(key)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                  className={`px-4 py-2 rounded-md ${
+    studentAdmissionApprovalDetails[0]?.signatureDetails?.status
+      ? "bg-gray-500 cursor-not-allowed"
+      : "bg-red-500 text-white"
+  }`}
+  disabled={studentAdmissionApprovalDetails[0]?.signatureDetails?.status}
                 >
                   Clear Signature
                 </button>
@@ -429,7 +472,7 @@ const SiblingsDetails = () => {
         </div>
         <div className="flex justify-between ">
           <button
-          type="button"
+            type="button"
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
             onClick={() => navigate("/familyDetails")}
           >

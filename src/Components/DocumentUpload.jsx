@@ -7,10 +7,16 @@ import {
   putFormData,
 } from "../../redux/formDataSlice";
 
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
+
 const DocumentUpload = ({ documentRequired }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData: userDetails } = useSelector((state) => state.userDetails);
+
+  const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
 
   const [uploads, setUploads] = useState({});
   const [uploading, setUploading] = useState({});
@@ -20,9 +26,10 @@ const DocumentUpload = ({ documentRequired }) => {
   const [activeDoc, setActiveDoc] = useState(null);
   const [cameraFacing, setCameraFacing] = useState("user");
 
+  useEffect(() => {}, [dispatch]);
   useEffect(() => {
-    dispatch(fetchUserDetails());
-  }, [dispatch]);
+    dispatch(fetchAdmissionApprovalMessage(userDetails?.acknowledgementNumber));
+  }, [userDetails]);
 
   useEffect(() => {
     if (activeDoc) getCamera();
@@ -165,7 +172,17 @@ const DocumentUpload = ({ documentRequired }) => {
                   )}
 
                   <div className="flex gap-2 mt-3">
-                    <label className="flex-1 bg-yellow-400 text-center py-2 rounded cursor-pointer hover:bg-yellow-300 transition text-sm font-medium">
+                    <label
+                      className="flex-1 bg-yellow-400 text-center py-2 rounded cursor-pointer hover:bg-yellow-300 transition text-sm font-medium 
+                     disabled:bg-gray-500
+                    
+                  "
+                      disabled={
+                        studentAdmissionApprovalDetails[0]?.documentsDetails?.[
+                          doc.name
+                        ].status
+                      }
+                    >
                       📁 Change from Device
                       <input
                         type="file"

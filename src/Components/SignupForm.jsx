@@ -8,6 +8,8 @@ import {
   putFormData,
   fetchUserDetails,
 } from "../../redux/formDataSlice";
+
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
@@ -22,6 +24,10 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.userDetails);
+
+  const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const [code, setCode] = useState("");
@@ -38,9 +44,9 @@ const SignupForm = () => {
   }, [userData]);
 
   const handleChange = (e) => {
-
-
-    
+    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+      return;
+    }
     const { name, value } = e.target;
     if (name === "aadharID") {
       if (value.length > 12) return;
@@ -64,7 +70,7 @@ const SignupForm = () => {
   //     : ["Engineering", "Medical"];
 
   let subjectOptionsForClass = {
-    "Foundation": ["VI", "VII", "VIII", "IX", "X"],
+    Foundation: ["VI", "VII", "VIII", "IX", "X"],
     "JEE(Main & Adv)": [
       "XI Engineering",
       "XII Engineering",
@@ -73,8 +79,6 @@ const SignupForm = () => {
 
     "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
   };
-
-
 
   // userData?.program === "Engineering" || userData?.program === "Medical"
   //   ? [...Array.from({ length: 1 }, (_, i) => i + 11), "12 Passed"]
@@ -125,10 +129,25 @@ const SignupForm = () => {
 
   useEffect(() => {
     console.log("userData", userData);
+    if (userData)
+      dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+
+    console.log(
+      "studentAdmissionApprovalDetails",
+      studentAdmissionApprovalDetails
+    );
   }, [userData]);
 
   useEffect(() => {
+    console.log(
+      "studentAdmissionApprovalDetails",
+      studentAdmissionApprovalDetails
+    );
+  }, [studentAdmissionApprovalDetails]);
+
+  useEffect(() => {
     dispatch(fetchUserDetails());
+    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
   }, []);
   // Define form fields
   const formFields = [
@@ -262,6 +281,12 @@ const SignupForm = () => {
         className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
+        {studentAdmissionApprovalDetails[0]?.studentDetails?.status && (
+          <div className="flex flex-col w-full gap-4 items-end  ">
+            <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+          </div>
+        )}
+
         <fieldset className="text-white border-2 w-full px-2 py-2 sm:px-6 sm:py-4 pb-7">
           <legend> Student Details </legend>
           <div className="flex flex-col w-full gap-4 items-center">

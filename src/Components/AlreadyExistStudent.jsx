@@ -5,7 +5,6 @@ import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import { fetchAlreadyExistingStudent } from "../../redux/alreadyExistStudentSlice";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import SignatureCanvas from "react-signature-canvas";
 
 const AlreadyExistStudent = () => {
   const { existingStudent } = useSelector((state) => state.alreadyExistStudent);
@@ -364,12 +363,10 @@ const AlreadyExistStudent = () => {
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
                           <div
-                            className={`absolute top-0 left-0 bg-${
-                              admisionStatus?.data[0]?.documentsDetails
-                                ?.cancelledCheque?.status
-                                ? "green"
-                                : "red"
-                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            className={`absolute top-0 left-0 ${
+                              admisionStatus?.data[0]?.documentsDetails?.cancelledCheque?.status
+                                ? "bg-green-500" : "bg-red-500"
+                            } text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
                             {admisionStatus?.data[0]?.documentsDetails
                               ?.cancelledCheque?.status
@@ -469,7 +466,55 @@ const AlreadyExistStudent = () => {
                   </div>
                 </div>
               </section>
-           
+              
+
+              <section>
+                <div className="flex justify-between">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Signature Details
+                  </h3>
+
+                  {!admisionStatus?.data[0]?.signatureDetails?.status && (
+                    <div className="flex">
+                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
+                        <strong className="mr-3">Status :</strong>{" "}
+                        {admisionStatus?.data[0]?.signatureDetails?.message}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                  <div>
+                    <strong>Parent Signature:</strong>
+                    <br />
+                    {selectedStudent.signatures?.parent ? (
+                      <img
+                        src={selectedStudent.signatures.parent}
+                        alt="Parent Signature"
+                        className="mt-1 border rounded max-h-32"
+                      />
+                    ) : (
+                      <p className="text-gray-500">No signature available</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <strong>Student Signature:</strong>
+                    <br />
+                    {selectedStudent.signatures?.student ? (
+                      <img
+                        src={selectedStudent.signatures.student}
+                        alt="Student Signature"
+                        className="mt-1 border rounded max-h-32"
+                      />
+                    ) : (
+                      <p className="text-gray-500">No signature available</p>
+                    )}
+                  </div>
+                </div>
+              </section>
+
               <button
                 className="p-3 bg-[#c61d23] rounded-xl text-white"
                 onClick={handleEditClick}
