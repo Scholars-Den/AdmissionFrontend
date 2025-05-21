@@ -4,6 +4,10 @@ import scholarsDenLogo from "../../assets/scholarsDenLogo.png";
 import { Link } from "react-router-dom";
 
 const AdminSidebar = () => {
+  const handleLogout = async () => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    navigate("/");
+  };
   return (
     <div
       className="flex flex-col justify-between h-screen pt-4 md:w-full"
@@ -51,6 +55,12 @@ const AdminSidebar = () => {
             <h4>Approval Rejected</h4>
             {/* </div> */}
           </Link>
+        </div>
+        <div
+          className="text-white justify-end items-end"
+          onClick={handleLogout}
+        >
+          Logout
         </div>
       </div>
 

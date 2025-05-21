@@ -74,6 +74,10 @@ const AlreadyExistStudent = () => {
     dispatch(fetchAlreadyExistingStudent(userData.parentsContactNumber));
   }, []);
 
+  useEffect(() => {
+    console.log("existing student", existingStudent);
+  }, [existingStudent]);
+
   // useEffect(() => {
   //   console.log("existing Student ", existingStudent);
   //   fetchAdmissionMessage();
@@ -122,8 +126,27 @@ const AlreadyExistStudent = () => {
     parent: useRef(null),
   };
 
+  const createNewUser = async () => {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+        const createNewAdmission = await axios.post("/admissions/createNewAdmission", {fatherContactNumber : userData.parentsContactNumber});
+        console.log("CreatrNewAdmission", createNewAdmission);
+      document.cookie = `token=${createNewAdmission.data.token}`;
+    navigate("/basicDetails");
+  };
+
+  const handleLogoutClick = () => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    navigate("/");
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
+      <div className="flex  justify-end mr-3 mt-3">
+        <button onClick={createNewUser} className="bg-[#ffdd00] p-3 rounded-xl">
+          Create New{" "}
+        </button>
+      </div>
       <div className="flex flex-wrap justify-center p-4 gap-4">
         {Array.isArray(existingStudent) && existingStudent.length > 0 ? (
           existingStudent.map((student) => (
@@ -191,10 +214,15 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.gender}
                   </p>
                 </div>
-
-                <div className="bg-[#c61d23] p-3 rounded-xl">
-                  {`Status : 
+                <div className="flex flex-col gap-4">
+                  <div className="bg-[#c61d23] text-white p-3 rounded-xl">
+                    {`Status : 
+                  ${admisionStatus?.data[0]?.status}`}
+                  </div>
+                  <div className="bg-[#c61d23] p-3 rounded-xl text-white">
+                    {`Message : 
                   ${admisionStatus?.data[0]?.message}`}
+                  </div>
                 </div>
               </div>
 
@@ -364,8 +392,10 @@ const AlreadyExistStudent = () => {
                           />
                           <div
                             className={`absolute top-0 left-0 ${
-                              admisionStatus?.data[0]?.documentsDetails?.cancelledCheque?.status
-                                ? "bg-green-500" : "bg-red-500"
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.cancelledCheque?.status
+                                ? "bg-green-500"
+                                : "bg-red-500"
                             } text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
                             {admisionStatus?.data[0]?.documentsDetails
@@ -466,7 +496,6 @@ const AlreadyExistStudent = () => {
                   </div>
                 </div>
               </section>
-              
 
               <section>
                 <div className="flex justify-between">
@@ -514,17 +543,31 @@ const AlreadyExistStudent = () => {
                   </div>
                 </div>
               </section>
-
-              <button
-                className="p-3 bg-[#c61d23] rounded-xl text-white"
-                onClick={handleEditClick}
-              >
-                Edit
-              </button>
+              <div className="flex w-full justify-end ">
+                {console.log("test data form admission", admisionStatus?.data)}
+                {admisionStatus?.data[0]?.status != "approved" && (
+                  <button
+                    className="p-3  bg-[#c61d23] rounded-xl text-white disabled:bg-gray-500"
+                    onClick={handleEditClick}
+                    disabled={admisionStatus?.data[0]?.status === "pending"}
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      <div className="w-full flex justify-end items-end p-3">
+        <span
+          className="p-2 bg-[#ffdd00] rounded-xl "
+          onClick={handleLogoutClick}
+        >
+          Logout
+        </span>
+      </div>
 
       <div className="flex justify-center items-center py-4">
         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />

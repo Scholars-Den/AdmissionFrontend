@@ -43,7 +43,7 @@ const SignupForm = () => {
     console.log("userData", userData);
   }, [userData]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) => { 
     if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
       return;
     }

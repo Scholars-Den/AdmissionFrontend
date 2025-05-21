@@ -57,12 +57,13 @@ const AdminComponent = () => {
     setBankDetailsStatus(item?.bankDetails?.status);
     setParentDetailsStatus(item?.parentDetails?.status);
     setStudentDetailsStatus(item?.studentDetails?.status);
+    setSignatureDetailsStatus(item?.signatureDetails?.status);
     setDocumentsDetailsStatus({
-      cancelledCheque: item.documentDetails?.cancelledCheque?.status || false,
-      passbookPhoto: item.documentDetails?.passbookPhoto?.status || false,
-      studentAadhar: item.documentDetails?.studentAadhar?.status || false,
-      parentAadhar: item.documentDetails?.parentAadhar?.status || false,
-      studentPhoto: item.documentDetails?.studentPhoto?.status || false,
+      cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
+      passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
+      studentAadhar: item?.documentsDetails?.studentAadhar?.status || false,
+      parentAadhar: item?.documentsDetails?.parentAadhar?.status || false,
+      studentPhoto: item?.documentsDetails?.studentPhoto?.status || false,
     });
     setShowPopup(true);
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
@@ -656,7 +657,7 @@ const AdminComponent = () => {
                     <div>
                       <p className="font-medium">Parent</p>
                       <img
-                        src={popupData.signatures.parent}
+                        src={popupData?.signatures?.parent}
                         alt="Parent Signature"
                         className="w-28 h-12 border rounded object-contain"
                       />
@@ -674,7 +675,7 @@ const AdminComponent = () => {
                           bankDetailsStatus &&
                           signatureDetailsStatus &&
                           allDocumentsApproved
-                          ? "approval"
+                          ? "approved"
                           : "rejected"
                       )
                     }

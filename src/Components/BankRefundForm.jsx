@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import InputField from "../../utils/InputField";
 import CheckboxField from "../../utils/CheckboxField";
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 
 const BankRefundForm = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,10 @@ const BankRefundForm = () => {
     admissionHead: React.createRef(),
     parent: React.createRef(),
   };
+
+  const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
 
   // const handleChange = (e) => {
   //   const { name, value, type, checked } = e.target;
@@ -69,6 +74,9 @@ const BankRefundForm = () => {
   // };
 
   const handleChange = (e) => {
+    if(studentAdmissionApprovalDetails[0]?.bankDetails.status){
+      return ;
+    }
     const { name, value, type, checked } = e.target;
     console.log(
       "name:",
@@ -195,6 +203,8 @@ const BankRefundForm = () => {
   }, []);
   useEffect(() => {
     console.log("userData form Use", userData);
+
+    dispatch(fetchAdmissionApprovalMessage(userData.acknowledgementNumber));
   }, [userData]);
 
   // After fetching, load the signature data into the canvas
@@ -216,11 +226,10 @@ const BankRefundForm = () => {
     if (!validateForm()) return;
     try {
       const formData = { ...userData, signatures };
-      
-      const testdata = await dispatch(submitBankRefundForm(formData));
-      console.log("Test Data", testdata)
-      navigate("/admissionComplete");
 
+      const testdata = await dispatch(submitBankRefundForm(formData));
+      console.log("Test Data", testdata);
+      navigate("/admissionComplete");
     } catch (error) {
       console.log("Error submitting form:", error);
     }
@@ -247,16 +256,14 @@ const BankRefundForm = () => {
             { label: "IFSC Code", name: "ifscCode" },
             { label: "Relation with Student", name: "relationWithStudent" },
           ].map(({ label, name }) => (
-              <InputField
-                key={name}
-                name={name}
-                value={userData?.[name] || ""}
-                onChange={handleChange}
-                placeholder={label}
-                error={errors[name]}
-              />
-
-     
+            <InputField
+              key={name}
+              name={name}
+              value={userData?.[name] || ""}
+              onChange={handleChange}
+              placeholder={label}
+              error={errors[name]}
+            />
           ))}
           {/* <h3 className="mt-4">Document Checklist (Please Tick)</h3> */}
           {/* <div className="grid grid-cols-3 gap-2">
@@ -283,7 +290,7 @@ const BankRefundForm = () => {
             {/* Display error */}
           </div>
         </div>
-          {/* <div className="grid md:grid-cols-2 gap-4">
+        {/* <div className="grid md:grid-cols-2 gap-4">
             {["admissionHead", "parent"].map((key) => (
               <div key={key} className="flex flex-col items-center">
                 <h3 className="text-md font-semibold mb-2">

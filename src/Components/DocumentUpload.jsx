@@ -26,7 +26,9 @@ const DocumentUpload = ({ documentRequired }) => {
   const [activeDoc, setActiveDoc] = useState(null);
   const [cameraFacing, setCameraFacing] = useState("user");
 
-  useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(fetchAdmissionApprovalMessage(userDetails?.acknowledgementNumber));
   }, [userDetails]);
@@ -123,13 +125,35 @@ const DocumentUpload = ({ documentRequired }) => {
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
-      <h2 className="text-white text-2xl mb-6 font-semibold">
+      <h2 className="text-white text-2xl m-1 font-semibold">
         Upload Required Documents
       </h2>
+      {studentAdmissionApprovalDetails[0]?.documentsDetails && (
+        <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+          {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails[0]?.documentsDetails.message}
+          </span> */}
+          <span
+            className={`${
+              studentAdmissionApprovalDetails[0]?.documentsDetails.status
+                ? "bg-green-500 "
+                : "bg-red-500 text-white"
+            } p-2 rounded-xl`}
+          >
+            {studentAdmissionApprovalDetails[0]?.documentsDetails.status
+              ? "Approved"
+              : "Rejected"}
+          </span>
+          
+        </div>
+      )}
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
           const uploadedImage = uploads[doc.name] || userDetails[doc.name];
+          const isDisabled =
+            studentAdmissionApprovalDetails[0]?.documentsDetails?.[doc.name]
+              .status;
 
           return (
             <div key={doc.name} className="bg-white rounded-xl p-4 shadow">
@@ -173,28 +197,34 @@ const DocumentUpload = ({ documentRequired }) => {
 
                   <div className="flex gap-2 mt-3">
                     <label
-                      className="flex-1 bg-yellow-400 text-center py-2 rounded cursor-pointer hover:bg-yellow-300 transition text-sm font-medium 
-                     disabled:bg-gray-500
-                    
-                  "
-                      disabled={
-                        studentAdmissionApprovalDetails[0]?.documentsDetails?.[
-                          doc.name
-                        ].status
+                      className={`flex-1 text-center py-2 rounded cursor-pointer transition text-sm font-medium
+                      ${
+                        isDisabled
+                          ? "bg-gray-500 cursor-not-allowed text-white"
+                          : "bg-yellow-400 hover:bg-yellow-300 "
                       }
+                    `}
                     >
                       📁 Change from Device
                       <input
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleFileUpload(e, doc.name)}
+                        disabled={isDisabled}
                         className="hidden"
                       />
                     </label>
 
                     <button
                       onClick={() => setActiveDoc(doc.name)}
-                      className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition text-sm font-medium"
+                      className={`flex-1 text-white py-2 rounded transition text-sm font-medium 
+    ${
+      isDisabled
+        ? "bg-gray-500 cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700"
+    }
+  `}
+                      disabled={isDisabled}
                     >
                       📸 Retake Photo
                     </button>
