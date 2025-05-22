@@ -71,7 +71,7 @@ const AlreadyExistStudent = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAlreadyExistingStudent(userData.parentsContactNumber));
+    dispatch(fetchAlreadyExistingStudent());
   }, []);
 
   useEffect(() => {
@@ -127,11 +127,20 @@ const AlreadyExistStudent = () => {
   };
 
   const createNewUser = async () => {
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    console.log("userData in createNewUser", userData);
 
-        const createNewAdmission = await axios.post("/admissions/createNewAdmission", {fatherContactNumber : userData.parentsContactNumber});
-        console.log("CreatrNewAdmission", createNewAdmission);
-      document.cookie = `token=${createNewAdmission.data.token}`;
+    const createNewAdmission = await axios.post(
+      "/admissions/createNewAdmission"
+    );
+
+    console.log("document cookie",document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
+    console.log("CreatrNewAdmission from createNewUSer", createNewAdmission);
+    // First, delete the old token (optional if you're immediately replacing it)
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+    // Then, set the new token
+    document.cookie = `token=${createNewAdmission.data.token}; path=/`;
+
     navigate("/basicDetails");
   };
 

@@ -206,7 +206,7 @@ const SiblingsDetails = () => {
   const handleSignatureEnd = (key) => {
     console.log(
       "signatureDetails",
-      studentAdmissionApprovalDetails[0].signatureDetails.status
+      studentAdmissionApprovalDetails[0]?.signatureDetails?.status
     );
     if (studentAdmissionApprovalDetails[0]?.signatureDetails?.status) return;
     else {
