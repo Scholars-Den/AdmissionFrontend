@@ -21,7 +21,7 @@ const FamilyDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.userDetails);
-    const { studentAdmissionApprovalDetails } = useSelector(
+  const { studentAdmissionApprovalDetails } = useSelector(
     (state) => state.alreadyExistStudent
   );
   const { loading } = useSelector((state) => state.loadingDetails);
@@ -96,8 +96,7 @@ const FamilyDetails = () => {
   ];
 
   const handleChange = (e) => {
-
-    if(studentAdmissionApprovalDetails[0]?.parentDetails?.status){
+    if (studentAdmissionApprovalDetails[0]?.parentDetails?.status) {
       return;
     }
     const { name, value } = e.target;
@@ -158,7 +157,6 @@ const FamilyDetails = () => {
   }, []);
 
   useEffect(() => {
-
     dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
   }, [userData]);
 
@@ -170,14 +168,21 @@ const FamilyDetails = () => {
         className="flex flex-col sm:px-8 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold ">
           Family Details Form
         </h2>
 
         <div className="flex flex-col w-full gap-4">
-          {studentAdmissionApprovalDetails[0]?.parentDetails?.status && (
+          {studentAdmissionApprovalDetails[0]?.parentDetails?.status ? (
             <div className="flex flex-col w-full gap-4 items-end  ">
               <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+            </div>
+          ) : (
+            <div className="flex flex-col w-full gap-4 items-end  ">
+             
+              <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">
+               {studentAdmissionApprovalDetails[0]?.parentDetails?.message}
+              </span>
             </div>
           )}
 

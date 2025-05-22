@@ -103,11 +103,21 @@ const AlreadyExistStudent = () => {
   };
 
   const handleEditClick = async () => {
-    const response = await axios.post("/admissions/editAdmissionDetails", {
-      acknowledgementNumber: selectedStudent.acknowledgementNumber,
-    });
+    console.log("selected student from handleEditClick", selectedStudent);
+    console.log(
+      "selected student from handleEditClick",
+      selectedStudent?.acknowledgementNumber
+    );
 
-    document.cookie = response.data.token;
+    const data = {
+      acknowledgementNumber: selectedStudent?.acknowledgementNumber,
+    };
+    const response = await axios.post("/admissions/editAdmissionDetails", data);
+
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+    // Then, set the new token
+    document.cookie = `token=${response.data.token}; path=/`;
     navigate("/basicDetails");
 
     console.log("response from handleEditClick", response);
@@ -133,7 +143,13 @@ const AlreadyExistStudent = () => {
       "/admissions/createNewAdmission"
     );
 
-    console.log("document cookie",document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
+    console.log(
+      "document cookie",
+      document.cookie.replace(
+        /(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      )
+    );
     console.log("CreatrNewAdmission from createNewUSer", createNewAdmission);
     // First, delete the old token (optional if you're immediately replacing it)
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
@@ -205,7 +221,7 @@ const AlreadyExistStudent = () => {
             <div className="p-6 space-y-6">
               {/* Header */}
               {/* Header with photo */}
-              <div className="flex items-center gap-4 border-b pb-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4">
                 <img
                   src={selectedStudent.studentPhoto}
                   alt="Student"
@@ -223,12 +239,12 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.gender}
                   </p>
                 </div>
-                <div className="flex flex-col gap-4">
-                  <div className="bg-[#c61d23] text-white p-3 rounded-xl">
+                <div className="flex flex-row sm:flex-col gap-4">
+                  <div className="text-[#c61d23]  p-3 rounded-xl">
                     {`Status : 
                   ${admisionStatus?.data[0]?.status}`}
                   </div>
-                  <div className="bg-[#c61d23] p-3 rounded-xl text-white">
+                  <div className="text-[#c61d23] p-3 rounded-xl ">
                     {`Message : 
                   ${admisionStatus?.data[0]?.message}`}
                   </div>
@@ -244,8 +260,8 @@ const AlreadyExistStudent = () => {
 
                   {!admisionStatus?.data[0]?.studentDetails.status && (
                     <div className="flex">
-                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                        <strong className="mr-3">Status :</strong>{" "}
+                      <p className="flex text-[#c61d23] p-2 rounded-xl ">
+                        {/* <strong className="mr-3">Status :</strong>{" "} */}
                         {admisionStatus?.data[0]?.studentDetails.message}
                       </p>
                     </div>
@@ -289,8 +305,8 @@ const AlreadyExistStudent = () => {
                   </h3>
                   {!admisionStatus?.data[0]?.parentDetails.status && (
                     <div className="flex">
-                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                        <strong className="mr-3">Status :</strong>{" "}
+                      <p className="flex text-[#c61d23] p-2 rounded-xl ">
+                        {/* <strong className="mr-3">Status :</strong>{" "} */}
                         {admisionStatus?.data[0]?.parentDetails.message}
                       </p>
                     </div>
@@ -336,8 +352,8 @@ const AlreadyExistStudent = () => {
 
                   {!admisionStatus?.data[0]?.bankDetails.status && (
                     <div className="flex">
-                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                        <strong className="mr-3">Status :</strong>{" "}
+                      <p className="flex text-[#c61d23] p-2 rounded-xl ">
+                        {/* <strong className="mr-3">Status :</strong>{" "} */}
                         {admisionStatus?.data[0]?.bankDetails.message}
                       </p>
                     </div>
@@ -368,15 +384,15 @@ const AlreadyExistStudent = () => {
 
               <section>
                 <div className="">
-                  <div className="flex justify-between">
+                  <div className="flex justify-around items-center gap-6 ">
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">
                       Documents Detail
                     </h3>
 
                     {!admisionStatus?.data[0]?.documentsDetails.status && (
                       <div className="flex">
-                        <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                          <strong className="mr-3">Status :</strong>{" "}
+                        <p className="flex text-[#c61d23] rounded-xl ">
+                          {/* <strong className="mr-3">Status </strong>{" "} */}
                           {admisionStatus?.data[0]?.documentsDetails.message}
                         </p>
                       </div>
@@ -386,6 +402,35 @@ const AlreadyExistStudent = () => {
                   {console.log("test data ", admisionStatus)}
 
                   <div className="flex flex-wrap justify-around gap-4 mt-3">
+                    <div className="flex items-center gap-4 text-xl">
+                      <p className="mb-1 font-medium">Student Photo</p>
+                      <a
+                        href={selectedStudent.studentPhoto}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div className="relative w-24">
+                          <img
+                            src={selectedStudent?.studentPhoto}
+                            alt="Cancelled Cheque"
+                            className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
+                          />
+                          <div
+                            className={`absolute top-0 left-0 ${
+                              admisionStatus?.data[0]?.documentsDetails
+                                ?.studentPhoto?.status
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            } text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                          >
+                            {admisionStatus?.data[0]?.documentsDetails
+                              ?.studentPhoto?.status
+                              ? "Approved"
+                              : "Rejected"}
+                          </div>
+                        </div>
+                      </a>
+                    </div>
                     <div className="flex items-center gap-4 text-xl">
                       <p className="mb-1 font-medium">Cancelled Cheque</p>
                       <a
@@ -514,8 +559,8 @@ const AlreadyExistStudent = () => {
 
                   {!admisionStatus?.data[0]?.signatureDetails?.status && (
                     <div className="flex">
-                      <p className="flex bg-[#c61d23] p-2 rounded-xl text-[#ffdd00]">
-                        <strong className="mr-3">Status :</strong>{" "}
+                      <p className="flex text-[#c61d23] p-2 rounded-xl ">
+                        {/* <strong className="mr-3">Status :</strong>{" "} */}
                         {admisionStatus?.data[0]?.signatureDetails?.message}
                       </p>
                     </div>

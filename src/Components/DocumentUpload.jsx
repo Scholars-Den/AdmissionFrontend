@@ -125,10 +125,10 @@ const DocumentUpload = ({ documentRequired }) => {
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
-      <h2 className="text-white text-2xl m-1 font-semibold">
-        Upload Required Documents
-      </h2>
-      {studentAdmissionApprovalDetails[0]?.documentsDetails && (
+
+
+
+{studentAdmissionApprovalDetails[0]?.documentsDetails.status ? (
         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
           {/* <span className="text-white">
            {  studentAdmissionApprovalDetails[0]?.documentsDetails.message}
@@ -144,9 +144,32 @@ const DocumentUpload = ({ documentRequired }) => {
               ? "Approved"
               : "Rejected"}
           </span>
-          
         </div>
+      )  : (
+           <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+          {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails[0]?.documentsDetails.message}
+          </span> */}
+          <span
+            className={`${
+              studentAdmissionApprovalDetails[0]?.documentsDetails.status
+                ? "bg-green-500 "
+                : "bg-red-500 text-white"
+            } p-2 rounded-xl`}
+          >
+            {studentAdmissionApprovalDetails[0]?.documentsDetails.message
+             }
+          </span>
+        </div>
+       
       )}
+
+
+
+      <h2 className="text-white text-2xl m-1 font-semibold">
+        Upload Required Documents
+      </h2>
+      
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
@@ -194,41 +217,42 @@ const DocumentUpload = ({ documentRequired }) => {
                       Uploaded successfully
                     </p>
                   )}
-
-                  <div className="flex gap-2 mt-3">
-                    <label
-                      className={`flex-1 text-center py-2 rounded cursor-pointer transition text-sm font-medium
+                  {!isDisabled && (
+                    <div className="flex gap-2 mt-3" disabled={isDisabled}>
+                      <label
+                        className={`flex-1 text-center py-2 rounded cursor-pointer transition text-sm font-medium
                       ${
                         isDisabled
-                          ? "bg-gray-500 cursor-not-allowed text-white"
+                          ? "bg-gray-300 cursor-not-allowed text-white"
                           : "bg-yellow-400 hover:bg-yellow-300 "
                       }
                     `}
-                    >
-                      📁 Change from Device
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload(e, doc.name)}
-                        disabled={isDisabled}
-                        className="hidden"
-                      />
-                    </label>
+                      >
+                        📁 Change from Device
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, doc.name)}
+                          disabled={isDisabled}
+                          className="hidden"
+                        />
+                      </label>
 
-                    <button
-                      onClick={() => setActiveDoc(doc.name)}
-                      className={`flex-1 text-white py-2 rounded transition text-sm font-medium 
+                      <button
+                        onClick={() => setActiveDoc(doc.name)}
+                        className={`flex-1 text-white py-2 rounded transition text-sm font-medium 
     ${
       isDisabled
         ? "bg-gray-500 cursor-not-allowed"
         : "bg-blue-600 hover:bg-blue-700"
     }
   `}
-                      disabled={isDisabled}
-                    >
-                      📸 Retake Photo
-                    </button>
-                  </div>
+                        disabled={isDisabled}
+                      >
+                        📸 Retake Photo
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : uploading[doc.name] ? (
                 <p className="text-gray-600 text-sm">Uploading...</p>

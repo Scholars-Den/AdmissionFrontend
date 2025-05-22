@@ -8,6 +8,7 @@ const AdminComponent = () => {
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
@@ -70,14 +71,13 @@ const AdminComponent = () => {
   };
 
   const submitMessage = async () => {
+    if (message.length < 10) {
+      setError("Message must be longer than 10 characters");
+      return;
+    }
     console.log("selectedItem", selectedItem);
     console.log("message", message);
     let response = "";
-
-
-
-
-
 
     console.log("ShowMessagePopup", showMessagePopup);
     // Collect unverified document names
@@ -98,59 +98,48 @@ const AdminComponent = () => {
     const allDocumentsApproved = unverifiedDocs.length === 0;
     const documentDetailsMessage = allDocumentsApproved
       ? "The student document has been verified successfully."
-      : `The student document could not be verified: ${unverifiedDocs[0]}.`;
+      : `Some document could not be verified due to missing or invalid files`;
+    // const documentDetailsMessage = allDocumentsApproved
+    //   ? "The student document has been verified successfully."
+    //   : `The student document could not be verified due to missing or invalid files: ${unverifiedDocs.map((docName) =>` ${docName}`)}.`;
 
+    const documentDetailsStructure = {
+      cancelledCheque: {
+        status: documentsDetailsStatus.cancelledCheque,
+        message: documentsDetailsStatus.cancelledCheque
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+      passbookPhoto: {
+        status: documentsDetailsStatus.passbookPhoto,
+        message: documentsDetailsStatus.passbookPhoto
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+      studentAadhar: {
+        status: documentsDetailsStatus.studentAadhar,
+        message: documentsDetailsStatus.studentAadhar
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+      parentAadhar: {
+        status: documentsDetailsStatus.parentAadhar,
+        message: documentsDetailsStatus.parentAadhar
+          ? "Student info verified"
+          : "Student info not verified",
+      },
+      studentPhoto: {
+        status: documentsDetailsStatus.studentPhoto,
+        message: documentsDetailsStatus.studentPhoto
+          ? "Student info verified"
+          : "Student info not verified",
+      },
 
-    const  documentDetailsStructure =  {
-        cancelledCheque: {
-          status: documentsDetailsStatus.cancelledCheque,
-          message: documentsDetailsStatus.cancelledCheque
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        passbookPhoto: {
-          status: documentsDetailsStatus.passbookPhoto,
-          message: documentsDetailsStatus.passbookPhoto
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        studentAadhar: {
-          status: documentsDetailsStatus.studentAadhar,
-          message: documentsDetailsStatus.studentAadhar
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        parentAadhar: {
-          status: documentsDetailsStatus.parentAadhar,
-          message: documentsDetailsStatus.parentAadhar
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        studentPhoto: {
-          status: documentsDetailsStatus.studentPhoto,
-          message: documentsDetailsStatus.studentPhoto
-            ? "Student info verified"
-            : "Student info not verified",
-        },
+      status: allDocumentsApproved,
+      message: documentDetailsMessage,
+    };
 
-        status: allDocumentsApproved,
-        message: documentDetailsMessage,
-      }
-
-
-      console.log("test documentdetailsData ", documentDetailsStructure)
-
-
-
-
-
-
-
-
-
-
-
-
+    console.log("test documentdetailsData ", documentDetailsStructure);
 
     response = await axios.post("/approval/editAdmissionApproval", {
       status: showMessagePopup === "approved" ? "approved" : "rejected",
@@ -714,6 +703,7 @@ const AdminComponent = () => {
               className="border-2 w-full p-2 my-3 text-black outline-none"
               onChange={(e) => setMessage(e.target.value)}
             />
+            <div>{error && <span className="text-[#c61d23]">{error}</span>}</div>
             <button
               onClick={submitMessage}
               className="p-3 hover:bg[#ffdd00] bg-[#f1df68] rounded-xl"

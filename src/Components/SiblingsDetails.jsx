@@ -134,13 +134,13 @@ const SiblingsDetails = () => {
     let isValid = true;
     const newSignatures = { ...signatures };
 
-    // Validate text fields
-    siblingsData.forEach(({ name, label, required }) => {
-      if (required && !userData[name]) {
-        formErrors[name] = `${label} is required`;
-        isValid = false;
-      }
-    });
+    // // Validate text fields
+    // siblingsData.forEach(({ name, label, required }) => {
+    //   if (required && !userData[name]) {
+    //     formErrors[name] = `${label} is required`;
+    //     isValid = false;
+    //   }
+    // });
 
     // Ensure all signatures are captured
     Object.keys(signatureRefs).forEach((key) => {
@@ -259,15 +259,25 @@ const SiblingsDetails = () => {
     <div className="w-full px-4 sm:px-8 py-6 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
-        {studentAdmissionApprovalDetails[0]?.signatureDetails && (
+        {studentAdmissionApprovalDetails[0]?.signatureDetails?.status ? (
           <div className="flex flex-col w-full gap-4 items-end  ">
             <span className="bg-green-500 p-2 rounded-xl">{`${
               studentAdmissionApprovalDetails[0]?.signatureDetails?.status
-                ? "Approved"
-                : "Rejected"
+                && "Approved"
+                
             }`}</span>
           </div>
-        )}
+        ) :
+        (
+           <div className="flex flex-col w-full gap-4 items-end mb-2 ">
+            <span className="bg-white text-[#c61d23] p-2 rounded-xl">{`${
+              studentAdmissionApprovalDetails[0]?.signatureDetails?.message
+                
+            }`}</span>
+          </div>
+          
+        )
+        }
 
         <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
 

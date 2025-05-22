@@ -12,6 +12,7 @@ export const fetchUserDetails = createAsyncThunk(
       const data = response.data[0];
 
       console.log("Fetched user data from fetchDetails function:", data);
+      console.log("Fetched user data from fetchDetails function:", response);
       if (data) {
         // Ensure siblings array always has a length of 4
         // const siblings = data?.siblings || [];

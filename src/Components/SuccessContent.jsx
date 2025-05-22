@@ -60,25 +60,25 @@ const SuccessContent = () => {
   //     tokenNo();
   //   }, []);
 
-  const createApprovalRequest = async () => {
-    try {
-      console.log("userData admissionRollBo fro create approvalRequest", userData);
+  // const createApprovalRequest = async () => {
+  //   try {
+  //     console.log("userData admissionRollBo fro create approvalRequest", userData);
 
-      const response = await axios.post("/approval/addAdmissionApproval", {
-        acknowledgementNumber: userData.acknowledgementNumber,
-      });
+  //     const response = await axios.post("/approval/addAdmissionApproval", {
+  //       acknowledgementNumber: userData.acknowledgementNumber,
+  //     });
 
-      console.log("response fro createApprovalRequest", response);
-    } catch (error) {
-      console.log("error for createApprovalRequest", error);
-    }
-  };
+  //     console.log("response fro createApprovalRequest", response);
+  //   } catch (error) {
+  //     console.log("error for createApprovalRequest", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (userData) {
-      createApprovalRequest();
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   if (userData) {
+  //     createApprovalRequest();
+  //   }
+  // }, [userData]);
 
   return (
     <div className="flex flex-col justify-center items-center text-white gap-4 mt-3">

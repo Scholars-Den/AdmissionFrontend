@@ -1,12 +1,15 @@
 import React from "react";
 
 import scholarsDenLogo from "../../assets/scholarsDenLogo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
+
+
+  const navigate = useNavigate();
   const handleLogout = async () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    navigate("/");
+    navigate("/adminsignup");
   };
   return (
     <div

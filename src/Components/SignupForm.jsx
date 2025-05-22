@@ -43,7 +43,7 @@ const SignupForm = () => {
     console.log("userData", userData);
   }, [userData]);
 
-  const handleChange = (e) => { 
+  const handleChange = (e) => {
     if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
       return;
     }
@@ -51,10 +51,7 @@ const SignupForm = () => {
     if (name === "aadharID") {
       if (value.length > 12) return;
     }
-    console.log("name", name, "value", value);
     if (name === "termsAndCondition") {
-      console.log("e.target.checked", e.target.checked);
-
       dispatch(updateUserDetails({ [e.target.name]: e.target.checked }));
       return;
     }
@@ -128,14 +125,8 @@ const SignupForm = () => {
   // };
 
   useEffect(() => {
-    console.log("userData", userData);
     if (userData)
       dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
-
-    console.log(
-      "studentAdmissionApprovalDetails",
-      studentAdmissionApprovalDetails
-    );
   }, [userData]);
 
   useEffect(() => {
@@ -147,7 +138,6 @@ const SignupForm = () => {
 
   useEffect(() => {
     dispatch(fetchUserDetails());
-    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
   }, []);
   // Define form fields
   const formFields = [
@@ -221,13 +211,9 @@ const SignupForm = () => {
     let isValid = true;
 
     formFields.forEach(({ name, required, validation }) => {
-      console.log("userData[name]", validation(userData[name]));
-
       const isValidInput = validation(userData[name]);
-      console.log("isValidInput", isValidInput);
       if (required && !isValidInput.isValid) {
         formErrors[name] = isValidInput.message;
-        console.log("formErrors[name]", formErrors[name]);
         isValid = false;
       }
     });
@@ -245,22 +231,19 @@ const SignupForm = () => {
     //   isValid = false;
     // }
 
-    console.log("formErrors", formErrors);
     setErrors(formErrors);
     return isValid;
   };
 
   const onSubmit = async (e) => {
-    console.log("onsUBMIT click");
     e.preventDefault();
     if (!validateForm()) return;
-    console.log("userData in onSumit ", userData);
+
     try {
       dispatch(setLoading(true));
       if (!codeVerified) {
         return setSubmitMessage("Please Verify Your Phone Number");
       }
-      console.log("userData in onSumit ", userData);
 
       await dispatch(putFormData(userData));
       if (document.cookie) {
@@ -281,9 +264,13 @@ const SignupForm = () => {
         className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
-        {studentAdmissionApprovalDetails[0]?.studentDetails?.status && (
+        {studentAdmissionApprovalDetails[0]?.studentDetails?.status ? (
           <div className="flex flex-col w-full gap-4 items-end  ">
             <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full gap-4 items-end  ">
+            <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">{studentAdmissionApprovalDetails[0]?.studentDetails?.message}</span>
           </div>
         )}
 
@@ -303,23 +290,17 @@ const SignupForm = () => {
               />
             ))}
 
-            {selectFields?.map(
-              (field) => (
-                console.log("field.name", field.name),
-                console.log("field.name", userData?.[field.name]),
-                (
-                  <SelectField
-                    key={field.name}
-                    name={field.name}
-                    value={userData?.[field.name] || ""}
-                    onChange={handleChange}
-                    options={field.options}
-                    error={errors[field.name]}
-                    label={field.label}
-                  />
-                )
-              )
-            )}
+            {selectFields?.map((field) => (
+              <SelectField
+                key={field.name}
+                name={field.name}
+                value={userData?.[field.name] || ""}
+                onChange={handleChange}
+                options={field.options}
+                error={errors[field.name]}
+                label={field.label}
+              />
+            ))}
 
             {submitMessage && (
               <p className="text-sm text-[#ffdd00] text-center">

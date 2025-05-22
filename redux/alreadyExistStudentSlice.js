@@ -46,6 +46,7 @@ export const fetchAdmissionApprovalMessage = createAsyncThunk(
   "alreadyExistStudent/fetchAdmissionApprovalMessage",
   async (ackNumber, { rejectWithValue }) => {
     try {
+      console.log("ackNumber", ackNumber);
       const checkApproval = await axios.post(
         "/approval/getAdmissionApprovalByAcknowledgementNumber",
         { acknowledgementNumber: ackNumber }
@@ -71,8 +72,6 @@ export const fetchAdmissionApprovalMessage = createAsyncThunk(
   }
 );
 
-
-
 // Slice definition
 const alreadyExistStudentSlice = createSlice({
   name: "alreadyExistStudent",
@@ -92,9 +91,13 @@ const alreadyExistStudentSlice = createSlice({
     builder.addCase(fetchAlreadyExistingStudent.rejected, (state) => {
       state.existingStudent = {};
     });
-    builder.addCase(fetchAdmissionApprovalMessage.fulfilled, (state, action) => {
-      state.studentAdmissionApprovalDetails = action.payload.studentAdmissionApprovalDetails;
-    });
+    builder.addCase(
+      fetchAdmissionApprovalMessage.fulfilled,
+      (state, action) => {
+        state.studentAdmissionApprovalDetails =
+          action.payload.studentAdmissionApprovalDetails;
+      }
+    );
     builder.addCase(fetchAdmissionApprovalMessage.rejected, (state) => {
       state.studentAdmissionApprovalDetails = {};
     });
