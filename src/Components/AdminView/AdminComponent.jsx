@@ -24,12 +24,25 @@ const AdminComponent = () => {
 
   const [showMessagePopup, setShowMessagePopup] = useState("");
 
+  const [filterData, setFilterData] = useState([]);
+
+  const [filterByAckNumber, setFilterByAckNumber] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   // const dispatch = useDispatch
 
-  const fetchApprovalRemaining = async () => {
+  const fetchApprovalRemaining = async (page = 1) => {
     try {
-      const response = await axios.get("/approval/pendingApproval");
-      setPendingApproval(response.data.data);
+      const response = await axios.get(
+        `/approval/pendingApproval?page=${page}`
+      );
+      const { data, totalPages } = response.data;
+      setPendingApproval(data);
+      setFilterData(data);
+      setCurrentPage(page);
+      setTotalPages(totalPages);
 
       console.log("response dataq data ", response.data.data[0]);
     } catch (error) {
@@ -285,22 +298,55 @@ const AdminComponent = () => {
     fetchAdmissionMessage();
   }, []);
 
+  const filter = async () => {
+    console.log("this filter is working");
+
+    setFilterData((prev) =>
+      pendingApproval.filter((item) =>
+        item.acknowledgementNumber?.includes(filterByAckNumber)
+      )
+    );
+  };
+
+  useEffect(() => {
+    filter();
+  }, [filterByAckNumber]);
+
   const allDocumentsApproved = Object.values(documentsDetailsStatus).every(
     Boolean
   );
 
   return (
     <div className="flex h-screen justify-center bg-gray-100">
-      <div className="p-6 rounded w-full max-w-md min-h-screen overflow-auto">
-        {pendingApproval.length === 0 ? (
+      <div className="p-6 pt-2 rounded w-full min-h-screen overflow-auto">
+        <div className="mb-6">
+          <div className="flex flex-col ">
+            <label className="text-base" htmlFor="">
+              Search By Acknowledgement Number
+            </label>
+            <div className="flex items-center gap-2 w-full ">
+              <input
+                type="text"
+                className="p-2 rounded-lg w-1/2"
+                placeholder="Search By Acknowledgement Number"
+                value={filterByAckNumber}
+                onChange={(e) => setFilterByAckNumber(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        {filterData.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          pendingApproval.map((item, index) => (
+          filterData.map((item, index) => (
             <div
               key={index}
               onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition"
+              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
             >
+              <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                ⏳ Pending
+              </div>
               <div>
                 <strong>Acknowledgement Number:</strong>{" "}
                 {item.acknowledgementNumber}
@@ -310,6 +356,25 @@ const AdminComponent = () => {
               </div>
             </div>
           ))
+        )}
+        {totalPages > 1 && (
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={() => fetchApprovalRemaining(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
+            <button
+              onClick={() => fetchApprovalRemaining(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
 
@@ -703,7 +768,9 @@ const AdminComponent = () => {
               className="border-2 w-full p-2 my-3 text-black outline-none"
               onChange={(e) => setMessage(e.target.value)}
             />
-            <div>{error && <span className="text-[#c61d23]">{error}</span>}</div>
+            <div>
+              {error && <span className="text-[#c61d23]">{error}</span>}
+            </div>
             <button
               onClick={submitMessage}
               className="p-3 hover:bg[#ffdd00] bg-[#f1df68] rounded-xl"

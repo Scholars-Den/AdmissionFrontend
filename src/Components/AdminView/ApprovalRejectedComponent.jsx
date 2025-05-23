@@ -8,14 +8,26 @@ const ApprovalRejectedComponent = () => {
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
 
+  const [filterData, setFilterData] = useState([]);
+  const [filterByAckNumber, setFilterByAckNumber] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // const dispatch = useDispatch
 
-  const fetchApprovedData = async () => {
+  const fetchApprovedData = async (page = 1) => {
     try {
-      const response = await axios.get("/approval/rejectedApproval");
-      setPendingApproval(response.data.data);
+      const response = await axios.get(
+        `/approval/rejectedApproval?page=${page}`
+      );
+
+      const { data, totalPages } = response.data;
+      console.log("response data from fetchApprovedData", response.data);
+      setPendingApproval(data);
+      setFilterData(data);
+      setCurrentPage(page);
+      setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching pending approval data:", error);
     }
@@ -48,6 +60,13 @@ const ApprovalRejectedComponent = () => {
       acknowledgementNumber: selectedItem.acknowledgementNumber,
     });
 
+
+
+  
+// const data =  await axios.post("/getAdmissionApprovalByAcknowledgementNumber")
+
+
+
     await fetchApprovedData();
 
     setSelectedItem(null);
@@ -67,18 +86,58 @@ const ApprovalRejectedComponent = () => {
     fetchApprovedData();
   }, []);
 
+  const filter = async () => {
+    console.log("this filter is working");
+
+    setFilterData((prev) =>
+      pendingApproval.filter((item) =>
+        item.acknowledgementNumber?.includes(filterByAckNumber)
+      )
+    );
+  };
+  useEffect(() => {
+    if (filterByAckNumber) filter();
+    else setFilterData(pendingApproval);
+  }, [filterByAckNumber]);
+  
+  
+  
+  
+  
+  
   return (
     <div className="flex h-screen justify-center bg-gray-100">
-      <div className="p-6 rounded w-full max-w-md">
-        {pendingApproval.length === 0 ? (
+      <div className="p-6 pt-2 rounded w-full min-h-screen ">
+        <div className="mb-6">
+          <div className="flex flex-col ">
+            <label className="text-base" htmlFor="">
+              Search By Acknowledgement Number
+            </label>
+            <div className="flex items-center gap-2 w-full ">
+              <input
+                type="text"
+                className="p-2 rounded-lg w-1/2"
+                placeholder="Search By Acknowledgement Number"
+                value={filterByAckNumber}
+                onChange={(e) => setFilterByAckNumber(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {filterData.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          pendingApproval.map((item, index) => (
+          filterData.map((item, index) => (
             <div
               key={index}
               onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition"
+              className="relative bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition"
             >
+              <div className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                ❌ Rejected
+              </div>
+
               <div>
                 <strong>Acknowledgement Number:</strong>{" "}
                 {item.acknowledgementNumber}
@@ -91,6 +150,26 @@ const ApprovalRejectedComponent = () => {
               </div>
             </div>
           ))
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={() => fetchApprovedData(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
+            <button
+              onClick={() => fetchApprovedData(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
 

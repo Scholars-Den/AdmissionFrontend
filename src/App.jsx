@@ -39,7 +39,7 @@ function App() {
       </div> */}
 
       {/* Signup Form (Middle Section) */}
-      <div className="flex-grow">
+      {/* <div className="flex-grow"> */}
           <Routes>
             <Route path="/" element={<VerificationPage />} />
             <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
@@ -73,7 +73,7 @@ function App() {
             <Route path="/spinner" element={<Spinner />} /> */}
 
           </Routes>
-        </div>
+        {/* </div> */}
 
          {/* <div className="flex justify-center items-center py-4">
               <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />

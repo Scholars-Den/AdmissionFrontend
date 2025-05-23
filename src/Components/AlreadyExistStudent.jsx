@@ -240,14 +240,14 @@ const AlreadyExistStudent = () => {
                   </p>
                 </div>
                 <div className="flex flex-row sm:flex-col gap-4">
-                  <div className="text-[#c61d23]  p-3 rounded-xl">
+                  <div className={`${admisionStatus?.data[0]?.status === "approved" ? "text-green-500" : "text-[#c61d23]"}  p-3 rounded-xl`}>
                     {`Status : 
-                  ${admisionStatus?.data[0]?.status}`}
+                  ${admisionStatus?.data[0]?.status ?  admisionStatus?.data[0]?.status :  "Please Complete you admission form"}`}
                   </div>
-                  <div className="text-[#c61d23] p-3 rounded-xl ">
+                { admisionStatus?.data[0]?.message && <div className={`${admisionStatus?.data[0]?.status === "approved" ? "text-green-500" : "text-[#c61d23]"}  p-3 rounded-xl`}>
                     {`Message : 
-                  ${admisionStatus?.data[0]?.message}`}
-                  </div>
+                  ${admisionStatus?.data[0]?.message }`}
+                  </div>}
                 </div>
               </div>
 
