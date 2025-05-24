@@ -153,6 +153,7 @@ const AdminComponent = () => {
     };
 
     console.log("test documentdetailsData ", documentDetailsStructure);
+    console.log("test documentdetailsData ", showMessagePopup);
 
     response = await axios.post("/approval/editAdmissionApproval", {
       status: showMessagePopup === "approved" ? "approved" : "rejected",
@@ -294,9 +295,9 @@ const AdminComponent = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAdmissionMessage();
-  }, []);
+  // useEffect(() => {
+  //   fetchAdmissionMessage();
+  // }, []);
 
   const filter = async () => {
     console.log("this filter is working");

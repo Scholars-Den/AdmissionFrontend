@@ -14,6 +14,8 @@ const ApprovalRejectedComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [approvalData, setApprovalData] = useState(null);
+
   // const dispatch = useDispatch
 
   const fetchApprovedData = async (page = 1) => {
@@ -40,7 +42,7 @@ const ApprovalRejectedComponent = () => {
 
       console.log("response data data", response.data.data);
 
-      setPopupData(response.data.data[0]);
+      setPopupData(response?.data?.data[0]);
     } catch (error) {
       console.error("Error fetching approval details:", error);
     }
@@ -50,30 +52,21 @@ const ApprovalRejectedComponent = () => {
     setSelectedItem(item);
     setShowPopup(true);
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
+    handleClickApproved(item);
   };
 
-  const handleClickApproved = async () => {
+  const handleClickApproved = async (item) => {
     console.log("selectedItem", selectedItem);
 
-    const response = await axios.post("/approval/editAdmissionApproval", {
-      status: "approved",
-      acknowledgementNumber: selectedItem.acknowledgementNumber,
-    });
+    const response = await axios.post(
+      "/approval/getAdmissionApprovalByAcknowledgementNumber",
+      {
+        acknowledgementNumber: item.acknowledgementNumber,
+      }
+    );
 
-
-
-  
-// const data =  await axios.post("/getAdmissionApprovalByAcknowledgementNumber")
-
-
-
-    await fetchApprovedData();
-
-    setSelectedItem(null);
-    setPopupData(null);
-    setShowPopup(false);
-
-    console.log("handleClickApproved response", response);
+    setApprovalData(response.data.data);
+    console.log("data form handleClcikApproval", response);
   };
 
   const closePopup = () => {
@@ -99,12 +92,7 @@ const ApprovalRejectedComponent = () => {
     if (filterByAckNumber) filter();
     else setFilterData(pendingApproval);
   }, [filterByAckNumber]);
-  
-  
-  
-  
-  
-  
+
   return (
     <div className="flex h-screen justify-center bg-gray-100">
       <div className="p-6 pt-2 rounded w-full min-h-screen ">
@@ -187,9 +175,23 @@ const ApprovalRejectedComponent = () => {
             {popupData ? (
               <div className="space-y-4 overflow-y-auto max-h-[70vh] text-sm text-gray-800">
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">
-                    Student Details
-                  </h3>
+                  <div className="flex justify-between pr-5 relative">
+                    <h3 className="text-lg font-semibold mb-1">
+                      Student Details
+                    </h3>
+
+                    <div
+                      className={`absolute top-2 right-2  ${
+                        approvalData?.studentDetails?.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 "
+                      } text-xs px-2 py-1 rounded-full font-medium shadow`}
+                    >
+                      {approvalData?.studentDetails?.status
+                        ? "✅ Approved"
+                        : "❌ Rejected"}
+                    </div>
+                  </div>
                   <p>
                     <strong>Acknowledgement Number:</strong>{" "}
                     {popupData.acknowledgementNumber}
@@ -219,7 +221,22 @@ const ApprovalRejectedComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Parent Details</h3>
+                  <div className="flex justify-between pr-5 relative">
+                    <h3 className="text-lg font-semibold mb-1">
+                      Parent Details
+                    </h3>
+                    <div
+                      className={`absolute top-2 right-2  ${
+                        approvalData?.parentDetails?.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 "
+                      } text-xs px-2 py-1 rounded-full font-medium shadow`}
+                    >
+                      {approvalData?.parentDetails?.status
+                        ? "✅ Approved"
+                        : "❌ Rejected"}
+                    </div>
+                  </div>
                   <p>
                     <strong>Father's Name:</strong> {popupData.fatherName}
                   </p>
@@ -245,7 +262,20 @@ const ApprovalRejectedComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                  <div className="flex justify-between pr-5 relative">
+                    <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                    <div
+                      className={`absolute top-2 right-2  ${
+                        approvalData?.bankDetails?.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 "
+                      } text-xs px-2 py-1 rounded-full font-medium shadow`}
+                    >
+                      {approvalData?.bankDetails?.status
+                        ? "✅ Approved"
+                        : "❌ Rejected"}
+                    </div>
+                  </div>
                   <p>
                     <strong>Bank Name:</strong> {popupData.bankName}
                   </p>
@@ -259,7 +289,7 @@ const ApprovalRejectedComponent = () => {
                     <strong>IFSC Code:</strong> {popupData.ifscCode}
                   </p>
                 </section>
-
+{/* 
                 <section>
                   <h3 className="text-lg font-semibold mb-1">Student Photo</h3>
                   <a
@@ -273,11 +303,40 @@ const ApprovalRejectedComponent = () => {
                       className="w-28 h-28 object-cover border rounded hover:scale-105 transition"
                     />
                   </a>
-                </section>
+                </section> */}
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Documents</h3>
+                  <div className="flex justify-between pr-5 relative">
+                    <h3 className="text-lg font-semibold mb-1">Documents</h3>
+                    <div
+                      className={`absolute top-2 right-2  ${
+                        approvalData?.documentsDetails?.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 "
+                      } text-xs px-2 py-1 rounded-full font-medium shadow`}
+                    >
+                      {approvalData?.documentsDetails?.status
+                        ? "✅ Approved"
+                        : "❌ Rejected"}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
+                    {popupData.studentPhoto && (
+                      <div>
+                        <p className="font-medium">Student Photo</p>
+                        <a
+                          href={popupData.studentPhoto}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <img
+                            src={popupData.studentPhoto}
+                            alt="Cancelled Cheque"
+                            className="w-full h-24 object-cover border rounded hover:scale-105 transition"
+                          />
+                        </a>
+                      </div>
+                    )}
                     {popupData.cancelledCheque && (
                       <div>
                         <p className="font-medium">Cancelled Cheque</p>
@@ -346,7 +405,20 @@ const ApprovalRejectedComponent = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Signatures</h3>
+                  <div className="flex justify-between pr-5 relative">
+                    <h3 className="text-lg font-semibold mb-1">Signatures</h3>
+                    <div
+                      className={`absolute top-2 right-2  ${
+                        approvalData?.signatureDetails?.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 "
+                      } text-xs px-2 py-1 rounded-full font-medium shadow`}
+                    >
+                      {approvalData?.signatureDetails?.status
+                        ? "✅ Approved"
+                        : "❌ Rejected"}
+                    </div>
+                  </div>
                   <div className="flex space-x-4">
                     <div>
                       <p className="font-medium">Student</p>

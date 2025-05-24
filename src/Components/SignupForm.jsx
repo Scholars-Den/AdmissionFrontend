@@ -264,15 +264,21 @@ const SignupForm = () => {
         className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
-        {studentAdmissionApprovalDetails[0]?.studentDetails?.status ? (
+
+        {console.log("studentAdmissionApprovalDetaisl", studentAdmissionApprovalDetails)}
+        {console.log("studentAdmissionApprovalDetaisl",studentAdmissionApprovalDetails !== undefined )}
+        {  studentAdmissionApprovalDetails?.studentDetails  &&
+        (
+         studentAdmissionApprovalDetails?.studentDetails?.status ? (
           <div className="flex flex-col w-full gap-4 items-end  ">
             <span className="bg-green-500 p-2 rounded-xl">Approved</span>
           </div>
         ) : (
           <div className="flex flex-col w-full gap-4 items-end  ">
-            <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">{studentAdmissionApprovalDetails[0]?.studentDetails?.message}</span>
+            <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">{studentAdmissionApprovalDetails?.studentDetails?.message}</span>
           </div>
-        )}
+        )
+      )}
 
         <fieldset className="text-white border-2 w-full px-2 py-2 sm:px-6 sm:py-4 pb-7">
           <legend> Student Details </legend>

@@ -125,57 +125,50 @@ const DocumentUpload = ({ documentRequired }) => {
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
-
-
-
-{studentAdmissionApprovalDetails[0]?.documentsDetails.status ? (
-        <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
-          {/* <span className="text-white">
-           {  studentAdmissionApprovalDetails[0]?.documentsDetails.message}
+      {studentAdmissionApprovalDetails !== undefined &&
+        (studentAdmissionApprovalDetails?.documentsDetails.status ? (
+          <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+            {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails?.documentsDetails.message}
           </span> */}
-          <span
-            className={`${
-              studentAdmissionApprovalDetails[0]?.documentsDetails.status
-                ? "bg-green-500 "
-                : "bg-red-500 text-white"
-            } p-2 rounded-xl`}
-          >
-            {studentAdmissionApprovalDetails[0]?.documentsDetails.status
-              ? "Approved"
-              : "Rejected"}
-          </span>
-        </div>
-      )  : (
-           <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
-          {/* <span className="text-white">
-           {  studentAdmissionApprovalDetails[0]?.documentsDetails.message}
+            <span
+              className={`${
+                studentAdmissionApprovalDetails?.documentsDetails.status
+                  ? "bg-green-500 "
+                  : "bg-red-500 text-white"
+              } p-2 rounded-xl`}
+            >
+              {studentAdmissionApprovalDetails?.documentsDetails.status
+                ? "Approved"
+                : "Rejected"}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+            {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails?.documentsDetails.message}
           </span> */}
-          <span
-            className={`${
-              studentAdmissionApprovalDetails[0]?.documentsDetails.status
-                ? "bg-green-500 "
-                : "bg-red-500 text-white"
-            } p-2 rounded-xl`}
-          >
-            {studentAdmissionApprovalDetails[0]?.documentsDetails.message
-             }
-          </span>
-        </div>
-       
-      )}
-
-
+            <span
+              className={`${
+                studentAdmissionApprovalDetails?.documentsDetails.status
+                  ? "bg-green-500 "
+                  : "bg-red-500 text-white"
+              } p-2 rounded-xl`}
+            >
+              {studentAdmissionApprovalDetails?.documentsDetails.message}
+            </span>
+          </div>
+        ))}
 
       <h2 className="text-white text-2xl m-1 font-semibold">
         Upload Required Documents
       </h2>
-      
 
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {documentRequired.map((doc) => {
           const uploadedImage = uploads[doc.name] || userDetails[doc.name];
           const isDisabled =
-            studentAdmissionApprovalDetails[0]?.documentsDetails?.[doc.name]
+            studentAdmissionApprovalDetails?.documentsDetails?.[doc.name]
               .status;
 
           return (

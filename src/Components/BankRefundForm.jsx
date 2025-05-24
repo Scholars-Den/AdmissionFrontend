@@ -74,7 +74,7 @@ const BankRefundForm = () => {
   // };
 
   const handleChange = (e) => {
-    if(studentAdmissionApprovalDetails[0]?.bankDetails.status){
+    if(studentAdmissionApprovalDetails?.bankDetails.status){
       return ;
     }
     const { name, value, type, checked } = e.target;
@@ -129,64 +129,70 @@ const BankRefundForm = () => {
   // };
 
   const validateForm = () => {
-    let formErrors = {};
-    let isValid = true;
+  let formErrors = {};
+  let isValid = true;
 
-    // Check if text inputs are filled
-    const requiredTextFields = [
-      "accountHolder",
-      "bankName",
-      "accountNumber",
-      "ifscCode",
-      "relationWithStudent",
-    ];
+  // Validate required text fields
+  const requiredTextFields = [
+    "accountHolder",
+    "bankName",
+    "accountNumber",
+    "ifscCode",
+    "relationWithStudent",
+  ];
 
-    requiredTextFields.forEach((field) => {
-      if (!userData[field]?.trim()) {
-        formErrors[field] = `${field} is required`;
-        isValid = false;
-      }
-    });
+  requiredTextFields.forEach((field) => {
+    if (!userData[field] || userData[field].trim() === "") {
+      formErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+      isValid = false;
+    }
+  });
 
-    // Check if at least one document is checked
-    // const requiredDocuments = [
-    //   "cancelledCheque",
-    //   "passbook",
-    //   "studentAadhar",
-    //   "parentAadhar",
-    //   "passportPhotos",
-    // ];
+  // Field-specific validations
+  if (userData.accountNumber && !/^\d{9,18}$/.test(userData.accountNumber)) {
+    formErrors.accountNumber = "Enter a valid Account Number (9–18 digits)";
+    isValid = false;
+  }
 
-    // const documentsChecked = requiredDocuments.every(
-    //   (doc) => userData.documents[doc]
-    // );
+  if (userData.ifscCode && !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(userData.ifscCode)) {
+    formErrors.ifscCode = "Enter a valid IFSC Code (e.g., ABCD0123456)";
+    isValid = false;
+  }
 
-    // if (!documentsChecked) {
-    //   formErrors.documents = "All required documents must be selected";
-    //   isValid = false;
-    // }
+  // Document validation (if needed)
+  // const requiredDocuments = [
+  //   "cancelledCheque",
+  //   "passbook",
+  //   "studentAadhar",
+  //   "parentAadhar",
+  //   "passportPhotos",
+  // ];
 
-    // Object.keys(signatures).forEach((key) => {
-    //   if (!signatures[key]) {
-    //     formErrors[key] = "Signature is required";
-    //     isValid = false;
-    //   }
-    // });
+  // const documentsChecked = requiredDocuments.every(
+  //   (doc) => userData.documents?.[doc]
+  // );
 
-    // Check if signatures are provided
-    // const requiredSignatures = ["admissionHead", "parent"];
-    // requiredSignatures.forEach((key) => {
-    //   if (!userData.signatures[key]) {
-    //     formErrors[key] = `${key} signature is required`;
-    //     isValid = false;
-    //   }
-    // });
-    console.log("formErrors", formErrors);
-    // Set errors if there are any
-    setErrors(formErrors);
+  // if (!documentsChecked) {
+  //   formErrors.documents = "All required documents must be selected";
+  //   isValid = false;
+  // }
 
-    return isValid;
-  };
+  // Signature validation (if needed)
+  // const requiredSignatures = ["admissionHead", "parent"];
+  // requiredSignatures.forEach((key) => {
+  //   if (!userData.signatures?.[key]) {
+  //     formErrors[key] = `${key} signature is required`;
+  //     isValid = false;
+  //   }
+  // });
+
+  // Set and return errors
+  setErrors(formErrors);
+  console.log("formErrors", formErrors);
+
+  return isValid;
+};
+
 
   useEffect(() => {
     dispatch(fetchUserDetails()).then((action) => {
@@ -248,6 +254,40 @@ const BankRefundForm = () => {
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Bank Account Details for Caution Money Refund
         </h2>
+           {studentAdmissionApprovalDetails !== undefined &&
+        (studentAdmissionApprovalDetails?.bankDetails.status ? (
+          <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+            {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails?.bankDetails.message}
+          </span> */}
+            <span
+              className={`${
+                studentAdmissionApprovalDetails?.bankDetails.status
+                  ? "bg-green-500 "
+                  : "bg-red-500 text-white"
+              } p-2 rounded-xl`}
+            >
+              {studentAdmissionApprovalDetails?.bankDetails.status
+                ? "Approved"
+                : "Rejected"}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+            {/* <span className="text-white">
+           {  studentAdmissionApprovalDetails?.bankDetails.message}
+          </span> */}
+            <span
+              className={`${
+                studentAdmissionApprovalDetails?.bankDetails.status
+                  ? "bg-green-500 "
+                  : "bg-red-500 text-white"
+              } p-2 rounded-xl`}
+            >
+              {studentAdmissionApprovalDetails?.bankDetails.message}
+            </span>
+          </div>
+        ))}
         <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
           {[
             { label: "Account Holder Name", name: "accountHolder" },
@@ -260,6 +300,7 @@ const BankRefundForm = () => {
               key={name}
               name={name}
               value={userData?.[name] || ""}
+              label={label}
               onChange={handleChange}
               placeholder={label}
               error={errors[name]}

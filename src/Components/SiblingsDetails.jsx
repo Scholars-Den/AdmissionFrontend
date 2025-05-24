@@ -53,7 +53,7 @@ const SiblingsDetails = () => {
 
   const handleSiblingChange = (index, event) => {
     const { name, value, type, checked } = event.target;
-    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+    if (studentAdmissionApprovalDetails?.studentDetails?.status) {
       console.log("name", name);
       console.log("name", value);
       return;
@@ -186,7 +186,7 @@ const SiblingsDetails = () => {
   };
 
   const handleChange = (e) => {
-    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+    if (studentAdmissionApprovalDetails?.studentDetails?.status) {
       return;
     }
     const { name, value } = e.target;
@@ -206,9 +206,9 @@ const SiblingsDetails = () => {
   const handleSignatureEnd = (key) => {
     console.log(
       "signatureDetails",
-      studentAdmissionApprovalDetails[0]?.signatureDetails?.status
+      studentAdmissionApprovalDetails?.signatureDetails?.status
     );
-    if (studentAdmissionApprovalDetails[0]?.signatureDetails?.status) return;
+    if (studentAdmissionApprovalDetails?.signatureDetails?.status) return;
     else {
       setSignatures((prev) => ({
         ...prev,
@@ -219,7 +219,7 @@ const SiblingsDetails = () => {
   };
 
   const clearSignature = (key) => {
-    if (studentAdmissionApprovalDetails[0]?.signatureDetails?.status) return;
+    if (studentAdmissionApprovalDetails?.signatureDetails?.status) return;
     signatureRefs[key]?.current?.clear();
     setSignatures((prev) => ({ ...prev, [key]: "" }));
   };
@@ -259,25 +259,19 @@ const SiblingsDetails = () => {
     <div className="w-full px-4 sm:px-8 py-6 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
-        {studentAdmissionApprovalDetails[0]?.signatureDetails?.status ? (
-          <div className="flex flex-col w-full gap-4 items-end  ">
-            <span className="bg-green-500 p-2 rounded-xl">{`${
-              studentAdmissionApprovalDetails[0]?.signatureDetails?.status
-                && "Approved"
-                
-            }`}</span>
-          </div>
-        ) :
-        (
-           <div className="flex flex-col w-full gap-4 items-end mb-2 ">
-            <span className="bg-white text-[#c61d23] p-2 rounded-xl">{`${
-              studentAdmissionApprovalDetails[0]?.signatureDetails?.message
-                
-            }`}</span>
-          </div>
-          
-        )
-        }
+        {studentAdmissionApprovalDetails !== undefined &&
+          (studentAdmissionApprovalDetails?.signatureDetails?.status ? (
+            <div className="flex flex-col w-full gap-4 items-end  ">
+              <span className="bg-green-500 p-2 rounded-xl">{`${
+                studentAdmissionApprovalDetails?.signatureDetails?.status &&
+                "Approved"
+              }`}</span>
+            </div>
+          ) : (
+            <div className="flex flex-col w-full gap-4 items-end mb-2 ">
+              <span className="bg-white text-[#c61d23] p-2 rounded-xl">{`${studentAdmissionApprovalDetails?.signatureDetails?.message}`}</span>
+            </div>
+          ))}
 
         <h2 className="text-2xl font-semibold mb-6">Siblings Details Form</h2>
 
@@ -451,7 +445,7 @@ const SiblingsDetails = () => {
                   canvasProps={{
                     className: "w-full h-24",
                     style: {
-                      pointerEvents: studentAdmissionApprovalDetails[0]
+                      pointerEvents: studentAdmissionApprovalDetails
                         ?.signatureDetails?.status
                         ? "none"
                         : "auto",
@@ -465,11 +459,13 @@ const SiblingsDetails = () => {
                   type="button"
                   onClick={() => clearSignature(key)}
                   className={`px-4 py-2 rounded-md ${
-    studentAdmissionApprovalDetails[0]?.signatureDetails?.status
-      ? "bg-gray-500 cursor-not-allowed"
-      : "bg-red-500 text-white"
-  }`}
-  disabled={studentAdmissionApprovalDetails[0]?.signatureDetails?.status}
+                    studentAdmissionApprovalDetails?.signatureDetails?.status
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-red-500 text-white"
+                  }`}
+                  disabled={
+                    studentAdmissionApprovalDetails?.signatureDetails?.status
+                  }
                 >
                   Clear Signature
                 </button>

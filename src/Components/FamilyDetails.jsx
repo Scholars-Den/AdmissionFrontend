@@ -96,7 +96,7 @@ const FamilyDetails = () => {
   ];
 
   const handleChange = (e) => {
-    if (studentAdmissionApprovalDetails[0]?.parentDetails?.status) {
+    if (studentAdmissionApprovalDetails?.parentDetails?.status) {
       return;
     }
     const { name, value } = e.target;
@@ -173,18 +173,18 @@ const FamilyDetails = () => {
         </h2>
 
         <div className="flex flex-col w-full gap-4">
-          {studentAdmissionApprovalDetails[0]?.parentDetails?.status ? (
-            <div className="flex flex-col w-full gap-4 items-end  ">
-              <span className="bg-green-500 p-2 rounded-xl">Approved</span>
-            </div>
-          ) : (
-            <div className="flex flex-col w-full gap-4 items-end  ">
-             
-              <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">
-               {studentAdmissionApprovalDetails[0]?.parentDetails?.message}
-              </span>
-            </div>
-          )}
+          {studentAdmissionApprovalDetails !== undefined &&
+            (studentAdmissionApprovalDetails?.parentDetails?.status ? (
+              <div className="flex flex-col w-full gap-4 items-end  ">
+                <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+              </div>
+            ) : (
+              <div className="flex flex-col w-full gap-4 items-end  ">
+                <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">
+                  {studentAdmissionApprovalDetails?.parentDetails?.message}
+                </span>
+              </div>
+            ))}
 
           <fieldset className="text-white border-2 w-full px-6">
             <legend> Father Details </legend>

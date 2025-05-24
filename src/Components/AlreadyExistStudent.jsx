@@ -43,6 +43,7 @@ const AlreadyExistStudent = () => {
 
       setAdmissionStatus(response.data);
     } catch (error) {
+      setAdmissionStatus({});
       setAdmissionStatusMap((prev) => ({
         ...prev,
         [ackNumber]: "Error fetching status",
@@ -92,10 +93,10 @@ const AlreadyExistStudent = () => {
 
     console.log("Student from handleCardClick", student);
 
-    if (!admissionStatusMap[student.acknowledgementNumber]) {
-      console.log("If condition working ");
-      fetchAdmissionMessage(student.acknowledgementNumber);
-    }
+    // if (!admissionStatusMap[student.acknowledgementNumber]) {
+    //   console.log("If condition working ");
+    fetchAdmissionMessage(student.acknowledgementNumber);
+    // }
   };
 
   const closeModal = () => {
@@ -239,16 +240,36 @@ const AlreadyExistStudent = () => {
                     {selectedStudent.gender}
                   </p>
                 </div>
-                <div className="flex flex-row sm:flex-col gap-4">
-                  <div className={`${admisionStatus?.data[0]?.status === "approved" ? "text-green-500" : "text-[#c61d23]"}  p-3 rounded-xl`}>
-                    {`Status : 
-                  ${admisionStatus?.data[0]?.status ?  admisionStatus?.data[0]?.status :  "Please Complete you admission form"}`}
+                {admisionStatus?.data && (
+                  <div className="flex flex-row sm:flex-col gap-4">
+                    <div
+                      className={`${
+                        admisionStatus?.data?.status === "approved"
+                          ? "text-green-500"
+                          : "text-[#c61d23]"
+                      }  p-3 rounded-xl`}
+                    >
+                      {`Status : 
+                  ${
+                    admisionStatus?.data?.status
+                      ? admisionStatus?.data?.status
+                      : admisionStatus?.data?.message
+                  }`}
+                    </div>
+                    {admisionStatus?.data?.message && (
+                      <div
+                        className={`${
+                          admisionStatus?.data?.status === "approved"
+                            ? "text-green-500"
+                            : "text-[#c61d23]"
+                        }  p-3 rounded-xl`}
+                      >
+                        {`Message : 
+                  ${admisionStatus?.data?.message}`}
+                      </div>
+                    )}
                   </div>
-                { admisionStatus?.data[0]?.message && <div className={`${admisionStatus?.data[0]?.status === "approved" ? "text-green-500" : "text-[#c61d23]"}  p-3 rounded-xl`}>
-                    {`Message : 
-                  ${admisionStatus?.data[0]?.message }`}
-                  </div>}
-                </div>
+                )}
               </div>
 
               {/* Section: Student Info */}
@@ -258,11 +279,11 @@ const AlreadyExistStudent = () => {
                     Student Details
                   </h3>
 
-                  {!admisionStatus?.data[0]?.studentDetails.status && (
+                  {!admisionStatus?.data?.studentDetails.status && (
                     <div className="flex">
                       <p className="flex text-[#c61d23] p-2 rounded-xl ">
                         {/* <strong className="mr-3">Status :</strong>{" "} */}
-                        {admisionStatus?.data[0]?.studentDetails.message}
+                        {admisionStatus?.data?.studentDetails.message}
                       </p>
                     </div>
                   )}
@@ -303,11 +324,11 @@ const AlreadyExistStudent = () => {
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">
                     Parent Details
                   </h3>
-                  {!admisionStatus?.data[0]?.parentDetails.status && (
+                  {!admisionStatus?.data?.parentDetails.status && (
                     <div className="flex">
                       <p className="flex text-[#c61d23] p-2 rounded-xl ">
                         {/* <strong className="mr-3">Status :</strong>{" "} */}
-                        {admisionStatus?.data[0]?.parentDetails.message}
+                        {admisionStatus?.data?.parentDetails.message}
                       </p>
                     </div>
                   )}
@@ -350,11 +371,11 @@ const AlreadyExistStudent = () => {
                     Bank Details
                   </h3>
 
-                  {!admisionStatus?.data[0]?.bankDetails.status && (
+                  {!admisionStatus?.data?.bankDetails.status && (
                     <div className="flex">
                       <p className="flex text-[#c61d23] p-2 rounded-xl ">
                         {/* <strong className="mr-3">Status :</strong>{" "} */}
-                        {admisionStatus?.data[0]?.bankDetails.message}
+                        {admisionStatus?.data?.bankDetails.message}
                       </p>
                     </div>
                   )}
@@ -389,17 +410,15 @@ const AlreadyExistStudent = () => {
                       Documents Detail
                     </h3>
 
-                    {!admisionStatus?.data[0]?.documentsDetails.status && (
+                    {!admisionStatus?.data?.documentsDetails.status && (
                       <div className="flex">
                         <p className="flex text-[#c61d23] rounded-xl ">
                           {/* <strong className="mr-3">Status </strong>{" "} */}
-                          {admisionStatus?.data[0]?.documentsDetails.message}
+                          {admisionStatus?.data?.documentsDetails.message}
                         </p>
                       </div>
                     )}
                   </div>
-
-                  {console.log("test data ", admisionStatus)}
 
                   <div className="flex flex-wrap justify-around gap-4 mt-3">
                     <div className="flex items-center gap-4 text-xl">
@@ -415,24 +434,27 @@ const AlreadyExistStudent = () => {
                             alt="Cancelled Cheque"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
-                          <div
-                            className={`absolute top-0 left-0 ${
-                              admisionStatus?.data[0]?.documentsDetails
+                          {admisionStatus?.data?.documentsDetails && (
+                            <div
+                              className={`absolute top-0 left-0 ${
+                                admisionStatus?.data?.documentsDetails
+                                  ?.studentPhoto?.status
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                              } text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            >
+                              {admisionStatus?.data?.documentsDetails
                                 ?.studentPhoto?.status
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                            } text-white text-xs font-semibold px-2 py-0.5 rounded`}
-                          >
-                            {admisionStatus?.data[0]?.documentsDetails
-                              ?.studentPhoto?.status
-                              ? "Approved"
-                              : "Rejected"}
-                          </div>
+                                ? "Approved"
+                                : "Rejected"}
+                            </div>
+                          )}
                         </div>
                       </a>
                     </div>
                     <div className="flex items-center gap-4 text-xl">
                       <p className="mb-1 font-medium">Cancelled Cheque</p>
+
                       <a
                         href={selectedStudent.cancelledCheque}
                         target="_blank"
@@ -444,19 +466,21 @@ const AlreadyExistStudent = () => {
                             alt="Cancelled Cheque"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
-                          <div
-                            className={`absolute top-0 left-0 ${
-                              admisionStatus?.data[0]?.documentsDetails
+                          {admisionStatus?.data?.documentsDetails && (
+                            <div
+                              className={`absolute top-0 left-0 ${
+                                admisionStatus?.data?.documentsDetails
+                                  ?.cancelledCheque?.status
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                              } text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            >
+                              {admisionStatus?.data?.documentsDetails
                                 ?.cancelledCheque?.status
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                            } text-white text-xs font-semibold px-2 py-0.5 rounded`}
-                          >
-                            {admisionStatus?.data[0]?.documentsDetails
-                              ?.cancelledCheque?.status
-                              ? "Approved"
-                              : "Rejected"}
-                          </div>
+                                ? "Approved"
+                                : "Rejected"}
+                            </div>
+                          )}
                         </div>
                       </a>
                     </div>
@@ -473,19 +497,21 @@ const AlreadyExistStudent = () => {
                             alt="Passbook"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
+                          {admisionStatus?.data?.documentsDetails && (
                           <div
                             className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data[0]?.documentsDetails
+                              admisionStatus?.data?.documentsDetails
                                 ?.passbookPhoto?.status
                                 ? "green"
                                 : "red"
                             }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
-                            {admisionStatus?.data[0]?.documentsDetails
+                            {admisionStatus?.data?.documentsDetails
                               ?.passbookPhoto?.status
                               ? "Approved"
                               : "Rejected"}
                           </div>
+                          )}
                         </div>
                       </a>
                     </div>
@@ -502,19 +528,21 @@ const AlreadyExistStudent = () => {
                             alt="Student Aadhar"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
+                          {admisionStatus?.data?.documentsDetails && (
                           <div
                             className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data[0]?.documentsDetails
+                              admisionStatus?.data?.documentsDetails
                                 ?.studentAadhar?.status
                                 ? "green"
                                 : "red"
                             }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
-                            {admisionStatus?.data[0]?.documentsDetails
+                            {admisionStatus?.data?.documentsDetails
                               ?.studentAadhar?.status
                               ? "Approved"
                               : "Rejected"}
                           </div>
+                          )}
                         </div>
                       </a>
                     </div>
@@ -531,19 +559,21 @@ const AlreadyExistStudent = () => {
                             alt="Parent Aadhar"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
+                          {admisionStatus?.data?.documentsDetails && (
                           <div
                             className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data[0]?.documentsDetails
+                              admisionStatus?.data?.documentsDetails
                                 ?.parentAadhar?.status
                                 ? "green"
                                 : "red"
                             }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
-                            {admisionStatus?.data[0]?.documentsDetails
+                            {admisionStatus?.data?.documentsDetails
                               ?.parentAadhar?.status
                               ? "Approved"
                               : "Rejected"}
                           </div>
+                          )}
                         </div>
                       </a>
                     </div>
@@ -557,11 +587,11 @@ const AlreadyExistStudent = () => {
                     Signature Details
                   </h3>
 
-                  {!admisionStatus?.data[0]?.signatureDetails?.status && (
+                  {!admisionStatus?.data?.signatureDetails?.status && (
                     <div className="flex">
                       <p className="flex text-[#c61d23] p-2 rounded-xl ">
                         {/* <strong className="mr-3">Status :</strong>{" "} */}
-                        {admisionStatus?.data[0]?.signatureDetails?.message}
+                        {admisionStatus?.data?.signatureDetails?.message}
                       </p>
                     </div>
                   )}
@@ -599,11 +629,11 @@ const AlreadyExistStudent = () => {
               </section>
               <div className="flex w-full justify-end ">
                 {console.log("test data form admission", admisionStatus?.data)}
-                {admisionStatus?.data[0]?.status != "approved" && (
+                {admisionStatus?.data?.status != "approved" && (
                   <button
                     className="p-3  bg-[#c61d23] rounded-xl text-white disabled:bg-gray-500"
                     onClick={handleEditClick}
-                    disabled={admisionStatus?.data[0]?.status === "pending"}
+                    disabled={admisionStatus?.data?.status === "pending"}
                   >
                     Edit
                   </button>
