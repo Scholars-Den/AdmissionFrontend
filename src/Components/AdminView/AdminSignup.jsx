@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SignupDetailsPage from "../SignupDetailsPage";
-import scholarsDenLogo from "../../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../../assets/scholarsdenLogo.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../../redux/loadingSlice";
