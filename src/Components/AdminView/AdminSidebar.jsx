@@ -1,6 +1,6 @@
 import React from "react";
 
-import scholarsDenLogo from "../../assets/scholarsDenLogo.png";
+import scholarsDenLogo from "../../assets/scholarsdenLogo.png";
 import { Link, useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
