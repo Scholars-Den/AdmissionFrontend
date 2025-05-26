@@ -51,23 +51,6 @@ const ApprovalCompleteComponent = () => {
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
   };
 
-  const handleClickApproved = async () => {
-    console.log("selectedItem", selectedItem);
-
-    const response = await axios.post("/approval/editAdmissionApproval", {
-      status: "approved",
-      acknowledgementNumber: selectedItem.acknowledgementNumber,
-    });
-
-    await fetchApprovedData();
-
-    setSelectedItem(null);
-    setPopupData(null);
-    setShowPopup(false);
-
-    console.log("handleClickApproved response", response);
-  };
-
   const closePopup = () => {
     setShowPopup(false);
     setSelectedItem(null);
@@ -78,14 +61,22 @@ const ApprovalCompleteComponent = () => {
     fetchApprovedData();
   }, []);
 
-  const filter = async () => {
+  const filter = async (page = 1) => {
     console.log("this filter is working");
 
-    setFilterData((prev) =>
-      approval.filter((item) =>
-        item.acknowledgementNumber?.includes(filterByAckNumber)
-      )
+    const data = await axios.post(
+      `/approval/filterAdmissionApproval?page=${page}`,
+      {
+        status: "approved",
+        acknowledgementNumber: filterByAckNumber,
+      }
     );
+
+    console.log("filterApproval from filter", data);
+
+    setFilterData(data.data.data);
+    setCurrentPage(data.data.currentPage);
+    setTotalPages(data.data.totalPages);
   };
 
   useEffect(() => {
@@ -93,6 +84,9 @@ const ApprovalCompleteComponent = () => {
     else setFilterData(approval);
   }, [filterByAckNumber]);
 
+  useEffect(() => {
+    console.log("filterData from useEffect", filterData);
+  }, [filterData]);
   return (
     <div className="flex h-screen  justify-center bg-gray-100">
       <div className="p-6 pt-2 rounded w-full min-h-screen overflow-auto ">
@@ -109,24 +103,23 @@ const ApprovalCompleteComponent = () => {
                 value={filterByAckNumber}
                 onChange={(e) => setFilterByAckNumber(e.target.value)}
               />
-            
             </div>
           </div>
         </div>
 
-        {filterData.length === 0 ? (
+        {filterData?.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData.map((item, index) => (
+          filterData?.map((item, index) => (
             <div
               key={index}
               onClick={() => handleCardClick(item)}
               className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition relative"
             >
-               <div className="absolute top-2 right-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+              <div className="absolute top-2 right-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
                 ✅ Approved
               </div>
-             
+
               <div>
                 <strong>Acknowledgement Number:</strong>{" "}
                 {item.acknowledgementNumber}
@@ -143,7 +136,13 @@ const ApprovalCompleteComponent = () => {
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
             <button
-              onClick={() => fetchApprovedData(currentPage - 1)}
+              onClick={() => {
+                 if (filterData) {
+                  filter(currentPage - 1);
+                } else {
+                  fetchApprovedData(currentPage - 1);
+                }
+              }}
               disabled={currentPage === 1}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >
@@ -151,7 +150,13 @@ const ApprovalCompleteComponent = () => {
             </button>
             <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
             <button
-              onClick={() => fetchApprovedData(currentPage + 1)}
+              onClick={() => {
+                if (filterData) {
+                  filter(currentPage + 1);
+                } else {
+                  fetchApprovedData(currentPage + 1);
+                }
+              }}
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >

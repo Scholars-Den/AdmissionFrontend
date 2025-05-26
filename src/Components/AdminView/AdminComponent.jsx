@@ -299,14 +299,22 @@ const AdminComponent = () => {
   //   fetchAdmissionMessage();
   // }, []);
 
-  const filter = async () => {
+  const filter = async (page = 1) => {
     console.log("this filter is working");
 
-    setFilterData((prev) =>
-      pendingApproval.filter((item) =>
-        item.acknowledgementNumber?.includes(filterByAckNumber)
-      )
+    const data = await axios.post(
+      `/approval/filterAdmissionApproval?page=${page}`,
+      {
+        status: "pending",
+        acknowledgementNumber: filterByAckNumber,
+      }
     );
+
+    console.log("filterApproval from filter", data);
+
+    setFilterData(data.data.data);
+    setCurrentPage(data.data.currentPage);
+    setTotalPages(data.data.totalPages);
   };
 
   useEffect(() => {
@@ -361,7 +369,13 @@ const AdminComponent = () => {
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
             <button
-              onClick={() => fetchApprovalRemaining(currentPage - 1)}
+              onClick={() => {
+                 if (filterData) {
+                  filter(currentPage - 1);
+                } else {
+                  fetchApprovalRemaining(currentPage - 1);
+                }
+              }}
               disabled={currentPage === 1}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >
@@ -369,7 +383,14 @@ const AdminComponent = () => {
             </button>
             <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
             <button
-              onClick={() => fetchApprovalRemaining(currentPage + 1)}
+              onClick={() => {
+                  if (filterData) {
+                  filter(currentPage + 1);
+                } else {
+                  fetchApprovalRemaining(currentPage + 1);
+                }
+              
+              }}
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >

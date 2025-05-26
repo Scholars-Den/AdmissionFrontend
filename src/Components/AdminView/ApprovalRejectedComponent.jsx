@@ -79,15 +79,24 @@ const ApprovalRejectedComponent = () => {
     fetchApprovedData();
   }, []);
 
-  const filter = async () => {
+  const filter = async (page = 1) => {
     console.log("this filter is working");
 
-    setFilterData((prev) =>
-      pendingApproval.filter((item) =>
-        item.acknowledgementNumber?.includes(filterByAckNumber)
-      )
+    const data = await axios.post(
+      `/approval/filterAdmissionApproval?page=${page}`,
+      {
+        status: "rejected",
+        acknowledgementNumber: filterByAckNumber,
+      }
     );
+
+    console.log("filterApproval from filter", data);
+
+    setFilterData(data.data.data);
+    setCurrentPage(data.data.currentPage);
+    setTotalPages(data.data.totalPages);
   };
+
   useEffect(() => {
     if (filterByAckNumber) filter();
     else setFilterData(pendingApproval);
@@ -143,7 +152,13 @@ const ApprovalRejectedComponent = () => {
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
             <button
-              onClick={() => fetchApprovedData(currentPage - 1)}
+              onClick={() => {
+                 if (filterData) {
+                  filter(currentPage - 1);
+                } else {
+                  fetchApprovedData(currentPage - 1);
+                }
+              }}
               disabled={currentPage === 1}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >
@@ -151,7 +166,13 @@ const ApprovalRejectedComponent = () => {
             </button>
             <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
             <button
-              onClick={() => fetchApprovedData(currentPage + 1)}
+              onClick={() => {
+                  if (filterData) {
+                  filter(currentPage + 1);
+                } else {
+                  fetchApprovedData(currentPage + 1);
+                }
+              }}
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >
@@ -289,7 +310,7 @@ const ApprovalRejectedComponent = () => {
                     <strong>IFSC Code:</strong> {popupData.ifscCode}
                   </p>
                 </section>
-{/* 
+                {/* 
                 <section>
                   <h3 className="text-lg font-semibold mb-1">Student Photo</h3>
                   <a

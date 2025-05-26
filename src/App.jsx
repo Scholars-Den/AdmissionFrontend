@@ -29,58 +29,53 @@ import ApprovalComplete from "./Components/AdminView/ApprovalComplete";
 import ApprovalRejected from "./Components/AdminView/ApprovalRejected";
 
 function App() {
-
   return (
     <Provider store={store}>
       <Router>
-      {/* <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
+        {/* <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
       <div className="flex-grow">
         <SignupDetailsPage />
       </div> */}
 
-      {/* Signup Form (Middle Section) */}
-      {/* <div className="flex-grow"> */}
-          <Routes>
-            <Route path="/" element={<VerificationPage />} />
-            <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
-            <Route path="/basicDetails" element={<Signup />} />
-            <Route path="/termsAndConditions" element={<TermsAndConditionPage/>} />
-            <Route path="/familyDetails" element = {< FamilyComponents />} />
-            <Route path="/siblingsDetails" element= {<SiblingsDetailsComponents />} />
-            <Route path="/bankRefund" element={<BankRefundComponents/>} />
-            <Route path="/admissionComplete" element={<SuccessComponent/>} />
-            <Route path="/documentUpload" element={<DocumentDetails/>} />
+        {/* Signup Form (Middle Section) */}
+        {/* <div className="flex-grow"> */}
+        <Routes>
+          <Route path="/" element={<VerificationPage />} />
+          <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
+          <Route path="/basicDetails" element={<Signup />} />
+          <Route
+            path="/termsAndConditions"
+            element={<TermsAndConditionPage />}
+          />
+          <Route path="/familyDetails" element={<FamilyComponents />} />
+          <Route
+            path="/siblingsDetails"
+            element={<SiblingsDetailsComponents />}
+          />
+          <Route path="/bankRefund" element={<BankRefundComponents />} />
+          <Route path="/admissionComplete" element={<SuccessComponent />} />
+          <Route path="/documentUpload" element={<DocumentDetails />} />
 
+          <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/approvalComplete" element={<ApprovalComplete />} />
+          <Route path="/approvalRejected" element={<ApprovalRejected />} />
 
+          <Route path="/adminsignup" element={<AdminSignup />} />
 
+          {/* <Route path="/documentUpload" element={<DocumentUpload/>} /> */}
 
-            <Route path="/adminDashboard" element={<AdminDashboard/>} />
-            <Route path="/approvalComplete" element={<ApprovalComplete/>} />
-            <Route path="/approvalRejected" element={<ApprovalRejected/>} />
-
-
-
-
-          <Route path="/adminsignup" element={<AdminSignup/>} />
-
-
-            {/* <Route path="/documentUpload" element={<DocumentUpload/>} /> */}
-            
-
-            {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
-            {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
+          {/* <Route path="/enquiryform" element={<EnquiryForm />} /> */}
+          {/* <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
             <Route path="/spinner" element={<Spinner />} /> */}
-
-          </Routes>
+        </Routes>
         {/* </div> */}
 
-         {/* <div className="flex justify-center items-center py-4">
+        {/* <div className="flex justify-center items-center py-4">
               <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
             </div> */}
 
-
-       {/* </div> */}
+        {/* </div> */}
       </Router>
     </Provider>
   );

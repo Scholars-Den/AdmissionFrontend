@@ -5,11 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../../redux/loadingSlice";
 
-import {
-  validateAadhaar,
-  validateName,
-  validatePhoneNo,
-} from "../../../utils/validation/inputValidation";
+
 import {
   submitAdminDetails,
   updateAdminDetails,
