@@ -53,7 +53,7 @@ export const submitAdminDetails = createAsyncThunk(
 
 
       console.log("adminLogin", adminLogin);
-document.cookie = adminLogin.data.token;
+document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
 
       if (adminLogin) {
         return {
