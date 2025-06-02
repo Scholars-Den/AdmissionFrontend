@@ -29,8 +29,8 @@ const VerificationPage = () => {
   const [codeEntered, setCodeEntered] = useState(false);
 
   // For enable OTP
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -169,8 +169,8 @@ const VerificationPage = () => {
     e.preventDefault();
 
     // For enable OTP
-    // let codeChecked = await checkVerificationCode();
-    let codeChecked = true;
+    let codeChecked = await checkVerificationCode();
+    // let codeChecked = true;
 
     console.log("codeChecked", codeChecked);
     if (codeChecked === false) {
@@ -354,15 +354,15 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-          {/* {showCodeBox && ( */}
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-            // disabled={!codeEntered}
-          >
-            Next
-          </button>
-          {/* )}  */}
+          {showCodeBox && (
+            <button
+              type="submit"
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+              disabled={!codeEntered}
+            >
+              Next
+            </button>
+          )}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
