@@ -259,7 +259,7 @@ const SiblingsDetails = () => {
     <div className="w-full px-4 sm:px-8 py-6 text-center bg-[#c61d23] text-white">
       {loading && <Spinner />}
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
-        {studentAdmissionApprovalDetails !== undefined &&
+        {studentAdmissionApprovalDetails?.signatureDetails &&
           (studentAdmissionApprovalDetails?.signatureDetails?.status ? (
             <div className="flex flex-col w-full gap-4 items-end  ">
               <span className="bg-green-500 p-2 rounded-xl">{`${

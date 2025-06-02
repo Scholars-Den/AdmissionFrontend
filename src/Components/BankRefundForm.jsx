@@ -74,7 +74,7 @@ const BankRefundForm = () => {
   // };
 
   const handleChange = (e) => {
-    if(studentAdmissionApprovalDetails?.bankDetails.status){
+    if(studentAdmissionApprovalDetails?.bankDetails?.status){
       return ;
     }
     const { name, value, type, checked } = e.target;
@@ -254,20 +254,20 @@ const BankRefundForm = () => {
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Bank Account Details for Caution Money Refund
         </h2>
-           {studentAdmissionApprovalDetails !== undefined &&
-        (studentAdmissionApprovalDetails?.bankDetails.status ? (
+           {studentAdmissionApprovalDetails?.bankDetails &&
+        (studentAdmissionApprovalDetails?.bankDetails?.status ? (
           <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
             {/* <span className="text-white">
            {  studentAdmissionApprovalDetails?.bankDetails.message}
           </span> */}
             <span
               className={`${
-                studentAdmissionApprovalDetails?.bankDetails.status
+                studentAdmissionApprovalDetails?.bankDetails?.status
                   ? "bg-green-500 "
                   : "bg-red-500 text-white"
               } p-2 rounded-xl`}
             >
-              {studentAdmissionApprovalDetails?.bankDetails.status
+              {studentAdmissionApprovalDetails?.bankDetails?.status
                 ? "Approved"
                 : "Rejected"}
             </span>
@@ -279,12 +279,12 @@ const BankRefundForm = () => {
           </span> */}
             <span
               className={`${
-                studentAdmissionApprovalDetails?.bankDetails.status
+                studentAdmissionApprovalDetails?.bankDetails?.status
                   ? "bg-green-500 "
                   : "bg-red-500 text-white"
               } p-2 rounded-xl`}
             >
-              {studentAdmissionApprovalDetails?.bankDetails.message}
+              {studentAdmissionApprovalDetails?.bankDetails?.message}
             </span>
           </div>
         ))}

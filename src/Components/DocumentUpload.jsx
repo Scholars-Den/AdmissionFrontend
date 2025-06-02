@@ -125,8 +125,8 @@ const DocumentUpload = ({ documentRequired }) => {
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
-      {studentAdmissionApprovalDetails !== undefined &&
-        (studentAdmissionApprovalDetails?.documentsDetails.status ? (
+      {studentAdmissionApprovalDetails?.documentsDetails   &&
+        (studentAdmissionApprovalDetails?.documentsDetails?.status ? (
           <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
             {/* <span className="text-white">
            {  studentAdmissionApprovalDetails?.documentsDetails.message}
@@ -150,12 +150,12 @@ const DocumentUpload = ({ documentRequired }) => {
           </span> */}
             <span
               className={`${
-                studentAdmissionApprovalDetails?.documentsDetails.status
+                studentAdmissionApprovalDetails?.documentsDetails?.status
                   ? "bg-green-500 "
                   : "bg-red-500 text-white"
               } p-2 rounded-xl`}
             >
-              {studentAdmissionApprovalDetails?.documentsDetails.message}
+              {studentAdmissionApprovalDetails?.documentsDetails?.message}
             </span>
           </div>
         ))}

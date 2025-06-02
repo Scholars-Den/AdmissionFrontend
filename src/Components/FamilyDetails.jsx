@@ -173,7 +173,7 @@ const FamilyDetails = () => {
         </h2>
 
         <div className="flex flex-col w-full gap-4">
-          {studentAdmissionApprovalDetails !== undefined &&
+          {studentAdmissionApprovalDetails?.parentDetails &&
             (studentAdmissionApprovalDetails?.parentDetails?.status ? (
               <div className="flex flex-col w-full gap-4 items-end  ">
                 <span className="bg-green-500 p-2 rounded-xl">Approved</span>
