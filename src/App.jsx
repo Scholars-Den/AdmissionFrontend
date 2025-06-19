@@ -27,6 +27,7 @@ import AdminSignup from "./Components/AdminView/AdminSignup";
 import AdminDashboard from "./Components/AdminView/AdminDashboard";
 import ApprovalComplete from "./Components/AdminView/ApprovalComplete";
 import ApprovalRejected from "./Components/AdminView/ApprovalRejected";
+import ManagerDashboard from "./Components/ManagerView/ManagerDashboard";
 
 function App() {
   return (
@@ -59,7 +60,7 @@ function App() {
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/approvalComplete" element={<ApprovalComplete />} />
           <Route path="/approvalRejected" element={<ApprovalRejected />} />
-
+          <Route path="/managerDashboard" element={<ManagerDashboard />} />
           <Route path="/adminsignup" element={<AdminSignup />} />
 
           {/* <Route path="/documentUpload" element={<DocumentUpload/>} /> */}

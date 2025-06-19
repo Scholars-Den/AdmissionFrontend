@@ -1,283 +1,134 @@
-import React, { useEffect, useState } from "react";
-import SignupDetailsPage from "../SignupDetailsPage";
-import scholarsDenLogo from "../../assets/scholarsdenLogo.png";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../../redux/loadingSlice";
-
-
-import {
-  submitAdminDetails,
-  updateAdminDetails,
-} from "../../../redux/adminDetailsSlice";
+import { sendOtp, verifyOtp } from "../../../redux/adminOtpSlice";
+import { useNavigate } from "react-router-dom";
+import { submitAdminDetails } from "../../../redux/adminDetailsSlice";
 
 const AdminSignup = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { adminDetails } = useSelector((state) => state.adminDetails);
-  const { loading } = useSelector((state) => state.loadingDetails);
-  const [showReloading, setShowReloading] = useState(false);
-
-  const [code, setCode] = useState("");
-  const [showCodeBox, setShowCodeBox] = useState(false);
-  const [codeEntered, setCodeEntered] = useState(false);
-
-  // For enable OTP
-  // const [codeVerified, setCodeVerified] = useState(true);
-  const [codeVerified, setCodeVerified] = useState(false);
-
+  const [contactNumber, setContactNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
-  const [errors, setErrors] = useState({});
-
-  // Aadhar example: 835824268440
-
-  useEffect(() => {
-    console.log("adminDetails", adminDetails);
-  }, [adminDetails]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "contactNumber") {
-      if (value.length > 10) {
-        return;
-      }
-    }
-    dispatch(updateAdminDetails({ [name]: value }));
-    //   dispatch(updateUserDetails({ [name]: value }));
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: value ? "" : `${name} is required`,
-    }));
-  };
-
-  // Define form fields
-  const formFields = [
-    {
-      name: "email",
-      type: "email",
-      placeholder: "Enter Your Email ",
-      required: true,
-    },
-    {
-      name: "password",
-      type: "text",
-      placeholder: "Enter Password ",
-      required: true,
-    },
-  ];
-
-  //   const validateForm = () => {
-  //     const formErrors = {};
-  //     let isValid = true;
-
-  //     formFields.forEach(({ name, required, validation }) => {
-  //       console.log("adminDetails[name]", validation(adminDetails[name]));
-
-  //       const isValidInput = validation(adminDetails[name]);
-  //       console.log("isValidInput", isValidInput);
-  //       if (required && !isValidInput.isValid) {
-  //         formErrors[name] = isValidInput.message;
-  //         console.log("formErrors[name]", formErrors[name]);
-  //         isValid = false;
-  //       }
-  //     });
-
-  //     console.log("formErrors", formErrors);
-  //     setErrors(formErrors);
-  //     return isValid;
-  //   };
-
-  const validateForm = () => {
-
-    console.log("Password", adminDetails);
-    const formErrors = {};
-    let isValid = true;
-
-    if (!adminDetails.email) {
-      formErrors.email = "Email is required";
-      isValid = false;
-    }
-
-    if (!adminDetails.password) {
-      formErrors.password = "Password is required";
-      isValid = false;
-    }
-
-    if (
-      adminDetails.email &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminDetails.email)
-    ) {
-      formErrors.email = "Email must be a valid email address";
-      isValid = false;
-    }
-
-    setErrors(formErrors);
-
-    console.log("FormErrors", formErrors);
-    return isValid;
-  };
-
-  const onSubmit = async (e) => {
-    console.log("onsUBMIT click");
-    e.preventDefault();
-
-    // For enable OTP
-
-    if (!validateForm()) return;
-
-    console.log("adminDetails in onSumit ", adminDetails);
-    try {
-      dispatch(setLoading(true));
-
-      console.log("adminDetails in onSumit ", adminDetails);
-
-      await dispatch(submitAdminDetails(adminDetails));
-      if (document.cookie) {
-
-         
-
-
-        // const alreadyExistStudent = await axios.post(
-        //   "/user/getStudentByPhone",
-        //   { contactNumber: adminDetails.contactNumber }
-        // );
-
-        // console.log("contactNumber", alreadyExistStudent);
-
-        // if (alreadyExistStudent.length === 0) {
-        //   navigate("/basicDetails");
-        // } else {
-        //   dispatch(
-        //     updateAlreadyExistStudent(alreadyExistStudent.data.data )
-        //   );
-
-        // }
-        // navigate("/alredyExist");
-        navigate("/adminDashboard");
-      }
-    } catch (error) {
-      console.log("Error submitting form:", error);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const handleOTPChange = async (e) => {
-    if (e.target.value.length <= 4) {
-      setCode(e.target.value);
-    }
-
-    if (e.target.value.length >= 4) {
-      setCodeEntered(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { adminDetails } = useSelector((state) => state.adminDetails);
+  const handleSendOtp = async () => {
+    if (contactNumber.length !== 10 || !/^\d+$/.test(contactNumber)) {
+      setError("Please enter a valid 10-digit contact number.");
       return;
-    } else {
-      setCodeEntered(false);
+    }
+    try {
+      setError("");
+      const result = await dispatch(sendOtp({ contactNumber }));
+      if (sendOtp.fulfilled.match(result)) {
+        setOtpSent(true);
+        setSubmitMessage("OTP sent successfully.");
+      } else {
+        setError(result.payload?.message || "Failed to send OTP.");
+      }
+    } catch (err) {
+      setError("Something went wrong.");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 4 || !/^\d+$/.test(otp)) {
+      setError("Enter a valid 4-digit OTP.");
+      return;
     }
 
-    console.log("e.target.value", e.target.value.length);
+    try {
+      setError("");
+      const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      console.log(
+        "verifyOTP.fullfilled.match(result)",
+        verifyOtp.fulfilled.match(result)
+      );
+      if (verifyOtp.fulfilled.match(result)) {
+        setSubmitMessage("OTP verified successfully.");
+        const isLogin = await dispatch(submitAdminDetails(contactNumber));
+        console.log(
+          "verify.fullfilled",
+          submitAdminDetails.fulfilled.match(isLogin)
+        );
+        console.log("isLogin", isLogin);
+
+        console.log("adminDetails", adminDetails);
+        const role = isLogin.payload.adminDetails.role
+        if (role === "admin") {
+          navigate("/adminDashboard");
+        } else {
+          navigate("/managerDashboard");
+        }
+      } else {
+        setError(result.payload?.message || "Invalid OTP.");
+      }
+    } catch {
+      setError("Verification failed.");
+    }
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col  bg-[#c61d23]">
-      <div className="mb-5">
-        <SignupDetailsPage />
-      </div>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-red-700 text-white px-4">
+      <div className="bg-white/10 backdrop-blur p-6 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-6">Admin Login</h2>
 
-      <div className=" flex-grow w-full bg-[#c61d23] flex flex-col items-center justify-between   px-4 py-1">
-        {/* {loading && <Spinner />} */}
+        <div className="mb-4">
+          <label htmlFor="contactNumber" className="block mb-1">
+            Contact Number
+          </label>
+          <input
+            type="text"
+            id="contactNumber"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            className="w-full px-4 py-2 rounded bg-red-700 border border-white text-white"
+            maxLength={10}
+            placeholder="Enter 10-digit number"
+          />
+        </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
-        >
-          <h2 className="text-center text-2xl md:text-3xl font-semibold">
-            Admin Login
-          </h2>
-
-          {/* Phone Field */}
-          <div className="space-y-4">
-            <label
-              htmlFor="contactNumber"
-              className="block text-sm font-medium"
-            >
-              Enter Admin Email
+        {otpSent && (
+          <div className="mb-4">
+            <label htmlFor="otp" className="block mb-1">
+              Enter OTP
             </label>
-            <div className="flex flex-col md:flex-row gap-2">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={adminDetails?.email || ""}
-                onChange={handleChange}
-                placeholder="Enter Admin Email"
-                className="border-b-2 py-2 focus:outline-none w-full p-4  "
-                style={{ backgroundColor: "#c61d23" }}
-              />
-              {/* {!showCodeBox && !codeVerified && (
-                <button
-                  type="button"
-                  onClick={verifyPhoneNo}
-                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
-                >
-                  Send OTP
-                </button>
-              )} */}
-            </div>
-            {errors.contactNumber && (
-              <p className="text-[#ffdd00] mt-1">{errors.contactNumber}</p>
-            )}
+            <input
+              type="text"
+              id="otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-2 rounded bg-red-700 border border-white text-white"
+              maxLength={4}
+              placeholder="Enter OTP"
+            />
           </div>
-          {/* password */}
-          <div className="space-y-4">
-            <label
-              htmlFor="contactNumber"
-              className="block text-sm font-medium"
+        )}
+
+        {error && <p className="text-yellow-300 text-sm mb-4">{error}</p>}
+        {submitMessage && (
+          <p className="text-green-300 text-sm mb-4">{submitMessage}</p>
+        )}
+
+        <div className="flex flex-col gap-4">
+          {!otpSent ? (
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              className="bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600"
             >
-              Password
-            </label>
-            <div className="flex flex-col md:flex-row gap-2">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={adminDetails.password}
-                onChange={handleChange}
-                placeholder="Password"
-                className="border-b-2 border-gray-300 py-2 focus:outline-none w-full"
-                style={{ backgroundColor: "#c61d23" }}
-              />
-            </div>
-            {errors.contactNumber && (
-              <p className="text-[#ffdd00] mt-1">{errors.contactNumber}</p>
-            )}
-          </div>
-
-          {showReloading && (
-            <div className="flex justify-center items-center">
-              <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
-            </div>
+              Send OTP
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleVerifyOtp}
+              className="bg-green-500 text-white py-2 rounded hover:bg-green-600"
+            >
+              Verify OTP
+            </button>
           )}
-
-          {/* Submit Message */}
-          {submitMessage && (
-            <p className="text-sm text-center text-[#ffdd00]">
-              {submitMessage}
-            </p>
-          )}
-
-          {/* Submit Button */}
-
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-          >
-            Next
-          </button>
-        </form>
-        <div className="flex justify-center items-center py-4">
-          <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div>
       </div>
     </div>

@@ -92,7 +92,7 @@ const VerificationPage = () => {
 
   const verifyPhoneNo = async () => {
     try {
-      if (userData?.fatherContactNumber.length != 10) {
+      if (userData?.fatherContactNumber?.length != 10) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           fatherContactNumber: `The length must be exactly 10.`,

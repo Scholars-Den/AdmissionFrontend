@@ -7,7 +7,7 @@ export const fetchAdminDetails = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const alreadyExistStudent = await axios.post("/user/getStudentByPhone", {
-        fatherContactNumber,
+        contactNumber,
       });
 
       // const alreadyExistStudent = await axios.post(
@@ -37,12 +37,12 @@ export const fetchAdminDetails = createAsyncThunk(
 
 export const submitAdminDetails = createAsyncThunk(
   "adminDetails/submitAdminDetails",
-  async (adminDetails, { rejectWithValue }) => {
+  async (contactNumber, { rejectWithValue }) => {
     try {
       console.log("adminDetails", adminDetails);
 
-      const adminLogin = await axios.post("/admin/login", {
-        adminDetails,
+      const adminLogin = await axios.post("/admission-admin/login", {
+        contactNumber,
       });
 
       // const alreadyExistStudent = await axios.post(
@@ -50,18 +50,16 @@ export const submitAdminDetails = createAsyncThunk(
       //         { fatherContactNumber: userData.fatherContactNumber }
       //       );
 
-
-
       console.log("adminLogin", adminLogin);
-document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
+      document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
 
       if (adminLogin) {
         return {
-          existingStudent: adminLogin.data.data,
+          adminDetails: adminLogin.data.admin,
         };
       } else {
         return {
-          existingStudent: {},
+          adminDetails: {},
         };
       }
     } catch (error) {
@@ -78,6 +76,8 @@ const adminDetails = createSlice({
   name: "adminDetails",
   initialState: {
     adminDetails: {},
+    loading: false,
+    dataExist: false,
   },
   reducers: {
     updateAdminDetails(state, action) {
@@ -88,7 +88,21 @@ const adminDetails = createSlice({
     builder.addCase(fetchAdminDetails.fulfilled, (state, action) => {
       state.adminDetails = action.payload.adminDetails;
     });
+    builder.addCase(fetchAdminDetails.pending, (state) => {
+      state.loading = true;
+      state.dataExist = false;
+    });
     builder.addCase(fetchAdminDetails.rejected, (state) => {
+      state.adminDetails = {};
+    });
+    builder.addCase(submitAdminDetails.pending, (state) => {
+      state.loading = true;
+      state.dataExist = false;
+    });
+    builder.addCase(submitAdminDetails.fulfilled, (state, action) => {
+      state.adminDetails = action.payload.adminDetails;
+      });
+    builder.addCase(submitAdminDetails.rejected, (state) => {
       state.adminDetails = {};
     });
   },
