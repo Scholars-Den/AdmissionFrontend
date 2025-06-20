@@ -1,15 +1,12 @@
 import Neeche from "../src/assets/Neeche.png";
 
-const SelectField = ({ label, name, value, options, onChange, error }) => {
-  // console.log("name", name, value, onChange, error);
+const SelectField = ({ label, name, value, options, onChange, error, classAdded }) => {
 
-  // console.log("OPTIONS", options);
   return (
-    <div className="flex flex-col rounded-xl bg-[#c61d23] w-full appearance-none">
+    <div className={`flex flex-col rounded-xl bg-[#c61d23] w-full appearance-none ${classAdded}`}>
       {/* <div className="w-full"> */}
 
-
-      {label !== "Select Relation" && label !== "Select Class"                                                                                                                                                                                                                                                                                                                                                    && (
+      {label !== "Select Relation" && label !== "Select Class" && (
         <label htmlFor={name} className="text-sm font-semibold mb-1">
           {label}
         </label>
@@ -21,14 +18,13 @@ const SelectField = ({ label, name, value, options, onChange, error }) => {
         onChange={onChange}
         className="border border-gray-300 text-black rounded-lg p-2 focus:ring-2 w-full focus:ring-yellow-400 focus:outline-none pr-2"
         style={{
-       
           backgroundImage: `url(${Neeche})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "right 10px center",
           backgroundSize: "16px",
         }}
       >
-        <option value=" " className=" " >
+        <option value=" " className=" ">
           {label}
         </option>
         {options.map((option) => (

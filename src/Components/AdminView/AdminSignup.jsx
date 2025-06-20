@@ -7,7 +7,7 @@ import { submitAdminDetails } from "../../../redux/adminDetailsSlice";
 const AdminSignup = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
   const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
   const dispatch = useDispatch();
@@ -33,38 +33,42 @@ const AdminSignup = () => {
   };
 
   const handleVerifyOtp = async () => {
-    if (otp.length !== 4 || !/^\d+$/.test(otp)) {
-      setError("Enter a valid 4-digit OTP.");
-      return;
-    }
+    // if (otp.length !== 4 || !/^\d+$/.test(otp)) {
+    //   setError("Enter a valid 4-digit OTP.");
+    //   return;
+    // }
 
     try {
       setError("");
-      const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      // const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      // console.log(
+      //   "verifyOTP.fullfilled.match(result)",
+      //   verifyOtp.fulfilled.match(result)
+      // );
+      // if (verifyOtp.fulfilled.match(result)) {
+      setSubmitMessage("OTP verified successfully.");
+      const isLogin = await dispatch(submitAdminDetails(contactNumber));
       console.log(
-        "verifyOTP.fullfilled.match(result)",
-        verifyOtp.fulfilled.match(result)
+        "verify.fullfilled",
+        submitAdminDetails.fulfilled.match(isLogin)
       );
-      if (verifyOtp.fulfilled.match(result)) {
-        setSubmitMessage("OTP verified successfully.");
-        const isLogin = await dispatch(submitAdminDetails(contactNumber));
-        console.log(
-          "verify.fullfilled",
-          submitAdminDetails.fulfilled.match(isLogin)
-        );
-        console.log("isLogin", isLogin);
+      console.log("isLogin", isLogin);
 
-        console.log("adminDetails", adminDetails);
-        const role = isLogin.payload.adminDetails.role
-        if (role === "admin") {
-          navigate("/adminDashboard");
-        } else {
-          navigate("/managerDashboard");
-        }
-      } else {
-        setError(result.payload?.message || "Invalid OTP.");
+      console.log("adminDetails", adminDetails);
+      const role = isLogin.payload.adminDetails.role;
+      console.log("role from handleVerifyOTP", role);
+      if (role === "admin") {
+        navigate("/adminDashboard");
+      } else if (role === "manager") {
+        navigate("/managerDashboard");
+      } else if (role === "consellor") {
+        navigate("/consellorDashboard");
       }
-    } catch {
+      // } else {
+      //   setError(result.payload?.message || "Invalid OTP.");
+      // }
+    } catch (error) {
+      console.log("error", error);
       setError("Verification failed.");
     }
   };
@@ -89,7 +93,7 @@ const AdminSignup = () => {
           />
         </div>
 
-        {otpSent && (
+        {/* {otpSent && (
           <div className="mb-4">
             <label htmlFor="otp" className="block mb-1">
               Enter OTP
@@ -104,7 +108,7 @@ const AdminSignup = () => {
               placeholder="Enter OTP"
             />
           </div>
-        )}
+        )} */}
 
         {error && <p className="text-yellow-300 text-sm mb-4">{error}</p>}
         {submitMessage && (

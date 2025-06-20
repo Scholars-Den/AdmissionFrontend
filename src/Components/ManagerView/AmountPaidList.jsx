@@ -1,7 +1,8 @@
 import AdminSidebar from '../AdminView/AdminSidebar';
+import AmountPaidComponent from './AmountPaidComponent';
 import ManagerComponent from './ManagerComponent';
 
-const ManagerDashboard = () => {
+const AmountPaidList = () => {
   return (
     <div className="">
       <div className="grid grid-cols-6 flex-col">
@@ -9,7 +10,7 @@ const ManagerDashboard = () => {
           <AdminSidebar />
         </div>
         <div className="col-span-5 flex-grow w-full ">
-            <ManagerComponent/>
+            <AmountPaidComponent/>
             {/* <ApprovalCompleteComponent/> */}
             
 
@@ -19,5 +20,12 @@ const ManagerDashboard = () => {
   );
 }
 
-export default ManagerDashboard
+export default AmountPaidList
+
+
+
+
+
+
+
 

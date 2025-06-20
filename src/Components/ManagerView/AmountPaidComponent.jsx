@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ManagerComponent = () => {
+const AmountPaidComponent = () => {
   const [approval, setApproval] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [popupData, setPopupData] = useState(null); // fetched details
@@ -16,13 +16,13 @@ const ManagerComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchApprovedData = async (page = 1) => {
+  const fetchAdmissionFeePaid = async (page = 1) => {
     try {
       const response = await axios.get(
-        `/approval/completedApproval?page=${page}`
+        `/approval/paid?page=${page}`
       );
       const { data, totalPages } = response.data;
-      console.log("response data from fetchApprovedData", response.data);
+      console.log("response data from fetchAdmissionFeePaid", response.data);
       setApproval(data);
       setFilterData(data);
       setCurrentPage(page);
@@ -65,30 +65,29 @@ const ManagerComponent = () => {
   const [receiptId, setReceiptId] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await axios.post("/admission-admin/update-student", {
-      receiptId,
-      amountPaid,
-      acknowledgementNumber: selectedItem.acknowledgementNumber,
-    });
+    try {
+      const response = await axios.post("/admission-admin/update-student", {
+        receiptId,
+        amountPaid,
+        acknowledgementNumber: selectedItem.acknowledgementNumber,
+      });
 
-    toast.success("Amount and ReceiptId updated successfully!");
+      toast.success("Amount and RereceiptId updated successfully!");
 
-    fetchApprovedData();
-    setShowProfile(false);
-    setShowPopup(false);
-    setReceiptId("");
-    setAmountPaid("");
-    setFormattedAmount("");
-  } catch (error) {
-    console.error("Error updating admission:", error);
-    toast.error("Failed to update admission. Please try again.");
-  }
-};
-
+      fetchAdmissionFeePaid();
+      setShowProfile(false);
+      setShowPopup(false);
+      setReceiptId("");
+      setAmountPaid("");
+      setFormattedAmount("");
+    } catch (error) {
+      console.error("Error updating admission:", error);
+      toast.error("Failed to update admission. Please try again.");
+    }
+  };
 
   const [formattedAmount, setFormattedAmount] = useState("");
 
@@ -105,7 +104,7 @@ const handleSubmit = async (e) => {
   };
 
   useEffect(() => {
-    fetchApprovedData();
+    fetchAdmissionFeePaid();
   }, []);
 
   const filter = async (page = 1) => {
@@ -114,7 +113,7 @@ const handleSubmit = async (e) => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "approved",
+        status: "amountPaid",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -136,15 +135,14 @@ const handleSubmit = async (e) => {
   }, [filterData]);
   return (
     <div className="flex h-screen  justify-center bg-gray-100">
-
       <div className="p-6 pt-2 rounded w-full min-h-screen overflow-auto ">
-      <>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-        />
-      </>
+        <>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+          />
+        </>
         <div className="mb-6">
           <div className="flex flex-col ">
             <label className="text-base" htmlFor="">
@@ -195,12 +193,12 @@ const handleSubmit = async (e) => {
                   >
                     Profile
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => handleCardClick(item)}
                     className="text-sky-600 p-2 bg-gray-300 rounded-lg hover:text-black hover:bg-white"
                   >
                     Add
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -213,7 +211,7 @@ const handleSubmit = async (e) => {
                 if (filterData) {
                   filter(currentPage - 1);
                 } else {
-                  fetchApprovedData(currentPage - 1);
+                  fetchAdmissionFeePaid(currentPage - 1);
                 }
               }}
               disabled={currentPage === 1}
@@ -227,7 +225,7 @@ const handleSubmit = async (e) => {
                 if (filterData) {
                   filter(currentPage + 1);
                 } else {
-                  fetchApprovedData(currentPage + 1);
+                  fetchAdmissionFeePaid(currentPage + 1);
                 }
               }}
               disabled={currentPage === totalPages}
@@ -259,6 +257,14 @@ const handleSubmit = async (e) => {
                   <p>
                     <strong>Acknowledgement Number:</strong>{" "}
                     {popupData.acknowledgementNumber}
+                  </p>
+                  <p>
+                    <strong>Amount Paid:</strong>{" "}
+                    {popupData.amountPaid}
+                  </p>
+                  <p>
+                    <strong>Receipt Id:</strong>{" "}
+                    {popupData.receiptId}
                   </p>
                   <p>
                     <strong>Aadhaar ID:</strong> {popupData.aadharID}
@@ -443,7 +449,7 @@ const handleSubmit = async (e) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">
-              Enter Payment Details ({selectedItem.acknowledgementNumber})
+              Enter Payment Details
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -502,4 +508,4 @@ const handleSubmit = async (e) => {
   );
 };
 
-export default ManagerComponent;
+export default AmountPaidComponent;

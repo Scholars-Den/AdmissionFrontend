@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
+import SelectField from "../../../utils/SelectField";
 
 const ApprovalCompleteComponent = () => {
   const [approval, setApproval] = useState([]);
@@ -8,13 +9,16 @@ const ApprovalCompleteComponent = () => {
   const [selectedItem, setSelectedItem] = useState(null); // for popup content
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
-
+const [consellorAssign, setConsellorAssign] = useState("");
+const [options, setOptions] = useState([]);
   const [filterByAckNumber, setFilterByAckNumber] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   // const dispatch = useDispatch
+
+
 
   const fetchApprovedData = async (page = 1) => {
     try {
@@ -180,6 +184,7 @@ const ApprovalCompleteComponent = () => {
             {popupData ? (
               <div className="space-y-4 overflow-y-auto max-h-[70vh] text-sm text-gray-800">
                 <section>
+                 
                   <h3 className="text-lg font-semibold mb-1">
                     Student Details
                   </h3>

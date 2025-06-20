@@ -3,7 +3,7 @@ import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
 import SelectField from "../../../utils/SelectField";
 
-const AdminComponent = () => {
+const ConsellorComponent = () => {
   const [pendingApproval, setPendingApproval] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null); // for popup content
   const [popupData, setPopupData] = useState(null); // fetched details
@@ -33,7 +33,6 @@ const AdminComponent = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
 
   // const dispatch = useDispatch
 
@@ -343,7 +342,7 @@ const AdminComponent = () => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "pending",
+        status: "amountPaid",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -391,8 +390,8 @@ const AdminComponent = () => {
               onClick={() => handleCardClick(item)}
               className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
             >
-              <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                ⏳ Pending
+              <div className="absolute top-2 right-2 bg-green-200 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                 AmountPaid
               </div>
               <div>
                 <strong>Acknowledgement Number:</strong>{" "}
@@ -842,4 +841,4 @@ const AdminComponent = () => {
   );
 };
 
-export default AdminComponent;
+export default ConsellorComponent;

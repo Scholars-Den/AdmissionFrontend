@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import scholarsDenLogo from "../../assets/scholarsdenLogo.png";
+import { fetchAdminDetails } from "../../../redux/adminDetailsSlice";
 
 const AdminSidebar = () => {
   const { adminDetails } = useSelector((state) => state.adminDetails);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const sidebarElementList = {
     admin: [
-      { to: "/adminDashboard", text: "Approval Remaining" },
-      { to: "/approvalComplete", text: "Approval Completed" },
-      { to: "/approvalRejected", text: "Approval Rejected" },
+      { to: "/adminDashboard", text: "Remaining" },
+      { to: "/approvalComplete", text: "Approved" },
+      { to: "/approvalRejected", text: " Rejected" },
     ],
     manager: [
-      { to: "/managerDashboard", text: "Approval Completed" },
+      { to: "/managerDashboard", text: "Approved" },
+      { to: "/amountPaid", text: "Paid" },
     ],
+    consellor: [{ to: "/consellorDashboard", text: "Assigned" }],
   };
 
   const handleLogout = () => {
@@ -24,7 +28,12 @@ const AdminSidebar = () => {
     navigate("/adminsignup");
   };
 
-  const role = adminDetails?.role || "manager"; // Fallback to 'admin' if role not set
+  const role = adminDetails?.role;
+  console.log("role", role);
+
+  useEffect(() => {
+    dispatch(fetchAdminDetails());
+  }, []);
 
   return (
     <div
@@ -34,7 +43,9 @@ const AdminSidebar = () => {
       <div className="flex flex-col gap-8 justify-center items-center">
         <div className="flex flex-col gap-1 items-center">
           <img className="w-16 h-16" src={scholarsDenLogo} alt="Scholars Den" />
-          <span className="text-white mt-3">Student Panel</span>
+          <span className="text-white mt-3">
+            {role?.charAt(0)?.toUpperCase() + role?.slice(1)} Panel
+          </span>
         </div>
 
         <div className="flex flex-col gap-7 w-full justify-end items-end">
@@ -53,10 +64,7 @@ const AdminSidebar = () => {
           ))}
         </div>
 
-        <div
-          className="text-white cursor-pointer mt-4"
-          onClick={handleLogout}
-        >
+        <div className="text-white cursor-pointer mt-4" onClick={handleLogout}>
           Logout
         </div>
       </div>

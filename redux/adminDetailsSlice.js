@@ -6,24 +6,22 @@ export const fetchAdminDetails = createAsyncThunk(
   "adminDetails/fetchAdminDetails",
   async (_, { rejectWithValue }) => {
     try {
-      const alreadyExistStudent = await axios.post("/user/getStudentByPhone", {
-        contactNumber,
-      });
+      const adminData = await axios.get("/admission-admin");
 
       // const alreadyExistStudent = await axios.post(
       //         "/user/getStudentByPhone",
       //         { fatherContactNumber: userData.fatherContactNumber }
       //       );
 
-      console.log("fatherContactNumber", alreadyExistStudent);
+      console.log("fatherContactNumber", adminData);
 
-      if (alreadyExistStudent) {
+      if (adminData) {
         return {
-          existingStudent: alreadyExistStudent.data.data,
+          adminDetails: adminData.data.data,
         };
       } else {
         return {
-          existingStudent: {},
+          adminDetails: {},
         };
       }
     } catch (error) {
