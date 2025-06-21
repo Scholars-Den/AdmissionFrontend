@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
 import SelectField from "../../../utils/SelectField";
@@ -12,6 +12,7 @@ const ConsellorComponent = () => {
   const [error, setError] = useState("");
 
   const [onSubmitError, setOnSubmitError] = useState("");
+  const { adminDetails } = useSelector((state) => state.adminDetails);
 
   const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
@@ -38,31 +39,27 @@ const ConsellorComponent = () => {
 
   const [consellorAssign, setConsellorAssign] = useState("");
 
+  // const []
+
   const onChangeOptions = (e) => {
     setConsellorAssign(e.target.value);
   };
 
   const [options, setOptions] = useState([]);
 
-  const fetchAllConsellor = async () => {
-    const response = await axios.get("/admin/allConsoller/");
-
-    console.log("RESPONSE FROM fetchAllConsollor", response);
-
-    setOptions(response.data.data.map((options) => options.name));
-  };
-  const fetchApprovalRemaining = async (page = 1) => {
+  const approvalByAssignedConsellor = async (page = 1) => {
     try {
       const response = await axios.get(
-        `/approval/pendingApproval?page=${page}`
+        `/approval/approvalByAssignedConsellor?page=${page}`
       );
+
+      console.log("response dataq data ", response);
+
       const { data, totalPages } = response.data;
       setPendingApproval(data);
       setFilterData(data);
       setCurrentPage(page);
       setTotalPages(totalPages);
-
-      console.log("response dataq data ", response.data.data[0]);
     } catch (error) {
       console.error("Error fetching pending approval data:", error);
     }
@@ -98,7 +95,6 @@ const ConsellorComponent = () => {
       studentPhoto: item?.documentsDetails?.studentPhoto?.status || false,
     });
     setShowPopup(true);
-    fetchAllConsellor();
 
     fetchDetailsByAcknowledgement(item.acknowledgementNumber);
   };
@@ -257,7 +253,7 @@ const ConsellorComponent = () => {
     setShowMessagePopup("");
     setMessage("");
 
-    await fetchApprovalRemaining();
+    await approvalByAssignedConsellor();
 
     setSelectedItem(null);
     setPopupData(null);
@@ -265,22 +261,7 @@ const ConsellorComponent = () => {
 
     console.log("handleClickApproved response", response);
   };
-  const handleClickRejected = async () => {
-    console.log("selectedItem", selectedItem);
 
-    const response = await axios.post("/approval/editAdmissionApproval", {
-      status: "rejected",
-      acknowledgementNumber: selectedItem.acknowledgementNumber,
-    });
-
-    await fetchApprovalRemaining();
-
-    setSelectedItem(null);
-    setPopupData(null);
-    setShowPopup(false);
-
-    console.log("handleClickApproved response", response);
-  };
 
   const closePopup = () => {
     setShowPopup(false);
@@ -289,48 +270,25 @@ const ConsellorComponent = () => {
   };
 
   const submitButtonClickHandler = () => {
-    console.log("consellorAssign", consellorAssign);
-    if (consellorAssign) {
-      setShowMessagePopup(
-        parentDetailsStatus &&
-          studentDetailsStatus &&
-          bankDetailsStatus &&
-          signatureDetailsStatus &&
-          allDocumentsApproved
-          ? "approved"
-          : "rejected"
-      );
-    } else {
-      showErrorMessage();
-    }
+    setShowMessagePopup(
+      parentDetailsStatus &&
+        studentDetailsStatus &&
+        bankDetailsStatus &&
+        signatureDetailsStatus &&
+        allDocumentsApproved
+        ? "approved"
+        : "rejected"
+    );
   };
 
   useEffect(() => {
-    fetchApprovalRemaining();
+    approvalByAssignedConsellor();
   }, []);
   useEffect(() => {
     console.log("selectedItem", selectedItem);
   }, [selectedItem]);
 
-  const fetchAdmissionMessage = async (ackNumber) => {
-    try {
-      console.log("AckNumber", ackNumber);
-      const response = await axios.post(
-        "/approval/getAdmissionApprovalByAcknowledgementNumber",
-        { acknowledgementNumber: ackNumber }
-      );
 
-      console.log("Testdata ", response);
-
-      console.log("RESPONSE FETCHaDMISSIONmEWSSAGE", response);
-      setAdmissionStatus(response.data);
-    } catch (error) {
-      // setAdmissionStatusMap((prev) => ({
-      //   ...prev,
-      //   [ackNumber]: "Error fetching status",
-      // }));
-    }
-  };
 
   // useEffect(() => {
   //   fetchAdmissionMessage();
@@ -339,19 +297,16 @@ const ConsellorComponent = () => {
   const filter = async (page = 1) => {
     console.log("this filter is working");
 
-    const data = await axios.post(
-      `/approval/filterAdmissionApproval?page=${page}`,
-      {
-        status: "amountPaid",
-        acknowledgementNumber: filterByAckNumber,
-      }
+    const response = await axios.get(
+      `/approval/approvalByAssignedConsellor?page=${page}`,
+  
     );
 
-    console.log("filterApproval from filter", data);
-
-    setFilterData(data.data.data);
-    setCurrentPage(data.data.currentPage);
-    setTotalPages(data.data.totalPages);
+               const { data, totalPages } = response.data;
+      setPendingApproval(data);
+      setFilterData(data);
+      setCurrentPage(page);
+      setTotalPages(totalPages);
   };
 
   useEffect(() => {
@@ -391,7 +346,7 @@ const ConsellorComponent = () => {
               className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
             >
               <div className="absolute top-2 right-2 bg-green-200 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                 AmountPaid
+                AmountPaid
               </div>
               <div>
                 <strong>Acknowledgement Number:</strong>{" "}
@@ -410,7 +365,7 @@ const ConsellorComponent = () => {
                 if (filterData) {
                   filter(currentPage - 1);
                 } else {
-                  fetchApprovalRemaining(currentPage - 1);
+                  approvalByAssignedConsellor(currentPage - 1);
                 }
               }}
               disabled={currentPage === 1}
@@ -424,7 +379,7 @@ const ConsellorComponent = () => {
                 if (filterData) {
                   filter(currentPage + 1);
                 } else {
-                  fetchApprovalRemaining(currentPage + 1);
+                  approvalByAssignedConsellor(currentPage + 1);
                 }
               }}
               disabled={currentPage === totalPages}
@@ -450,14 +405,6 @@ const ConsellorComponent = () => {
             {popupData ? (
               <div className="space-y-4 overflow-y-auto max-h-[70vh] text-sm text-gray-800">
                 <section>
-                  <SelectField
-                    label={"Assign Consellor"}
-                    name={"consellor"}
-                    value={consellorAssign}
-                    options={options}
-                    onChange={onChangeOptions}
-                    classAdded={"bg-white"}
-                  />
                   <div className="flex justify-around">
                     <h3 className="text-lg font-semibold mb-1">
                       Student Details
@@ -785,20 +732,7 @@ const ConsellorComponent = () => {
                   </div>
                 </section>
 
-                <div className="w-full flex justify-center">
-                  <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => submitButtonClickHandler()}
-                  >
-                    Submit
-                  </button>
-                  {/* <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => setShowMessagePopup("rejected")}
-                  >
-                    Rejected
-                  </button> */}
-                </div>
+              
               </div>
             ) : (
               <p>Loading...</p>

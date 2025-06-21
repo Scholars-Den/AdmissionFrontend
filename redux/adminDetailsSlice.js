@@ -8,12 +8,7 @@ export const fetchAdminDetails = createAsyncThunk(
     try {
       const adminData = await axios.get("/admission-admin");
 
-      // const alreadyExistStudent = await axios.post(
-      //         "/user/getStudentByPhone",
-      //         { fatherContactNumber: userData.fatherContactNumber }
-      //       );
-
-      console.log("fatherContactNumber", adminData);
+      console.log("adminData", adminData);
 
       if (adminData) {
         return {
@@ -50,6 +45,7 @@ export const submitAdminDetails = createAsyncThunk(
 
       console.log("adminLogin", adminLogin);
       document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
+      document.cookie = `role=${adminLogin.data.admin.role}; path=/; secure; samesite=strict`;
 
       if (adminLogin) {
         return {
@@ -99,7 +95,7 @@ const adminDetails = createSlice({
     });
     builder.addCase(submitAdminDetails.fulfilled, (state, action) => {
       state.adminDetails = action.payload.adminDetails;
-      });
+    });
     builder.addCase(submitAdminDetails.rejected, (state) => {
       state.adminDetails = {};
     });

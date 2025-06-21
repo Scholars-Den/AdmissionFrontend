@@ -21,6 +21,7 @@ const AdminSidebar = () => {
       { to: "/amountPaid", text: "Paid" },
     ],
     consellor: [{ to: "/consellorDashboard", text: "Assigned" }],
+    super_admin: [{ to: "/superAdminDashboard", text: "Admission Taken" }],
   };
 
   const handleLogout = () => {
@@ -34,6 +35,15 @@ const AdminSidebar = () => {
   useEffect(() => {
     dispatch(fetchAdminDetails());
   }, []);
+  const formatRoleName = (role) => {
+    if (!role) return "";
+    return role
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  console.log("role", formatRoleName(role));
 
   return (
     <div
@@ -44,7 +54,7 @@ const AdminSidebar = () => {
         <div className="flex flex-col gap-1 items-center">
           <img className="w-16 h-16" src={scholarsDenLogo} alt="Scholars Den" />
           <span className="text-white mt-3">
-            {role?.charAt(0)?.toUpperCase() + role?.slice(1)} Panel
+            {role && `${formatRoleName(role)} Panel`}
           </span>
         </div>
 

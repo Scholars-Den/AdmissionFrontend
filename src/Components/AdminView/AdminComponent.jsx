@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
 import SelectField from "../../../utils/SelectField";
+import Neeche from "../../assets/Neeche.png";
 
 const AdminComponent = () => {
   const [pendingApproval, setPendingApproval] = useState([]);
@@ -34,13 +35,13 @@ const AdminComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-
   // const dispatch = useDispatch
 
   const [consellorAssign, setConsellorAssign] = useState("");
 
   const onChangeOptions = (e) => {
     setConsellorAssign(e.target.value);
+    setOnSubmitError("");
   };
 
   const [options, setOptions] = useState([]);
@@ -50,7 +51,7 @@ const AdminComponent = () => {
 
     console.log("RESPONSE FROM fetchAllConsollor", response);
 
-    setOptions(response.data.data.map((options) => options.name));
+    setOptions(response.data.data.map((options) => options));
   };
   const fetchApprovalRemaining = async (page = 1) => {
     try {
@@ -289,9 +290,15 @@ const AdminComponent = () => {
     setPopupData(null);
   };
 
-  const submitButtonClickHandler = () => {
+  const submitButtonClickHandler = async () => {
     console.log("consellorAssign", consellorAssign);
     if (consellorAssign) {
+      console.log("consellorAssign", consellorAssign);
+
+      const response = await axios.post("/approval/consellor-assign", {
+        consellorAssign,
+        acknowledgementNumber: selectedItem.acknowledgementNumber,
+      });
       setShowMessagePopup(
         parentDetailsStatus &&
           studentDetailsStatus &&
@@ -302,7 +309,7 @@ const AdminComponent = () => {
           : "rejected"
       );
     } else {
-      showErrorMessage();
+      setOnSubmitError("Please assign a counselor first.");
     }
   };
 
@@ -451,14 +458,61 @@ const AdminComponent = () => {
             {popupData ? (
               <div className="space-y-4 overflow-y-auto max-h-[70vh] text-sm text-gray-800">
                 <section>
-                  <SelectField
+                  {/* <SelectField
                     label={"Assign Consellor"}
                     name={"consellor"}
                     value={consellorAssign}
                     options={options}
                     onChange={onChangeOptions}
                     classAdded={"bg-white"}
-                  />
+                  /> */}
+
+                  <div
+                    className={`flex flex-col rounded-xl bg-white w-full appearance-none`}
+                  >
+                    {/* <div className="w-full"> */}
+
+             
+                        <label
+                          htmlFor={"consellor"}
+                          className="text-sm font-semibold mb-1"
+                        >
+                          {"Assign Consellor"}
+                        </label>
+                 
+                    <select
+                      name={"consoller"}
+                      value={consellorAssign || ""}
+                      onChange={(e)=>onChangeOptions(e)}
+                      className="border border-gray-300 text-black rounded-lg p-2 focus:ring-2 w-full focus:ring-yellow-400 focus:outline-none pr-2"
+                      style={{
+                        backgroundImage: `url(${Neeche})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "right 10px center",
+                        backgroundSize: "16px",
+                      }}
+                    >
+                      <option value=" " className=" ">
+                        {"Assign Consellor"}
+                      </option>
+                      {options.map((option) => (
+                        <option
+                          className=" text-black border-2 border-black-2 rounded-lg p-3 "
+                          key={option._id}
+                          value={option._id}
+                        >
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                    {error && (
+                      <span className="text-[#ffdd00] text-sm mt-1">
+                        {error}
+                      </span>
+                    )}
+                    {/* </div> */}
+                  </div>
+
                   <div className="flex justify-around">
                     <h3 className="text-lg font-semibold mb-1">
                       Student Details
@@ -785,6 +839,9 @@ const AdminComponent = () => {
                     </div>
                   </div>
                 </section>
+                {onSubmitError && (
+                  <span className="flex text-[#c61d23]">{onSubmitError}</span>
+                )}
 
                 <div className="w-full flex justify-center">
                   <button
