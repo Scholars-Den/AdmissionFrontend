@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectField from "../../../utils/SelectField";
 
-const SuperAdminConponent = () => {
+const AdmissionHeadComponent = () => {
   const [approval, setApproval] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [popupData, setPopupData] = useState(null); // fetched details
@@ -15,6 +15,7 @@ const SuperAdminConponent = () => {
 
   const [filterByAckNumber, setFilterByAckNumber] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // for popup content
+  const [enrollmentNo, setEnrollmentNo] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -38,7 +39,7 @@ const SuperAdminConponent = () => {
     const response = await fetch("https://erptestapi.scholarsden.in/batches", {
       headers: {
         Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNTk3Njg0LCJpYXQiOjE3NTA1MTEyODQsImp0aSI6IjA4MTYyNjkzYjc4MjQzNzRhYTUzYzQ3ZmJjMWRhOWM4IiwidXNlcl9pZCI6MX0.y2he_jly_55UNognK4MWcAy4X6nYZGBGy7MHzu-Jz5A",
+          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNzY2NDA0LCJpYXQiOjE3NTA2ODAwMDQsImp0aSI6ImUwYTBmZDUyYWVmYzQ1ZDc4ZjNkZTg4MmIyYzRiOTUwIiwidXNlcl9pZCI6MX0.bVrseXZxLWUHhpAKqTRDL50UffzWmiyVw_RL95pQht0",
       },
     });
 
@@ -114,12 +115,6 @@ const SuperAdminConponent = () => {
 
   const onChangeBatch = (e) => {
     setBatch(e.target.value);
-  };
-
-  const handleAmountChange = (e) => {
-    const raw = e.target.value.replace(/,/g, "").replace(/\D/g, "");
-    setAmountPaid(raw);
-    setFormattedAmount(formatWithCommas(raw));
   };
 
   useEffect(() => {
@@ -495,25 +490,24 @@ const SuperAdminConponent = () => {
                 label={"Select Batch"}
                 name={"Batch"}
                 value={batch}
-                options={batchList.map((batch)=> batch.batch_name)}
+                options={batchList?.map((batch) => batch.batch_name)}
                 onChange={onChangeBatch}
                 classAdded={"bg-white"}
               />
 
               <div className="mb-4">
                 <label
-                  htmlFor="amountPaid"
+                  htmlFor="enrollmentno"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Enrollment No
                 </label>
                 <input
                   type="text"
-                  id="amountPaid"
-                  value={formattedAmount}
-                  onChange={handleAmountChange}
+                  id="enrollmentno"
+                  value={selectedItem.enrollnmentNo}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  disabled
                 />
               </div>
 
@@ -540,4 +534,4 @@ const SuperAdminConponent = () => {
   );
 };
 
-export default SuperAdminConponent;
+export default AdmissionHeadComponent;

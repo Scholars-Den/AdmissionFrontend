@@ -21,7 +21,7 @@ import ManagerDashboard from "./Components/ManagerView/ManagerDashboard";
 import AmountPaidList from "./Components/ManagerView/AmountPaidList";
 import ConsellorDashboard from "./Components/Consellor/ConsellorDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import SuperAdminDashboard from "./Components/SuperAdmin/SuperAdminDashboard";
+import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDashboard";
 
 function App() {
   return (
@@ -131,10 +131,10 @@ function App() {
             }
           />
           <Route
-            path="/superAdminDashboard"
+            path="/admissionHeadDasboard"
             element={
-              <ProtectedRoute allowedRoles={["super_admin"]}>
-                <SuperAdminDashboard />
+              <ProtectedRoute allowedRoles={["admissionHead"]}>
+                <AdmissionHeadDashboard />
               </ProtectedRoute>
             }
           />

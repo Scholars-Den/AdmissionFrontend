@@ -1,5 +1,5 @@
 import AdminSidebar from '../AdminView/AdminSidebar';
-import SuperAdminConponent from './SuperAdminConponent';
+import AdmissionHeadComponent from './AdmissionHeadComponent';
 
 const ManagerDashboard = () => {
   return (
@@ -9,7 +9,7 @@ const ManagerDashboard = () => {
           <AdminSidebar />
         </div>
         <div className="col-span-5 flex-grow w-full ">
-            <SuperAdminConponent/>
+            <AdmissionHeadComponent/>
             
 
         </div>

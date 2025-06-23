@@ -64,8 +64,8 @@ const AdminSignup = () => {
       } else if (role === "consellor") {
         navigate("/consellorDashboard");
       
-      } else if (role === "super_admin") {
-        navigate("/superAdminDashboard");
+      } else if (role === "admissionHead") {
+        navigate("/admissionHeadDasboard");
       }
       // } else {
       //   setError(result.payload?.message || "Invalid OTP.");

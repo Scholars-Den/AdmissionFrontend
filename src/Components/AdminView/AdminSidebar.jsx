@@ -21,7 +21,7 @@ const AdminSidebar = () => {
       { to: "/amountPaid", text: "Paid" },
     ],
     consellor: [{ to: "/consellorDashboard", text: "Assigned" }],
-    super_admin: [{ to: "/superAdminDashboard", text: "Admission Taken" }],
+    admissionHead: [{ to: "/admissionHeadDasboard", text: "Admission Taken" }],
   };
 
   const handleLogout = () => {
