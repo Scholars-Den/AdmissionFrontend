@@ -22,6 +22,7 @@ import AmountPaidList from "./Components/ManagerView/AmountPaidList";
 import ConsellorDashboard from "./Components/Consellor/ConsellorDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDashboard";
+import ProtectedRouteForStudent from "./Components/ProtectedRouteForStudent";
 
 function App() {
   return (
@@ -38,41 +39,41 @@ function App() {
           <Route
             path="/familyDetails"
             element={
-              <ProtectedRoute>
+              <ProtectedRouteForStudent>
                 <FamilyComponents />
-              </ProtectedRoute>
+              </ProtectedRouteForStudent>
             }
           />
           <Route
             path="/siblingsDetails"
             element={
-              <ProtectedRoute>
+              <ProtectedRouteForStudent>
                 <SiblingsDetailsComponents />
-              </ProtectedRoute>
+              </ProtectedRouteForStudent>
             }
           />
           <Route
             path="/bankRefund"
             element={
-              <ProtectedRoute>
+              <ProtectedRouteForStudent>
                 <BankRefundComponents />
-              </ProtectedRoute>
+              </ProtectedRouteForStudent>
             }
           />
           <Route
             path="/admissionComplete"
             element={
-              <ProtectedRoute>
+              <ProtectedRouteForStudent>
                 <SuccessComponent />
-              </ProtectedRoute>
+              </ProtectedRouteForStudent>
             }
           />
           <Route
             path="/documentUpload"
             element={
-              <ProtectedRoute>
+              <ProtectedRouteForStudent>
                 <DocumentDetails />
-              </ProtectedRoute>
+              </ProtectedRouteForStudent>
             }
           />
 

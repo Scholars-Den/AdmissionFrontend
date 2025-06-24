@@ -17,7 +17,7 @@ import {
 import SignupDetailsPage from "./SignupDetailsPage";
 import { updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice";
 
-const VerificationPage = () => {
+const   VerificationPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userData, message } = useSelector((state) => state.userDetails);
@@ -169,8 +169,8 @@ const VerificationPage = () => {
     e.preventDefault();
 
     // For enable OTP
-    let codeChecked = await checkVerificationCode();
-    // let codeChecked = true;
+    // let codeChecked = await checkVerificationCode();
+    let codeChecked = true;
 
     console.log("codeChecked", codeChecked);
     if (codeChecked === false) {
@@ -298,7 +298,7 @@ const VerificationPage = () => {
                 maxLength={10}
                 inputMode="numeric"
               />
-              {!showCodeBox && !codeVerified && (
+              {/* {!showCodeBox && !codeVerified && (
                 <button
                   type="button"
                   onClick={verifyPhoneNo}
@@ -306,7 +306,7 @@ const VerificationPage = () => {
                 >
                   Send OTP
                 </button>
-              )}
+              )} */}
             </div>
             {errors.fatherContactNumber && (
               <p className="text-[#ffdd00] mt-1">
@@ -354,15 +354,15 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-          {showCodeBox && (
+          {/* {showCodeBox && ( */}
             <button
               type="submit"
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              disabled={!codeEntered}
+              // disabled={!codeEntered}
             >
               Next
             </button>
-          )}
+          {/* )} */}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />

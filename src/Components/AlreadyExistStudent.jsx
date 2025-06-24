@@ -300,7 +300,7 @@ const AlreadyExistStudent = () => {
                     <strong>Program:</strong> {selectedStudent.program}
                   </p>
                   <p>
-                    <strong>Aadhar ID:</strong> {selectedStudent.aadharID}
+                    <strong>Aadhar ID:</strong> {selectedStudent.aadhaarID}
                   </p>
                   <p>
                     <strong>Category:</strong> {selectedStudent.category}
@@ -340,7 +340,7 @@ const AlreadyExistStudent = () => {
                   </p>
                   <p>
                     <strong>Father's Aadhar:</strong>{" "}
-                    {selectedStudent.fatherAadharId}
+                    {selectedStudent.fatherAadhaarID}
                   </p>
                   <p>
                     <strong>Father's Occupation:</strong>{" "}
@@ -351,7 +351,7 @@ const AlreadyExistStudent = () => {
                   </p>
                   <p>
                     <strong>Mother's Aadhar:</strong>{" "}
-                    {selectedStudent.motherAadharId}
+                    {selectedStudent.motherAadhaarID}
                   </p>
                   <p>
                     <strong>Mother's Occupation:</strong>{" "}
@@ -518,13 +518,13 @@ const AlreadyExistStudent = () => {
                     <div className="flex items-center gap-4 text-xl">
                       <p className="mb-1 font-medium">Student Aadhar</p>
                       <a
-                        href={selectedStudent.studentAadhar}
+                        href={selectedStudent.studentAadhaar}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <div className="relative w-24">
                           <img
-                            src={selectedStudent.studentAadhar}
+                            src={selectedStudent.studentAadhaar}
                             alt="Student Aadhar"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
@@ -532,13 +532,13 @@ const AlreadyExistStudent = () => {
                           <div
                             className={`absolute top-1 left-1 bg-${
                               admisionStatus?.data?.documentsDetails
-                                ?.studentAadhar?.status
+                                ?.studentAadhaar?.status
                                 ? "green"
                                 : "red"
                             }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
                             {admisionStatus?.data?.documentsDetails
-                              ?.studentAadhar?.status
+                              ?.studentAadhaar?.status
                               ? "Approved"
                               : "Rejected"}
                           </div>
@@ -549,13 +549,13 @@ const AlreadyExistStudent = () => {
                     <div className="flex items-center gap-4 text-xl">
                       <p className="mb-1 font-medium">Parent Aadhar</p>
                       <a
-                        href={selectedStudent.parentAadhar}
+                        href={selectedStudent.parentAadhaar}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <div className="relative w-24">
                           <img
-                            src={selectedStudent.parentAadhar}
+                            src={selectedStudent.parentAadhaar}
                             alt="Parent Aadhar"
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
@@ -563,13 +563,13 @@ const AlreadyExistStudent = () => {
                           <div
                             className={`absolute top-1 left-1 bg-${
                               admisionStatus?.data?.documentsDetails
-                                ?.parentAadhar?.status
+                                ?.parentAadhaar?.status
                                 ? "green"
                                 : "red"
                             }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
                           >
                             {admisionStatus?.data?.documentsDetails
-                              ?.parentAadhar?.status
+                              ?.parentAadhaar?.status
                               ? "Approved"
                               : "Rejected"}
                           </div>

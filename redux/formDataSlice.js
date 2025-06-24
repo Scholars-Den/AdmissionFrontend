@@ -30,7 +30,7 @@ export const fetchUserDetails = createAsyncThunk(
             enrollmentNumber: data?.enrollmentNumber || "",
             acknowledgementNumber: data?.acknowledgementNumber || "",
 
-            aadharID: data?.aadharID || "",
+            aadhaarID: data?.aadhaarID || "",
             studentContactNumber: data?.studentContactNumber || "",
             gender: data?.gender || "",
             category: data?.category || "",
@@ -41,12 +41,12 @@ export const fetchUserDetails = createAsyncThunk(
             scholarship: data?.scholarship || "",
             termsAndCondition: data?.TermsAndCondition || "",
             fatherName: data?.fatherName || "",
-            fatherAadharId: data?.fatherAadharId || "",
+            fatherAadhaarID: data?.fatherAadhaarID || "",
             fatherDob: data?.fatherDob || "",
             fatherBloodGroup: data?.fatherBloodGroup || "",
             fatherOccupations: data?.fatherOccupations || "",
             motherName: data?.motherName || "",
-            motherAadharId: data?.motherAadharId || "",
+            motherAadhaarID: data?.motherAadhaarID || "",
             motherDob: data?.motherDob || "",
             motherBloodGroup: data?.motherBloodGroup || "",
             motherOccupations: data?.motherOccupations || "",
@@ -63,8 +63,8 @@ export const fetchUserDetails = createAsyncThunk(
             relationWithStudent: data?.relationWithStudent || "",
             cancelledCheque: data?.cancelledCheque || "",
             passbook: data?.passbook || "",
-            studentAadhar: data?.studentAadhar || "",
-            parentAadhar: data?.parentAadhar || "",
+            studentAadhaar: data?.studentAadhaar || "",
+            parentAadhaar: data?.parentAadhaar || "",
             passbookPhoto: data?.passbookPhoto || "",
             admissionOfficer: data?.admissionOfficer || "",
             parent: data?.parent || "",
@@ -155,7 +155,7 @@ export const submitFormData = createAsyncThunk(
           message: data.message || "",
           userData: {
             studentName: data?.newAdmission?.studentName || "",
-            aadharID: data?.newAdmission?.aadharID || "",
+            aadhaarID: data?.newAdmission?.aadhaarID || "",
             studentContactNumber:
               data?.newAdmission?.studentContactNumber || "",
             gender: data?.newAdmission?.gender || "",
@@ -168,20 +168,20 @@ export const submitFormData = createAsyncThunk(
             program: data?.newAdmission?.program || "",
 
             fatherName: data?.newAdmission?.fatherName || "",
-            fatherAadharId: data?.newAdmission?.fatherAadharId || "",
+            fatherAadhaarID: data?.newAdmission?.fatherAadhaarID || "",
             fatherDob: data?.newAdmission?.fatherDob || "",
             fatherBloodGroup: data?.newAdmission?.fatherBloodGroup || "",
             fatherOccupations: data?.newAdmission?.fatherOccupatoions || "",
             motherName: data?.newAdmission?.motherName || "",
-            motherAadharId: data?.newAdmission?.motherAadharId || "",
+            motherAadhaarID: data?.newAdmission?.motherAadhaarID || "",
             motherDob: data?.newAdmission?.motherDob || "",
             motherBloodGroup: data?.newAdmission?.motherBloodGroup || "",
             motherOccupations: data?.newAdmission?.motherOccupations || "",
 
             cancelledCheque: data?.cancelledCheque || "",
             passbook: data?.passbook || "",
-            studentAadhar: data?.studentAadhar || "",
-            parentAadhar: data?.parentAadhar || "",
+            studentAadhaar: data?.studentAadhaar || "",
+            parentAadhaar: data?.parentAadhaar || "",
             passbookPhoto: data?.passbookPhoto || "",
           },
         };
@@ -221,7 +221,7 @@ export const putFormData = createAsyncThunk(
           dataExist: true, // Indicate data exists
           userData: {
             studentName: data?.studentName || "",
-            aadharID: data?.aadharID || "",
+            aadhaarID: data?.aadhaarID || "",
             studentContactNumber: data?.studentContactNumber || "",
 
             gender: data?.gender || "",
@@ -232,12 +232,12 @@ export const putFormData = createAsyncThunk(
             termsAndCondition: data?.TermsAndCondition || "",
 
             fatherName: data?.fatherName || "",
-            fatherAadharId: data?.fatherAadharId || "",
+            fatherAadhaarID: data?.fatherAadhaarID || "",
             fatherDob: data?.fatherDob || "",
             fatherBloodGroup: data?.fatherBloodGroup || "",
             fatherOccupations: data?.fatherOccupatoions || "",
             motherName: data?.motherName || "",
-            motherAadharId: data?.motherAadharId || "",
+            motherAadhaarID: data?.motherAadhaarID || "",
             motherDob: data?.motherDob || "",
             motherBloodGroup: data?.motherBloodGroup || "",
             motherOccupations: data?.motherOccupations || "",
@@ -245,8 +245,8 @@ export const putFormData = createAsyncThunk(
 
             cancelledCheque: data?.cancelledCheque || "",
             passbook: data?.passbook || "",
-            studentAadhar: data?.studentAadhar || "",
-            parentAadhar: data?.parentAadhar || "",
+            studentAadhaar: data?.studentAadhaar || "",
+            parentAadhaar: data?.parentAadhaar || "",
             passbookPhoto: data?.passbookPhoto || "",
           },
         };

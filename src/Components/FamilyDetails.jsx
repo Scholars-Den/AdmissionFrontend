@@ -44,7 +44,7 @@ const FamilyDetails = () => {
             label: "*Father Name",
           },
           {
-            name: "fatherAadharId",
+            name: "fatherAadhaarID",
             type: "text",
             placeholder: "*Father's Aadhar ID",
             required: true,
@@ -75,7 +75,7 @@ const FamilyDetails = () => {
             label: "Mother Name",
           },
           {
-            name: "motherAadharId",
+            name: "motherAadhaarID",
             type: "text",
             placeholder: "*Mother's Aadhar ID",
             required: true,

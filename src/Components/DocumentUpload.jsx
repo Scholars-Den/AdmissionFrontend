@@ -8,6 +8,7 @@ import {
 } from "../../redux/formDataSlice";
 
 import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
+import DocumentCarousel from "./Swiper";
 
 const DocumentUpload = ({ documentRequired }) => {
   const dispatch = useDispatch();
@@ -125,7 +126,7 @@ const DocumentUpload = ({ documentRequired }) => {
 
   return (
     <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center">
-      {studentAdmissionApprovalDetails?.documentsDetails   &&
+      {studentAdmissionApprovalDetails?.documentsDetails &&
         (studentAdmissionApprovalDetails?.documentsDetails?.status ? (
           <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
             {/* <span className="text-white">
@@ -159,12 +160,10 @@ const DocumentUpload = ({ documentRequired }) => {
             </span>
           </div>
         ))}
-
       <h2 className="text-white text-2xl m-1 font-semibold">
         Upload Required Documents
       </h2>
-
-      <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-1 p-7 gap-6">
         {documentRequired.map((doc) => {
           const uploadedImage = uploads[doc.name] || userDetails[doc.name];
           const isDisabled =
@@ -271,8 +270,16 @@ const DocumentUpload = ({ documentRequired }) => {
             </div>
           );
         })}
-      </div>
-
+      </div> */}
+      <DocumentCarousel
+        documentRequired={documentRequired}
+        uploads={uploads}
+        userDetails={userDetails}
+        studentAdmissionApprovalDetails={studentAdmissionApprovalDetails}
+        uploading={uploading}
+        handleFileUpload={handleFileUpload}
+        setActiveDoc={setActiveDoc}
+      />
       {/* {allUploaded && ( */}
       <div className="flex w-full justify-between ">
         <button
@@ -283,15 +290,21 @@ const DocumentUpload = ({ documentRequired }) => {
           Back
         </button>
         <button
-          className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+          className={`mt-6 border-2 px-4 py-2 rounded font-medium transition
+    ${
+      allUploaded
+        ? "bg-[#ffd700] text-black hover:bg-[#ffdd00]"
+        : "bg-gray-300 text-gray-600 cursor-not-allowed"
+    }
+  `}
           type="button"
           onClick={() => navigate("/bankRefund")}
+          disabled={!allUploaded}
         >
           Next
         </button>
       </div>
       {/* )} */}
-
       {/* Camera Modal */}
       {activeDoc && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col justify-center items-center z-50 p-4">
@@ -332,11 +345,9 @@ const DocumentUpload = ({ documentRequired }) => {
           </div>
         </div>
       )}
-
       {/* {showError && (
         <p className="text-center text-red-500 text-sm mt-4">{showError}</p>
       )} */}
-
       <canvas ref={canvasRef} className="hidden" />
     </div>
   );

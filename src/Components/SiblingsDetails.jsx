@@ -113,19 +113,16 @@ const SiblingsDetails = () => {
       name: "noOfBrother",
       label: "No. of Brothers",
       type: "number",
-      required: true,
     },
     {
       name: "noOfSister",
       label: "No. of Sisters",
       type: "number",
-      required: true,
     },
     {
       name: "siblingsPosition",
       label: "Your position among siblings",
       type: "number",
-      required: true,
     },
   ];
 
@@ -409,6 +406,7 @@ const SiblingsDetails = () => {
 
                     <td className="border p-2 text-center">
                       <button
+                        type="button"
                         onClick={() => handleRemoveSibling(index)}
                         className="text-red-500 font-bold"
                       >
@@ -493,7 +491,7 @@ const SiblingsDetails = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
 export default SiblingsDetails;

@@ -4,11 +4,11 @@ import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 
 const DocumentDetails = () => {
   const documentRequired = [
-    { label: "Student Aadhar Card", name: "studentAadhar" },
+    { label: "Student Aadhaar Card", name: "studentAadhaar" },
     { label: "Student Photo", name: "studentPhoto" },
     {
-      label: "Aadhar Of One Of The Parents/Guardian Mentined In Student Aadher",
-      name: "parentAadhar",
+      label: "Aadhaar Of One Of The Parents/Guardian Mentined In Student Aadhaar",
+      name: "parentAadhaar",
     },
     { label: "Passbook", name: "passbookPhoto" },
     { label: "Cancelled Cheque", name: "cancelledCheque" },

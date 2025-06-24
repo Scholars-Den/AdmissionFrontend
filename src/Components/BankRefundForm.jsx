@@ -163,8 +163,8 @@ const BankRefundForm = () => {
   // const requiredDocuments = [
   //   "cancelledCheque",
   //   "passbook",
-  //   "studentAadhar",
-  //   "parentAadhar",
+  //   "studentAadhaar",
+  //   "parentAadhaar",
   //   "passportPhotos",
   // ];
 
@@ -311,8 +311,8 @@ const BankRefundForm = () => {
           {[
             { label: "Cancelled Cheque", name: "cancelledCheque" },
             { label: "Photocopy of Passbook", name: "passbook" },
-            { label: "Photocopy of Student’s Aadhar", name: "studentAadhar" },
-            { label: "Photocopy of Parent’s Aadhar", name: "parentAadhar" },
+            { label: "Photocopy of Student’s Aadhar", name: "studentAadhaar" },
+            { label: "Photocopy of Parent’s Aadhar", name: "parentAadhaar" },
             { label: "Two Passport Size Photographs", name: "passportPhotos" },
           ].map(({ label, name }) => (
             <CheckboxField

@@ -20,8 +20,8 @@ const ConsellorComponent = () => {
   const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
     cancelledCheque: false,
     passbookPhoto: false,
-    studentAadhar: false,
-    parentAadhar: false,
+    studentAadhaar: false,
+    parentAadhaar: false,
     studentPhoto: false,
   });
   const [signatureDetailsStatus, setSignatureDetailsStatus] = useState(false);
@@ -90,8 +90,8 @@ const ConsellorComponent = () => {
     setDocumentsDetailsStatus({
       cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
       passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
-      studentAadhar: item?.documentsDetails?.studentAadhar?.status || false,
-      parentAadhar: item?.documentsDetails?.parentAadhar?.status || false,
+      studentAadhaar: item?.documentsDetails?.studentAadhaar?.status || false,
+      parentAadhaar: item?.documentsDetails?.parentAadhaar?.status || false,
       studentPhoto: item?.documentsDetails?.studentPhoto?.status || false,
     });
     setShowPopup(true);
@@ -115,9 +115,9 @@ const ConsellorComponent = () => {
       unverifiedDocs.push("Cancelled Cheque");
     if (!documentsDetailsStatus.passbookPhoto)
       unverifiedDocs.push("Passbook Photo");
-    if (!documentsDetailsStatus.studentAadhar)
+    if (!documentsDetailsStatus.studentAadhaar)
       unverifiedDocs.push("Student Aadhar");
-    if (!documentsDetailsStatus.parentAadhar)
+    if (!documentsDetailsStatus.parentAadhaar)
       unverifiedDocs.push("Parent Aadhar");
     if (!documentsDetailsStatus.studentPhoto)
       unverifiedDocs.push("Student Photo");
@@ -145,15 +145,15 @@ const ConsellorComponent = () => {
           ? "Student info verified"
           : "Student info not verified",
       },
-      studentAadhar: {
-        status: documentsDetailsStatus.studentAadhar,
-        message: documentsDetailsStatus.studentAadhar
+      studentAadhaar: {
+        status: documentsDetailsStatus.studentAadhaar,
+        message: documentsDetailsStatus.studentAadhaar
           ? "Student info verified"
           : "Student info not verified",
       },
-      parentAadhar: {
-        status: documentsDetailsStatus.parentAadhar,
-        message: documentsDetailsStatus.parentAadhar
+      parentAadhaar: {
+        status: documentsDetailsStatus.parentAadhaar,
+        message: documentsDetailsStatus.parentAadhaar
           ? "Student info verified"
           : "Student info not verified",
       },
@@ -206,15 +206,15 @@ const ConsellorComponent = () => {
             ? "Student info verified"
             : "Student info not verified",
         },
-        studentAadhar: {
-          status: documentsDetailsStatus.studentAadhar,
-          message: documentsDetailsStatus.studentAadhar
+        studentAadhaar: {
+          status: documentsDetailsStatus.studentAadhaar,
+          message: documentsDetailsStatus.studentAadhaar
             ? "Student info verified"
             : "Student info not verified",
         },
-        parentAadhar: {
-          status: documentsDetailsStatus.parentAadhar,
-          message: documentsDetailsStatus.parentAadhar
+        parentAadhaar: {
+          status: documentsDetailsStatus.parentAadhaar,
+          message: documentsDetailsStatus.parentAadhaar
             ? "Student info verified"
             : "Student info not verified",
         },
@@ -426,7 +426,7 @@ const ConsellorComponent = () => {
                     {popupData.acknowledgementNumber}
                   </p>
                   <p>
-                    <strong>Aadhaar ID:</strong> {popupData.aadharID}
+                    <strong>Aadhaar ID:</strong> {popupData.aadhaarID}
                   </p>
                   <p>
                     <strong>Student Name:</strong> {popupData.studentName}
@@ -471,7 +471,7 @@ const ConsellorComponent = () => {
                   </p>
                   <p>
                     <strong>Father's Aaadhaar Card:</strong>{" "}
-                    {popupData.fatherAadharId}
+                    {popupData.fatherAadhaarID}
                   </p>
                   <p>
                     <strong>Father's Occupations:</strong>{" "}
@@ -482,7 +482,7 @@ const ConsellorComponent = () => {
                   </p>
                   <p>
                     <strong>Mother's Aaadhaar Card:</strong>{" "}
-                    {popupData.motherAadharId}
+                    {popupData.motherAadhaarID}
                   </p>
                   <p>
                     <strong>Mother's Occupations:</strong>{" "}
@@ -538,8 +538,8 @@ const ConsellorComponent = () => {
                             return {
                               cancelledCheque: !shouldUncheck,
                               passbookPhoto: !shouldUncheck,
-                              studentAadhar: !shouldUncheck,
-                              parentAadhar: !shouldUncheck,
+                              studentAadhaar: !shouldUncheck,
+                              parentAadhaar: !shouldUncheck,
                               studentPhoto: !shouldUncheck,
                             };
                           })
@@ -635,28 +635,28 @@ const ConsellorComponent = () => {
                       </div>
                     )}
 
-                    {popupData.studentAadhar && (
+                    {popupData.studentAadhaar && (
                       <div>
                         <div className="flex justify-between pr-2">
                           <p className="font-medium">Student Aadhar</p>
                           <input
                             type="checkbox"
-                            checked={documentsDetailsStatus.studentAadhar}
+                            checked={documentsDetailsStatus.studentAadhaar}
                             onChange={() =>
                               setDocumentsDetailsStatus((prev) => ({
                                 ...prev,
-                                studentAadhar: !prev.studentAadhar,
+                                studentAadhaar: !prev.studentAadhaar,
                               }))
                             }
                           />
                         </div>
                         <a
-                          href={popupData.studentAadhar}
+                          href={popupData.studentAadhaar}
                           target="_blank"
                           rel="noreferrer"
                         >
                           <img
-                            src={popupData.studentAadhar}
+                            src={popupData.studentAadhaar}
                             alt="Student Aadhar"
                             className="w-full h-24 object-cover border rounded hover:scale-105 transition"
                           />
@@ -664,28 +664,28 @@ const ConsellorComponent = () => {
                       </div>
                     )}
 
-                    {popupData.parentAadhar && (
+                    {popupData.parentAadhaar && (
                       <div>
                         <div className="flex justify-between pr-2">
                           <p className="font-medium">Parent Aadhar</p>
                           <input
                             type="checkbox"
-                            checked={documentsDetailsStatus.parentAadhar}
+                            checked={documentsDetailsStatus.parentAadhaar}
                             onChange={() =>
                               setDocumentsDetailsStatus((prev) => ({
                                 ...prev,
-                                parentAadhar: !prev.parentAadhar,
+                                parentAadhaar: !prev.parentAadhaar,
                               }))
                             }
                           />
                         </div>
                         <a
-                          href={popupData.parentAadhar}
+                          href={popupData.parentAadhaar}
                           target="_blank"
                           rel="noreferrer"
                         >
                           <img
-                            src={popupData.parentAadhar}
+                            src={popupData.parentAadhaar}
                             alt="Parent Aadhar"
                             className="w-full h-24 object-cover border rounded hover:scale-105 transition"
                           />

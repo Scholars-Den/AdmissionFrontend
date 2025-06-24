@@ -193,7 +193,7 @@ const [options, setOptions] = useState([]);
                     {popupData.acknowledgementNumber}
                   </p>
                   <p>
-                    <strong>Aadhaar ID:</strong> {popupData.aadharID}
+                    <strong>Aadhaar ID:</strong> {popupData.aadhaarID}
                   </p>
                   <p>
                     <strong>Student Name:</strong> {popupData.studentName}
@@ -223,7 +223,7 @@ const [options, setOptions] = useState([]);
                   </p>
                   <p>
                     <strong>Father's Aaadhaar Card:</strong>{" "}
-                    {popupData.fatherAadharId}
+                    {popupData.fatherAadhaarID}
                   </p>
                   <p>
                     <strong>Father's Occupations:</strong>{" "}
@@ -234,7 +234,7 @@ const [options, setOptions] = useState([]);
                   </p>
                   <p>
                     <strong>Mother's Aaadhaar Card:</strong>{" "}
-                    {popupData.motherAadharId}
+                    {popupData.motherAadhaarID}
                   </p>
                   <p>
                     <strong>Mother's Occupations:</strong>{" "}
@@ -308,32 +308,32 @@ const [options, setOptions] = useState([]);
                         </a>
                       </div>
                     )}
-                    {popupData.studentAadhar && (
+                    {popupData.studentAadhaar && (
                       <div>
                         <p className="font-medium">Student Aadhar</p>
                         <a
-                          href={popupData.studentAadhar}
+                          href={popupData.studentAadhaar}
                           target="_blank"
                           rel="noreferrer"
                         >
                           <img
-                            src={popupData.studentAadhar}
+                            src={popupData.studentAadhaar}
                             alt="Student Aadhar"
                             className="w-full h-24 object-cover border rounded hover:scale-105 transition"
                           />
                         </a>
                       </div>
                     )}
-                    {popupData.parentAadhar && (
+                    {popupData.parentAadhaar && (
                       <div>
-                        <p className="font-medium">Parent Aadhar</p>
+                        <p className="font-medium">Parent Aadhaar</p>
                         <a
-                          href={popupData.parentAadhar}
+                          href={popupData.parentAadhaar}
                           target="_blank"
                           rel="noreferrer"
                         >
                           <img
-                            src={popupData.parentAadhar}
+                            src={popupData.parentAadhaar}
                             alt="Parent Aadhar"
                             className="w-full h-24 object-cover border rounded hover:scale-105 transition"
                           />
