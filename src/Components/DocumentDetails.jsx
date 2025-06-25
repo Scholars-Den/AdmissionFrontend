@@ -7,7 +7,7 @@ const DocumentDetails = () => {
     { label: "Student Aadhaar Card", name: "studentAadhaar" },
     { label: "Student Photo", name: "studentPhoto" },
     {
-      label: "Aadhaar Of One Of The Parents/Guardian Mentined In Student Aadhaar",
+      label: "Guardian Aadhaar Card (Upload the Aadhaar card of one of the parents or guardian mentioned in the student’s Aadhaar.)",
       name: "parentAadhaar",
     },
     { label: "Passbook", name: "passbookPhoto" },

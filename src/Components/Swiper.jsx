@@ -21,36 +21,67 @@ const DocumentCarousel = ({
       spaceBetween={20}
       slidesPerView={1}
       navigation
-      pagination={{ clickable: true }}  
-      className="max-w-lg p-7"
+      pagination={{ clickable: true }}
+      className="w-full md:w-2/3 p-7"
     >
       {documentRequired.map((doc) => {
-        const uploadedImage = uploads[doc.name] || userDetails[doc.name]
+        const uploadedImage = uploads[doc.name] || userDetails[doc.name];
         const isDisabled =
-          studentAdmissionApprovalDetails?.documentsDetails?.[doc.name]
-            ?.status
+          studentAdmissionApprovalDetails?.documentsDetails?.[doc.name]?.status;
 
         return (
           <SwiperSlide key={doc.name}>
             <div className="bg-white rounded-xl p-4 shadow">
-              <div className="w-full">
-                {doc.label.length > 10 ? (
-                  <h3 className="text-lg font-semibold text-[#c61d23] mb-2">
-                    {doc.label.split(" ").map((item, index) => (
+              {/* <div className="w-full">
+                <h3 className="mb-2 font-semibold text-[#c61d23]">
+                  {doc.label.length > 10 ? (
+                    doc.label.split("/").map((item, index) => (
                       <span
                         key={index}
-                        className={index < 3 ? "text-xl" : "text-sm"}
-                      >{`${item} `}</span>
-                    ))}
-                  </h3>
-                ) : (
-                  <h3 className="text-lg font-semibold text-[#c61d23] mb-2">
-                    {doc.label}
-                  </h3>
-                )}
+                        className={
+                          index === 0 ? "block text-xl" : "block text-xs"
+                        }
+                      >
+                        {item.trim()}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-lg">{doc.label}</span>
+                  )}
+                </h3>
               </div>
+              
+              
+              */}
 
-              {uploadedImage !== "" ? (
+
+
+
+<div className="w-full mb-2">
+  <h3 className="font-semibold ">
+    {doc.label.includes("(") ? (
+      <>
+        <span className="block text-xl">
+          {doc.label.split("(")[0].trim()}
+        </span>
+        <span className="block text-xs text-[#c61d23]">
+          {"("}{doc.label.split("(")[1].trim()}
+        </span>
+
+        
+      </>
+    ) : (
+      <span className="text-lg">{doc.label}</span>
+    )}
+  </h3>
+</div>
+
+
+
+
+
+
+              {/* {uploadedImage !== "" ? (
                 <>
                   <img
                     src={uploadedImage}
@@ -119,13 +150,63 @@ const DocumentCarousel = ({
                     📸 Capture via Camera
                   </button>
                 </>
-              )}
+              )} */}
+
+              <div className="w-full h-64 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+                {uploadedImage ? (
+                  <img
+                    src={uploadedImage}
+                    alt={doc.label}
+                    className="w-full h-full object-cover"
+                  />
+                ) : uploading[doc.name] ? (
+                  <p className="text-gray-600 text-sm">Uploading...</p>
+                ) : (
+                  <p className="text-gray-400 text-sm">No image uploaded</p>
+                )}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 mt-3">
+                <label
+                  className={`flex-1 text-center py-2 rounded cursor-pointer transition text-sm font-medium
+      ${
+        isDisabled
+          ? "bg-gray-300 cursor-not-allowed text-white"
+          : "bg-yellow-400 hover:bg-yellow-300"
+      }
+    `}
+                >
+                  📁{" "}
+                  {uploadedImage ? "Change from Device" : "Upload from Device"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e, doc.name)}
+                    disabled={isDisabled}
+                    className="hidden"
+                  />
+                </label>
+
+                <button
+                  onClick={() => setActiveDoc(doc.name)}
+                  className={`flex-1 text-white py-2 rounded transition text-sm font-medium 
+      ${
+        isDisabled
+          ? "bg-gray-500 cursor-not-allowed"
+          : "bg-blue-600 hover:bg-blue-700"
+      }
+    `}
+                  disabled={isDisabled}
+                >
+                  📸 {uploadedImage ? "Retake Photo" : "Capture via Camera"}
+                </button>
+              </div>
             </div>
           </SwiperSlide>
-        )
+        );
       })}
     </Swiper>
-  )
+  );
 };
 
 export default DocumentCarousel;

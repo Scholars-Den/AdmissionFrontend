@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Signup from "./Components/Signup";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -23,17 +23,28 @@ import ConsellorDashboard from "./Components/Consellor/ConsellorDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDashboard";
 import ProtectedRouteForStudent from "./Components/ProtectedRouteForStudent";
+import LockNavigation from "../utils/LockNavigation";
 
 function App() {
+  useEffect(() => {
+    // Push a new state when the component mounts
+    window.history.pushState(null, null, window.location.pathname);
+  }, []);
+
   return (
     <Provider store={store}>
+        <LockNavigation/>
       <Router>
+
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<VerificationPage />} />
           <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
           <Route path="/basicDetails" element={<Signup />} />
-          <Route path="/termsAndConditions" element={<TermsAndConditionPage />} />
+          <Route
+            path="/termsAndConditions"
+            element={<TermsAndConditionPage />}
+          />
 
           {/* Protected Routes for authenticated users */}
           <Route
