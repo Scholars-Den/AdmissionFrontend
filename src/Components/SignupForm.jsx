@@ -121,7 +121,9 @@ const SignupForm = () => {
   // };
 
   useEffect(() => {
-    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+    if (!userData && userData.acknowledgementNumber) {
+      dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+    }
   }, [userData]);
 
   useEffect(() => {

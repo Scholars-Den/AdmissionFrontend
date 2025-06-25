@@ -25,16 +25,15 @@ import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDash
 import ProtectedRouteForStudent from "./Components/ProtectedRouteForStudent";
 import LockNavigation from "../utils/LockNavigation";
 
+
 function App() {
-  useEffect(() => {
-    // Push a new state when the component mounts
-    window.history.pushState(null, null, window.location.pathname);
-  }, []);
+
+
 
   return (
     <Provider store={store}>
-        <LockNavigation/>
       <Router>
+        <LockNavigation/>
 
         <Routes>
           {/* Public Routes */}

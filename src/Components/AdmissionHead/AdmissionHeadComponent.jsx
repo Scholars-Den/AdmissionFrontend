@@ -39,7 +39,7 @@ const AdmissionHeadComponent = () => {
     const response = await fetch("https://erptestapi.scholarsden.in/batches", {
       headers: {
         Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNzY2NDA0LCJpYXQiOjE3NTA2ODAwMDQsImp0aSI6ImUwYTBmZDUyYWVmYzQ1ZDc4ZjNkZTg4MmIyYzRiOTUwIiwidXNlcl9pZCI6MX0.bVrseXZxLWUHhpAKqTRDL50UffzWmiyVw_RL95pQht0",
+          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwOTE2NTM1LCJpYXQiOjE3NTA4MzAxMzUsImp0aSI6ImU5ZDMzODY2OWYxMDRhNjliZTkwOThmODUwNzczNTk5IiwidXNlcl9pZCI6MX0.ZmFsyLn1j2OfuBXgsOFEavNRbwa83gZqVe9eEQ8RYHQ",
       },
     });
 
@@ -90,6 +90,8 @@ const AdmissionHeadComponent = () => {
         amountPaid,
         acknowledgementNumber: selectedItem.acknowledgementNumber,
       });
+
+      console.log("response data", response);
 
       toast.success("Amount and ReceiptId updated successfully!");
 
@@ -173,46 +175,47 @@ const AdmissionHeadComponent = () => {
         {filterData?.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData?.map((item, index) => (
-            <div
-              key={index}
-              // onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition relative"
-            >
-              <div className="absolute top-2 right-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                ✅ Approved
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="flex flex-col ">
-                  <div>
-                    <strong>Acknowledgement Number:</strong>{" "}
-                    {item.acknowledgementNumber}
-                  </div>
-                  <div>
-                    <strong>Status:</strong> {item.status}
-                  </div>
-                  <div>
-                    <strong>Message:</strong> {item.message}
-                  </div>
-                </div>
+          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr>
+                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                <th className="py-3 px-6 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-800 text-sm">
+              {filterData?.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-gray-200 hover:bg-gray-100 transition"
+                >
+                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
 
-                <div className="flex gap-3 items-end">
-                  <button
-                    onClick={() => handleProfileClick(item)}
-                    className="text-sky-600 p-2 bg-gray-300 rounded-lg  hover:text-black hover:bg-white "
-                  >
-                    Profile
-                  </button>
-                  <button
-                    onClick={() => handleCardClick(item)}
-                    className="text-sky-600 p-2 bg-gray-300 rounded-lg hover:text-black hover:bg-white"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
+                  <td className="py-3 px-6">
+                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                      ✅ Approved
+                    </span>
+                  </td>
+                  <td className="py-3 px-6">
+                    <div className="flex gap-1 flex-col">
+                      <button
+                        onClick={() => handleProfileClick(item)}
+                        className="text-sky-600 px-3 py-1 bg-gray-200 rounded hover:text-black hover:bg-white"
+                      >
+                        Profile
+                      </button>
+                      <button
+                        onClick={() => handleCardClick(item)}
+                        className="text-sky-600 px-3 py-1 bg-gray-200 rounded hover:text-black hover:bg-white"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
@@ -486,7 +489,7 @@ const AdmissionHeadComponent = () => {
                 classAdded={"bg-white"}
               />
 
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label
                   htmlFor="enrollmentno"
                   className="block text-sm font-medium text-gray-700"
@@ -500,9 +503,9 @@ const AdmissionHeadComponent = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled
                 />
-              </div>
+              </div> */}
 
-              <div className="flex justify-end space-x-3">
+              <div className="flex justify-end space-x-3 mt-3">
                 <button
                   type="button"
                   onClick={() => setShowPopup(false)}

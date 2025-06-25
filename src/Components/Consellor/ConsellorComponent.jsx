@@ -262,7 +262,6 @@ const ConsellorComponent = () => {
     console.log("handleClickApproved response", response);
   };
 
-
   const closePopup = () => {
     setShowPopup(false);
     setSelectedItem(null);
@@ -288,8 +287,6 @@ const ConsellorComponent = () => {
     console.log("selectedItem", selectedItem);
   }, [selectedItem]);
 
-
-
   // useEffect(() => {
   //   fetchAdmissionMessage();
   // }, []);
@@ -298,15 +295,14 @@ const ConsellorComponent = () => {
     console.log("this filter is working");
 
     const response = await axios.get(
-      `/approval/approvalByAssignedConsellor?page=${page}`,
-  
+      `/approval/approvalByAssignedConsellor?page=${page}`
     );
 
-               const { data, totalPages } = response.data;
-      setPendingApproval(data);
-      setFilterData(data);
-      setCurrentPage(page);
-      setTotalPages(totalPages);
+    const { data, totalPages } = response.data;
+    setPendingApproval(data);
+    setFilterData(data);
+    setCurrentPage(page);
+    setTotalPages(totalPages);
   };
 
   useEffect(() => {
@@ -339,24 +335,36 @@ const ConsellorComponent = () => {
         {filterData.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
-            >
-              <div className="absolute top-2 right-2 bg-green-200 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                AmountPaid
-              </div>
-              <div>
-                <strong>Acknowledgement Number:</strong>{" "}
-                {item.acknowledgementNumber}
-              </div>
-              <div>
-                <strong>Status:</strong> {item.status}
-              </div>
-            </div>
-          ))
+          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr>
+                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                <th className="py-3 px-6 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-800 text-sm">
+              {filterData.map((item, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleCardClick(item)}
+                  className="border-b border-gray-200 hover:bg-gray-200 cursor-pointer transition"
+                >
+                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
+                  <td className="py-3 px-6">
+                    <span className="bg-green-200 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                      AmountPaid
+                    </span>
+                  </td>
+                  <td className="py-3 px-6">
+                    <button className="text-blue-600 hover:underline">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
@@ -731,8 +739,6 @@ const ConsellorComponent = () => {
                     </div>
                   </div>
                 </section>
-
-              
               </div>
             ) : (
               <p>Loading...</p>

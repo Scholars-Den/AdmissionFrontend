@@ -21,7 +21,7 @@ const AdminSidebar = () => {
       { to: "/managerDashboard", text: "Approved" },
       { to: "/amountPaid", text: "Paid" },
     ],
-    consellor: [{ to: "/consellorDashboard", text: "Assigned" }],
+    counsellor: [{ to: "/consellorDashboard", text: "Assigned" }],
     admissionHead: [{ to: "/admissionHeadDasboard", text: "Admission Taken" }],
   };
 

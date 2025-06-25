@@ -61,7 +61,7 @@ const AdminSignup = () => {
         navigate("/adminDashboard");
       } else if (role === "manager") {
         navigate("/managerDashboard");
-      } else if (role === "consellor") {
+      } else if (role === "counsellor") {
         navigate("/consellorDashboard");
       
       } else if (role === "admissionHead") {

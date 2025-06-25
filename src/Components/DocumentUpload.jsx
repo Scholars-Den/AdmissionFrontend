@@ -80,10 +80,10 @@ const DocumentUpload = ({ documentRequired }) => {
     try {
       const blob = await (await fetch(dataUrl)).blob();
       const formData = new FormData();
-      formData.append("file", blob, `${userDetails.name}_${docType}.png`);
+      formData.append("file", blob, `${userDetails.studentName}_${docType}.png`);
       formData.append("upload_preset", "ProfilePictures");
       formData.append("cloud_name", "dtytgoj3f");
-      formData.append("folder", "SDAT270425Image");
+      formData.append("folder", `admissionsDoc/${userDetails.acknowledgementNumber}`);
 
       const oldImageUrl = userDetails[docType];
 

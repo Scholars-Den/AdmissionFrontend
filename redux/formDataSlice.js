@@ -214,7 +214,7 @@ export const putFormData = createAsyncThunk(
 
       console.log("response from submitsuserDetails", response);
 
-      const data = response.data;
+      const data = response.data.user;
 
       if (data.length !== 0) {
         return {

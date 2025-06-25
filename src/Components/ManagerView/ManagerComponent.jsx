@@ -165,46 +165,54 @@ const handleSubmit = async (e) => {
         {filterData?.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData?.map((item, index) => (
-            <div
-              key={index}
-              // onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition relative"
-            >
-              <div className="absolute top-2 right-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                ✅ Approved
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="flex flex-col ">
-                  <div>
-                    <strong>Acknowledgement Number:</strong>{" "}
-                    {item.acknowledgementNumber}
-                  </div>
-                  <div>
-                    <strong>Status:</strong> {item.status}
-                  </div>
-                  <div>
-                    <strong>Message:</strong> {item.message}
-                  </div>
-                </div>
-
-                <div className="flex gap-3 items-end">
-                  <button
-                    onClick={() => handleProfileClick(item)}
-                    className="text-sky-600 p-2 bg-gray-300 rounded-lg  hover:text-black hover:bg-white "
-                  >
-                    Profile
-                  </button>
-                  <button
-                    onClick={() => handleCardClick(item)}
-                    className="text-sky-600 p-2 bg-gray-300 rounded-lg hover:text-black hover:bg-white"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
+         <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+  <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+    <tr>
+      <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+      <th className="py-3 px-6 text-left">Status</th>
+      <th className="py-3 px-6 text-right">Actions</th>
+    </tr>
+  </thead>
+  <tbody className="text-gray-800 text-sm">
+    {filterData?.map((item, index) => (
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-200 cursor-pointer relative"
+      >
+        <td className="py-3 px-6 relative">
+          {item.acknowledgementNumber}
+          {/* Badge positioned absolutely inside this cell */}
+         
+        </td>
+        <td className="py-3 px-6"> {item.status.toLowerCase() === "approved" && (
+            <span className=" bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none whitespace-nowrap">
+              ✅ Approved
+            </span>
+          )}</td>
+        <td className="py-3 px-6 flex flex-col justify-end gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleProfileClick(item);
+            }}
+            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
+          >
+            Profile
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick(item);
+            }}
+            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
+          >
+            Add Payment
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">

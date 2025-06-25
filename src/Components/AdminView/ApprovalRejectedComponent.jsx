@@ -125,35 +125,43 @@ const ApprovalRejectedComponent = () => {
         {filterData.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => handleCardClick(item)}
-              className="relative bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition"
-            >
-              <div className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                ❌ Rejected
-              </div>
-
-              <div>
-                <strong>Acknowledgement Number:</strong>{" "}
-                {item.acknowledgementNumber}
-              </div>
-              <div>
-                <strong>Status:</strong> {item.status}
-              </div>
-              <div>
-                <strong>Message:</strong> {item.message}
-              </div>
-            </div>
-          ))
+          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr>
+                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                <th className="py-3 px-6 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-800 text-sm">
+              {filterData.map((item, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleCardClick(item)}
+                  className="border-b border-gray-200 hover:bg-gray-200 cursor-pointer transition relative"
+                >
+                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
+                  <td className="py-3 px-6">
+                      <span className="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none">
+                        ❌ rejected
+                      </span>
+                  </td>
+                 <td className="py-3 px-6">
+                    <button className="text-blue-600 hover:underline">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
             <button
               onClick={() => {
-                 if (filterData) {
+                if (filterData) {
                   filter(currentPage - 1);
                 } else {
                   fetchApprovedData(currentPage - 1);
@@ -167,7 +175,7 @@ const ApprovalRejectedComponent = () => {
             <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
             <button
               onClick={() => {
-                  if (filterData) {
+                if (filterData) {
                   filter(currentPage + 1);
                 } else {
                   fetchApprovedData(currentPage + 1);

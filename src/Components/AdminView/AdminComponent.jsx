@@ -392,24 +392,51 @@ const AdminComponent = () => {
         {filterData.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          filterData.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => handleCardClick(item)}
-              className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
-            >
-              <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                ⏳ Pending
-              </div>
-              <div>
-                <strong>Acknowledgement Number:</strong>{" "}
-                {item.acknowledgementNumber}
-              </div>
-              <div>
-                <strong>Status:</strong> {item.status}
-              </div>
-            </div>
-          ))
+          // filterData.map((item, index) => (
+          //   <div
+          //     key={index}
+          //     onClick={() => handleCardClick(item)}
+          //     className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transitio relative"
+          //   >
+          //     <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+          //       ⏳ Pending
+          //     </div>
+          //     <div>
+          //       <strong>Acknowledgement Number:</strong>{" "}
+          //       {item.acknowledgementNumber}
+          //     </div>
+          //     <div>
+          //       <strong>Status:</strong> {item.status}
+          //     </div>
+          //   </div>
+          // ))
+
+          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr>
+                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                <th className="py-3 px-6 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-800 text-sm">
+              {filterData.map((item, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleCardClick(item)}
+                  className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition"
+                >
+                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
+                  <td className="py-3 px-6">
+                    <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                      ⏳ {item.status}
+                    </span>
+                  </td>
+                 
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
@@ -472,18 +499,17 @@ const AdminComponent = () => {
                   >
                     {/* <div className="w-full"> */}
 
-             
-                        <label
-                          htmlFor={"consellor"}
-                          className="text-sm font-semibold mb-1"
-                        >
-                          {"Assign Consellor"}
-                        </label>
-                 
+                    <label
+                      htmlFor={"counsellor"}
+                      className="text-sm font-semibold mb-1"
+                    >
+                      {"Assign Counsellor"}
+                    </label>
+
                     <select
-                      name={"consoller"}
+                      name={"counsoller"}
                       value={consellorAssign || ""}
-                      onChange={(e)=>onChangeOptions(e)}
+                      onChange={(e) => onChangeOptions(e)}
                       className="border border-gray-300 text-black rounded-lg p-2 focus:ring-2 w-full focus:ring-yellow-400 focus:outline-none pr-2"
                       style={{
                         backgroundImage: `url(${Neeche})`,
@@ -493,7 +519,7 @@ const AdminComponent = () => {
                       }}
                     >
                       <option value=" " className=" ">
-                        {"Assign Consellor"}
+                        {"Assign Counsellor"}
                       </option>
                       {options.map((option) => (
                         <option

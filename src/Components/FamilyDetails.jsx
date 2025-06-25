@@ -46,10 +46,10 @@ const FamilyDetails = () => {
           {
             name: "fatherAadhaarID",
             type: "text",
-            placeholder: "*Father's Aadhar ID",
+            placeholder: "*Father's Aadhaar ID",
             required: true,
             validation: validateAadhaar,
-            label: "*Father Aadhar Id",
+            label: "*Father Aadhaar Id",
           },
 
           {
@@ -77,10 +77,10 @@ const FamilyDetails = () => {
           {
             name: "motherAadhaarID",
             type: "text",
-            placeholder: "*Mother's Aadhar ID",
+            placeholder: "*Mother's Aadhaar ID",
             required: true,
             validation: validateAadhaar,
-            label: "Mother Aadhar Id",
+            label: "Mother Aadhaar Id",
           },
 
           {
@@ -116,7 +116,7 @@ const FamilyDetails = () => {
 
       console.log("userData in onSumit ", userData);
 
-      await dispatch(putFormData(userData));
+      const result = await dispatch(putFormData(userData));
       navigate("/siblingsDetails");
     } catch (error) {
       console.error("Error submitting form:", error);
