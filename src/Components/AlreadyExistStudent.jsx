@@ -175,35 +175,57 @@ const AlreadyExistStudent = () => {
       </div>
       <div className="flex flex-wrap justify-center p-4 gap-4">
         {Array.isArray(existingStudent) && existingStudent.length > 0 ? (
-          existingStudent.map((student) => (
-            <div
-              key={student._id}
-              className="bg-white p-4 rounded shadow-md cursor-pointer hover:bg-gray-100 w-72"
-              onClick={() => handleCardClick(student)}
-            >
-              <img
-                src={student.studentPhoto}
-                alt={student.studentName}
-                className="w-20 h-20 object-cover rounded-full mx-auto mb-2"
-              />
-              <h2 className="text-center font-semibold">
-                {student.studentName}
-              </h2>
-              <p className="text-center text-sm text-gray-600">
-                Class: {student.studentClass}
-              </p>
-              <p className="text-center text-sm text-gray-600">
-                {student.acknowledgementNumber}
-              </p>
-              {/* <p className="text-center text-sm text-gray-600">
-                Status:{" "}
-                {admissionStatusMap[student.acknowledgementNumber] ||
-                  "Loading..."}
-              </p> */}
+          <div>
+            {/* Table header */}
+            <div className="grid grid-cols-6 w-full text-center font-semibold">
+              <h3 className="col-span-2">Photo</h3>
+              <h3 className="col-span-1">Name</h3>
+              <h3 className="col-span-1">Class</h3>
+              <h3 className="col-span-2">Acknowledgement Number</h3>
             </div>
-          ))
+
+            {/* Student data */}
+            {existingStudent.map((student) => (
+              <div
+                key={student._id}
+                onClick={() => handleCardClick(student)}
+                className="cursor-pointer hover:bg-gray-100 grid grid-cols-6 w-full text-center gap-5 bg-white p-4 rounded-lg"
+              >
+                {/* Photo */}
+                <div className="col-span-2 flex justify-center">
+                  <img
+                    src={student.studentPhoto}
+                    alt={student.studentName}
+                    className="w-20 h-20 rounded-full"
+                  />
+                </div>
+
+                {/* Name */}
+                <div className="col-span-1 text-center py-2">
+                  {student.studentName}
+                </div>
+
+                {/* Class */}
+                <div className="col-span-1 text-center py-2">
+                  {student.studentClass}
+                </div>
+
+                {/* Acknowledgement Number */}
+                <div className="col-span-2 text-center py-2">
+                  {student.acknowledgementNumber}
+                </div>
+
+                {/* Optionally, you can display the status */}
+                {/* <div className="col-span-1 text-center py-2">
+            {admissionStatusMap[student.acknowledgementNumber] || "Loading..."}
+          </div> */}
+              </div>
+            ))}
+          </div>
         ) : (
-          <p className="text-white text-center mt-4">No student data found.</p>
+          <div className="text-center text-gray-500">
+            No students available.
+          </div>
         )}
       </div>
 
@@ -498,19 +520,19 @@ const AlreadyExistStudent = () => {
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
                           {admisionStatus?.data?.documentsDetails && (
-                          <div
-                            className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data?.documentsDetails
+                            <div
+                              className={`absolute top-1 left-1 bg-${
+                                admisionStatus?.data?.documentsDetails
+                                  ?.passbookPhoto?.status
+                                  ? "green"
+                                  : "red"
+                              }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            >
+                              {admisionStatus?.data?.documentsDetails
                                 ?.passbookPhoto?.status
-                                ? "green"
-                                : "red"
-                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
-                          >
-                            {admisionStatus?.data?.documentsDetails
-                              ?.passbookPhoto?.status
-                              ? "Approved"
-                              : "Rejected"}
-                          </div>
+                                ? "Approved"
+                                : "Rejected"}
+                            </div>
                           )}
                         </div>
                       </a>
@@ -529,19 +551,19 @@ const AlreadyExistStudent = () => {
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
                           {admisionStatus?.data?.documentsDetails && (
-                          <div
-                            className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data?.documentsDetails
+                            <div
+                              className={`absolute top-1 left-1 bg-${
+                                admisionStatus?.data?.documentsDetails
+                                  ?.studentAadhaar?.status
+                                  ? "green"
+                                  : "red"
+                              }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            >
+                              {admisionStatus?.data?.documentsDetails
                                 ?.studentAadhaar?.status
-                                ? "green"
-                                : "red"
-                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
-                          >
-                            {admisionStatus?.data?.documentsDetails
-                              ?.studentAadhaar?.status
-                              ? "Approved"
-                              : "Rejected"}
-                          </div>
+                                ? "Approved"
+                                : "Rejected"}
+                            </div>
                           )}
                         </div>
                       </a>
@@ -560,19 +582,19 @@ const AlreadyExistStudent = () => {
                             className="w-24 h-auto border rounded shadow-md hover:scale-105 transition"
                           />
                           {admisionStatus?.data?.documentsDetails && (
-                          <div
-                            className={`absolute top-1 left-1 bg-${
-                              admisionStatus?.data?.documentsDetails
+                            <div
+                              className={`absolute top-1 left-1 bg-${
+                                admisionStatus?.data?.documentsDetails
+                                  ?.parentAadhaar?.status
+                                  ? "green"
+                                  : "red"
+                              }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
+                            >
+                              {admisionStatus?.data?.documentsDetails
                                 ?.parentAadhaar?.status
-                                ? "green"
-                                : "red"
-                            }-500 text-white text-xs font-semibold px-2 py-0.5 rounded`}
-                          >
-                            {admisionStatus?.data?.documentsDetails
-                              ?.parentAadhaar?.status
-                              ? "Approved"
-                              : "Rejected"}
-                          </div>
+                                ? "Approved"
+                                : "Rejected"}
+                            </div>
                           )}
                         </div>
                       </a>
