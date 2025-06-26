@@ -7,7 +7,7 @@ import { submitAdminDetails } from "../../../redux/adminDetailsSlice";
 const AdminSignup = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(true);
+  const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
   const dispatch = useDispatch();
@@ -33,19 +33,19 @@ const AdminSignup = () => {
   };
 
   const handleVerifyOtp = async () => {
-    // if (otp.length !== 4 || !/^\d+$/.test(otp)) {
-    //   setError("Enter a valid 4-digit OTP.");
-    //   return;
-    // }
+    if (otp.length !== 4 || !/^\d+$/.test(otp)) {
+      setError("Enter a valid 4-digit OTP.");
+      return;
+    }
 
     try {
       setError("");
-      // const result = await dispatch(verifyOtp({ contactNumber, otp }));
-      // console.log(
-      //   "verifyOTP.fullfilled.match(result)",
-      //   verifyOtp.fulfilled.match(result)
-      // );
-      // if (verifyOtp.fulfilled.match(result)) {
+      const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      console.log(
+        "verifyOTP.fullfilled.match(result)",
+        verifyOtp.fulfilled.match(result)
+      );
+      if (verifyOtp.fulfilled.match(result)) {
       setSubmitMessage("OTP verified successfully.");
       const isLogin = await dispatch(submitAdminDetails(contactNumber));
       console.log(
@@ -67,9 +67,9 @@ const AdminSignup = () => {
       } else if (role === "admissionHead") {
         navigate("/admissionHeadDasboard");
       }
-      // } else {
-      //   setError(result.payload?.message || "Invalid OTP.");
-      // }
+      } else {
+        setError(result.payload?.message || "Invalid OTP.");
+      }
     } catch (error) {
       console.log("error", error);
       setError("Verification failed.");
@@ -96,7 +96,7 @@ const AdminSignup = () => {
           />
         </div>
 
-        {/* {otpSent && (
+        {otpSent && (
           <div className="mb-4">
             <label htmlFor="otp" className="block mb-1">
               Enter OTP
@@ -111,7 +111,7 @@ const AdminSignup = () => {
               placeholder="Enter OTP"
             />
           </div>
-        )} */}
+        )}
 
         {error && <p className="text-yellow-300 text-sm mb-4">{error}</p>}
         {submitMessage && (
