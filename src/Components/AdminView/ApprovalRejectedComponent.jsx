@@ -18,14 +18,15 @@ const ApprovalRejectedComponent = () => {
 
   // const dispatch = useDispatch
 
-  const fetchApprovedData = async (page = 1) => {
+ 
+  const fetchNotApproved = async (page = 1) => {
     try {
       const response = await axios.get(
-        `/approval/rejectedApproval?page=${page}`
+        `/approval/notApproved?page=${page}`
       );
 
       const { data, totalPages } = response.data;
-      console.log("response data from fetchApprovedData", response.data);
+      console.log("response data from fetchNotApproved", response.data);
       setPendingApproval(data);
       setFilterData(data);
       setCurrentPage(page);
@@ -40,7 +41,7 @@ const ApprovalRejectedComponent = () => {
       const response = await axios.get(`/approval/details/${ackNumber}`);
       console.log("response from fetchDetailsByAcknowledge", response);
 
-      console.log("response data data", response.data.data);
+      console.log("response data data", response.data);
 
       setPopupData(response?.data?.data[0]);
     } catch (error) {
@@ -76,7 +77,8 @@ const ApprovalRejectedComponent = () => {
   };
 
   useEffect(() => {
-    fetchApprovedData();
+
+    fetchNotApproved()
   }, []);
 
   const filter = async (page = 1) => {
@@ -85,7 +87,7 @@ const ApprovalRejectedComponent = () => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "rejected",
+        status: "not approved",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -130,7 +132,7 @@ const ApprovalRejectedComponent = () => {
               <tr>
                 <th className="py-3 px-6 text-left">Acknowledgement Number</th>
                 <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Action</th>
+                {/* <th className="py-3 px-6 text-left">Action</th> */}
               </tr>
             </thead>
             <tbody className="text-gray-800 text-sm">
@@ -143,14 +145,14 @@ const ApprovalRejectedComponent = () => {
                   <td className="py-3 px-6">{item.acknowledgementNumber}</td>
                   <td className="py-3 px-6">
                       <span className="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none">
-                        ❌ rejected
+                        ❌ not approved
                       </span>
                   </td>
-                 <td className="py-3 px-6">
+                 {/* <td className="py-3 px-6">
                     <button className="text-blue-600 hover:underline">
                       View Details
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -164,7 +166,7 @@ const ApprovalRejectedComponent = () => {
                 if (filterData) {
                   filter(currentPage - 1);
                 } else {
-                  fetchApprovedData(currentPage - 1);
+                  fetchNotApproved(currentPage - 1);
                 }
               }}
               disabled={currentPage === 1}
@@ -178,7 +180,7 @@ const ApprovalRejectedComponent = () => {
                 if (filterData) {
                   filter(currentPage + 1);
                 } else {
-                  fetchApprovedData(currentPage + 1);
+                  fetchNotApproved(currentPage + 1);
                 }
               }}
               disabled={currentPage === totalPages}
@@ -218,7 +220,7 @@ const ApprovalRejectedComponent = () => {
                     >
                       {approvalData?.studentDetails?.status
                         ? "✅ Approved"
-                        : "❌ Rejected"}
+                        : "❌ Not Approved"}
                     </div>
                   </div>
                   <p>
@@ -263,7 +265,7 @@ const ApprovalRejectedComponent = () => {
                     >
                       {approvalData?.parentDetails?.status
                         ? "✅ Approved"
-                        : "❌ Rejected"}
+                        : "❌ Not Approved"}
                     </div>
                   </div>
                   <p>
@@ -302,7 +304,7 @@ const ApprovalRejectedComponent = () => {
                     >
                       {approvalData?.bankDetails?.status
                         ? "✅ Approved"
-                        : "❌ Rejected"}
+                        : "❌ Not Approved"}
                     </div>
                   </div>
                   <p>
@@ -346,7 +348,7 @@ const ApprovalRejectedComponent = () => {
                     >
                       {approvalData?.documentsDetails?.status
                         ? "✅ Approved"
-                        : "❌ Rejected"}
+                        : "❌ Not Approved"}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -445,7 +447,7 @@ const ApprovalRejectedComponent = () => {
                     >
                       {approvalData?.signatureDetails?.status
                         ? "✅ Approved"
-                        : "❌ Rejected"}
+                        : "❌ Not Approved"}
                     </div>
                   </div>
                   <div className="flex space-x-4">

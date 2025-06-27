@@ -5,13 +5,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
-import AlreadyExistStudent from "./Components/AlreadyExistStudent";
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
 import BankRefundComponents from "./Components/BankRefundComponents";
 import VerificationPage from "./Components/VerificationPage";
 import SuccessComponent from "./Components/SuccessComponent";
-import SignupDetailsPage from "./Components/SignupDetailsPage";
 import DocumentDetails from "./Components/DocumentDetails";
 import AdminSignup from "./Components/AdminView/AdminSignup";
 import AdminDashboard from "./Components/AdminView/AdminDashboard";
@@ -24,6 +22,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDashboard";
 import ProtectedRouteForStudent from "./Components/ProtectedRouteForStudent";
 import LockNavigation from "../utils/LockNavigation";
+import ExistingStudent from "./Components/ExistingStudent/ExistingStudent";
 
 
 function App() {
@@ -38,7 +37,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<VerificationPage />} />
-          <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
+          <Route path="/alreadyExist" element={<ExistingStudent />} />
           <Route path="/basicDetails" element={<Signup />} />
           <Route
             path="/termsAndConditions"

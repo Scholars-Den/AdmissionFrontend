@@ -340,11 +340,12 @@ const ConsellorComponent = () => {
               <tr>
                 <th className="py-3 px-6 text-left">Acknowledgement Number</th>
                 <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Action</th>
+                {/* <th className="py-3 px-6 text-left">Action</th> */}
               </tr>
             </thead>
             <tbody className="text-gray-800 text-sm">
               {filterData.map((item, index) => (
+              
                 <tr
                   key={index}
                   onClick={() => handleCardClick(item)}
@@ -353,14 +354,14 @@ const ConsellorComponent = () => {
                   <td className="py-3 px-6">{item.acknowledgementNumber}</td>
                   <td className="py-3 px-6">
                     <span className="bg-green-200 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                      AmountPaid
+                      {item.status}
                     </span>
                   </td>
-                  <td className="py-3 px-6">
+                  {/* <td className="py-3 px-6">
                     <button className="text-blue-600 hover:underline">
                       View Details
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

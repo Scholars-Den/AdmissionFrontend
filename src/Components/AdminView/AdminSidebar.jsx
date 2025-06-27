@@ -13,9 +13,9 @@ const AdminSidebar = () => {
 
   const sidebarElementList = {
     admin: [
-      { to: "/adminDashboard", text: "Remaining" },
+      { to: "/adminDashboard", text: "Pending" },
       { to: "/approvalComplete", text: "Approved" },
-      { to: "/approvalRejected", text: " Rejected" },
+      { to: "/approvalRejected", text: "Not Approved" },
     ],
     manager: [
       { to: "/managerDashboard", text: "Approved" },

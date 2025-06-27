@@ -1,8 +1,8 @@
 import React from "react";
 import LoginSugnupPageImg from "../assets/LoginSugnupPageImg.png";
-import whatsapp from "../assets/whatsapp.png"
+import whatsapp from "../assets/whatsapp.png";
 import facebook from "../assets/facebook.png";
-import twitter from "../assets/twitter.png"
+import twitter from "../assets/twitter.png";
 import { Link } from "react-router-dom";
 
 const SignupDetailsPage = () => {
@@ -17,17 +17,23 @@ const SignupDetailsPage = () => {
             </h3>
             <h4 className="text-sm">Please fill your Admission Form</h4>
           </div>
-          <div className="flex items-center ">
-            <span className="p-2" >+91 8126555222 / 333</span>
-            <Link to={"https://api.whatsapp.com/send/?phone=919068701333&text&type=phone_number&app_absent=0"}>
-              <img className="w-7 " src={whatsapp} alt="" />
-            </Link>
-            <Link to="https://www.facebook.com/scholsden">
-              <img className="w-7 " src={facebook} alt="" />
-            </Link>
-            <Link to={"https://x.com/scholsden"}>
-              <img className="w-6 " src={twitter} alt="" />
-            </Link>
+          <div className="flex flex-col sm:flex-row items-center ">
+            <span className="p-2 text-xs sm:text-lg">+91 8126555222 / 333</span>
+            <div className="flex items-center justify-center ">
+              <Link
+                to={
+                  "https://api.whatsapp.com/send/?phone=919068701333&text&type=phone_number&app_absent=0"
+                }
+              >
+                <img className="w-7 " src={whatsapp} alt="" />
+              </Link>
+              <Link to="https://www.facebook.com/scholsden">
+                <img className="w-7 " src={facebook} alt="" />
+              </Link>
+              <Link to={"https://x.com/scholsden"} className="text-center h-full" >
+                <img className="w-7 " src={twitter} alt="" />
+              </Link>
+            </div>
           </div>
         </div>
         <div className="flex w-full justify-between  items-end ">

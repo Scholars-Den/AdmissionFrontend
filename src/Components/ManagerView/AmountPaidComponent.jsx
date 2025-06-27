@@ -113,7 +113,7 @@ const AmountPaidComponent = () => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "amountPaid",
+        status: "successful",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -180,9 +180,9 @@ const AmountPaidComponent = () => {
           
         </td>
         <td>
-          {item.status.toLowerCase() === "amountpaid" && (
+          {item.status.toLowerCase() === "successful" && (
             <span className=" bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none whitespace-nowrap">
-              ✅ Approved
+              ✅ Admission Successful 
             </span>
           )}
         </td>

@@ -106,7 +106,7 @@ const AdminComponent = () => {
   };
 
   const submitMessage = async () => {
-    if (message.length < 10) {
+    if (message.length < 1) {
       setError("Message must be longer than 10 characters");
       return;
     }
@@ -416,7 +416,7 @@ const AdminComponent = () => {
               <tr>
                 <th className="py-3 px-6 text-left">Acknowledgement Number</th>
                 <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Action</th>
+                {/* <th className="py-3 px-6 text-left">Action</th> */}
               </tr>
             </thead>
             <tbody className="text-gray-800 text-sm">

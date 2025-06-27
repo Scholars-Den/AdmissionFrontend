@@ -75,6 +75,8 @@ const handleSubmit = async (e) => {
       acknowledgementNumber: selectedItem.acknowledgementNumber,
     });
 
+    console.log("response from manager Component", response);
+
     toast.success("Amount and ReceiptId updated successfully!");
 
     fetchApprovedData();

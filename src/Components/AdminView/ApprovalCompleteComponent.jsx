@@ -143,7 +143,7 @@ const [options, setOptions] = useState([]);
           <tr>
             <th className="py-3 px-6 text-left">Acknowledgement Number</th>
             <th className="py-3 px-6 text-left">Status</th>
-            <th className="py-3 px-6 text-left">Action</th>
+            {/* <th className="py-3 px-6 text-left">Action</th> */}
           </tr>
         </thead>
         <tbody className="text-gray-800 text-sm">
@@ -159,7 +159,7 @@ const [options, setOptions] = useState([]);
                   ⏳ {item.status}
                 </span>
               </td>
-              <td className="py-3 px-6">
+              {/* <td className="py-3 px-6">
                 <button
                   onClick={(e) => {
                     e.stopPropagation(); // prevent row click too
@@ -169,7 +169,7 @@ const [options, setOptions] = useState([]);
                 >
                   View Details
                 </button>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>

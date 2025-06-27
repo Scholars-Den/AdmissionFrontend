@@ -7,6 +7,7 @@ import { submitAdminDetails } from "../../../redux/adminDetailsSlice";
 const AdminSignup = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [otp, setOtp] = useState("");
+  // const [otpSent, setOtpSent] = useState(true);
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
@@ -21,6 +22,7 @@ const AdminSignup = () => {
     try {
       setError("");
       const result = await dispatch(sendOtp({ contactNumber }));
+      console.log("result", result);
       if (sendOtp.fulfilled.match(result)) {
         setOtpSent(true);
         setSubmitMessage("OTP sent successfully.");
@@ -45,28 +47,28 @@ const AdminSignup = () => {
         "verifyOTP.fullfilled.match(result)",
         verifyOtp.fulfilled.match(result)
       );
+      console.log("result",result)
       if (verifyOtp.fulfilled.match(result)) {
-      setSubmitMessage("OTP verified successfully.");
-      const isLogin = await dispatch(submitAdminDetails(contactNumber));
-      console.log(
-        "verify.fullfilled",
-        submitAdminDetails.fulfilled.match(isLogin)
-      );
-      console.log("isLogin", isLogin);
+        setSubmitMessage("OTP verified successfully.");
+        const isLogin = await dispatch(submitAdminDetails(contactNumber));
+        console.log(
+          "verify.fullfilled",
+          submitAdminDetails.fulfilled.match(isLogin)
+        );
+        console.log("isLogin", isLogin);
 
-      console.log("adminDetails", adminDetails);
-      const role = isLogin.payload.adminDetails.role;
-      console.log("role from handleVerifyOTP", role);
-      if (role === "admin") {
-        navigate("/adminDashboard");
-      } else if (role === "manager") {
-        navigate("/managerDashboard");
-      } else if (role === "counsellor") {
-        navigate("/consellorDashboard");
-      
-      } else if (role === "admissionHead") {
-        navigate("/admissionHeadDasboard");
-      }
+        console.log("adminDetails", adminDetails);
+        const role = isLogin.payload.adminDetails.role;
+        console.log("role from handleVerifyOTP", role);
+        if (role === "admin") {
+          navigate("/adminDashboard");
+        } else if (role === "manager") {
+          navigate("/managerDashboard");
+        } else if (role === "counsellor") {
+          navigate("/consellorDashboard");
+        } else if (role === "admissionHead") {
+          navigate("/admissionHeadDasboard");
+        }
       } else {
         setError(result.payload?.message || "Invalid OTP.");
       }
@@ -135,7 +137,7 @@ const AdminSignup = () => {
             >
               Verify OTP
             </button>
-          )}
+           )}
         </div>
       </div>
     </div>
