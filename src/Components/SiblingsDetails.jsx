@@ -431,17 +431,17 @@ const SiblingsDetails = () => {
           ].map(({ key, label }) => (
             <div
               key={key}
-              className="m-2 flex flex-col justify-between items-center w-full md:w-1/3"
+              className="m-1 flex flex-col justify-between items-center w-full "
             >
               <h3 className="flex items-center text-lg font-semibold h-16">
                 {label}
               </h3>
-              <div className="border border-gray-400 bg-white px-2 m-2 w-full  rounded-md">
+              <div className="border border-gray-400 bg-white px-1 m-2 w-full  rounded-md">
                 <SignatureCanvas
                   ref={signatureRefs[key]}
                   penColor="black"
                   canvasProps={{
-                    className: "w-full h-24",
+                    className: "w-full h-52",
                     style: {
                       pointerEvents: studentAdmissionApprovalDetails
                         ?.signatureDetails?.status

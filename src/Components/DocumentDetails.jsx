@@ -10,8 +10,8 @@ const DocumentDetails = () => {
       label: "Guardian Aadhaar Card (Upload the Aadhaar card of one of the parents or guardian mentioned in the student’s Aadhaar.)",
       name: "parentAadhaar",
     },
-    { label: "Passbook", name: "passbookPhoto" },
-    { label: "Cancelled Cheque", name: "cancelledCheque" },
+    // { label: "Passbook", name: "passbookPhoto" },
+    // { label: "Cancelled Cheque", name: "cancelledCheque" },
   ];
 
   return (
