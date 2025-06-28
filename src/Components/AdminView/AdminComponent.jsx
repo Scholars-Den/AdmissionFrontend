@@ -18,8 +18,8 @@ const AdminComponent = () => {
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
   const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
   const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
-    cancelledCheque: false,
-    passbookPhoto: false,
+    // cancelledCheque: false,
+    // passbookPhoto: false,
     studentAadhaar: false,
     parentAadhaar: false,
     studentPhoto: false,
@@ -93,8 +93,8 @@ const AdminComponent = () => {
     setStudentDetailsStatus(item?.studentDetails?.status);
     setSignatureDetailsStatus(item?.signatureDetails?.status);
     setDocumentsDetailsStatus({
-      cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
-      passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
+      // cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
+      // passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
       studentAadhaar: item?.documentsDetails?.studentAadhaar?.status || false,
       parentAadhaar: item?.documentsDetails?.parentAadhaar?.status || false,
       studentPhoto: item?.documentsDetails?.studentPhoto?.status || false,
@@ -117,10 +117,10 @@ const AdminComponent = () => {
     console.log("ShowMessagePopup", showMessagePopup);
     // Collect unverified document names
     const unverifiedDocs = [];
-    if (!documentsDetailsStatus.cancelledCheque)
-      unverifiedDocs.push("Cancelled Cheque");
-    if (!documentsDetailsStatus.passbookPhoto)
-      unverifiedDocs.push("Passbook Photo");
+    // if (!documentsDetailsStatus.cancelledCheque)
+    //   unverifiedDocs.push("Cancelled Cheque");
+    // if (!documentsDetailsStatus.passbookPhoto)
+    //   unverifiedDocs.push("Passbook Photo");
     if (!documentsDetailsStatus.studentAadhaar)
       unverifiedDocs.push("Student Aadhar");
     if (!documentsDetailsStatus.parentAadhaar)
@@ -139,18 +139,18 @@ const AdminComponent = () => {
     //   : `The student document could not be verified due to missing or invalid files: ${unverifiedDocs.map((docName) =>` ${docName}`)}.`;
 
     const documentDetailsStructure = {
-      cancelledCheque: {
-        status: documentsDetailsStatus.cancelledCheque,
-        message: documentsDetailsStatus.cancelledCheque
-          ? "Student info verified"
-          : "Student info not verified",
-      },
-      passbookPhoto: {
-        status: documentsDetailsStatus.passbookPhoto,
-        message: documentsDetailsStatus.passbookPhoto
-          ? "Student info verified"
-          : "Student info not verified",
-      },
+      // cancelledCheque: {
+      //   status: documentsDetailsStatus.cancelledCheque,
+      //   message: documentsDetailsStatus.cancelledCheque
+      //     ? "Student info verified"
+      //     : "Student info not verified",
+      // },
+      // passbookPhoto: {
+      //   status: documentsDetailsStatus.passbookPhoto,
+      //   message: documentsDetailsStatus.passbookPhoto
+      //     ? "Student info verified"
+      //     : "Student info not verified",
+      // },
       studentAadhaar: {
         status: documentsDetailsStatus.studentAadhaar,
         message: documentsDetailsStatus.studentAadhaar
@@ -178,7 +178,7 @@ const AdminComponent = () => {
     console.log("test documentdetailsData ", showMessagePopup);
 
     response = await axios.post("/approval/editAdmissionApproval", {
-      status: showMessagePopup === "approved" ? "approved" : "rejected",
+      status: showMessagePopup === "approved" ? "approved" : "not approved",
       acknowledgementNumber: selectedItem.acknowledgementNumber,
       message,
       studentDetails: {
@@ -200,18 +200,18 @@ const AdminComponent = () => {
           : "Bank info not verified",
       },
       documentsDetails: {
-        cancelledCheque: {
-          status: documentsDetailsStatus.cancelledCheque,
-          message: documentsDetailsStatus.cancelledCheque
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        passbookPhoto: {
-          status: documentsDetailsStatus.passbookPhoto,
-          message: documentsDetailsStatus.passbookPhoto
-            ? "Student info verified"
-            : "Student info not verified",
-        },
+        // cancelledCheque: {
+        //   status: documentsDetailsStatus.cancelledCheque,
+        //   message: documentsDetailsStatus.cancelledCheque
+        //     ? "Student info verified"
+        //     : "Student info not verified",
+        // },
+        // passbookPhoto: {
+        //   status: documentsDetailsStatus.passbookPhoto,
+        //   message: documentsDetailsStatus.passbookPhoto
+        //     ? "Student info verified"
+        //     : "Student info not verified",
+        // },
         studentAadhaar: {
           status: documentsDetailsStatus.studentAadhaar,
           message: documentsDetailsStatus.studentAadhaar
@@ -432,7 +432,6 @@ const AdminComponent = () => {
                       ⏳ {item.status}
                     </span>
                   </td>
-                 
                 </tr>
               ))}
             </tbody>
@@ -670,8 +669,8 @@ const AdminComponent = () => {
                             const shouldUncheck =
                               Object.values(prev).every(Boolean); // all true?
                             return {
-                              cancelledCheque: !shouldUncheck,
-                              passbookPhoto: !shouldUncheck,
+                              // cancelledCheque: !shouldUncheck,
+                              // passbookPhoto: !shouldUncheck,
                               studentAadhaar: !shouldUncheck,
                               parentAadhaar: !shouldUncheck,
                               studentPhoto: !shouldUncheck,
@@ -711,7 +710,7 @@ const AdminComponent = () => {
                         </a>
                       </div>
                     )}
-                    {popupData.cancelledCheque && (
+                    {/* {popupData.cancelledCheque && (
                       <div>
                         <div className="flex justify-between pr-2">
                           <p className="font-medium">Cancelled Cheque</p>
@@ -767,7 +766,7 @@ const AdminComponent = () => {
                           />
                         </a>
                       </div>
-                    )}
+                    )} */}
 
                     {popupData.studentAadhaar && (
                       <div>
@@ -869,19 +868,20 @@ const AdminComponent = () => {
                   <span className="flex text-[#c61d23]">{onSubmitError}</span>
                 )}
 
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-between">
                   <button
                     className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
                     onClick={() => submitButtonClickHandler()}
                   >
-                    Submit
+                    Not Approved
                   </button>
-                  {/* <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl"
-                    onClick={() => setShowMessagePopup("rejected")}
+                  <button
+                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl disabled:bg-gray-400" 
+                    disabled = {   !(parentDetailsStatus && studentDetailsStatus && bankDetailsStatus && signatureDetailsStatus && allDocumentsApproved)}
+                    onClick={() => submitButtonClickHandler()}
                   >
-                    Rejected
-                  </button> */}
+                    Approved
+                  </button>
                 </div>
               </div>
             ) : (

@@ -89,12 +89,11 @@ export const fetchUserDetails = createAsyncThunk(
 
 export const submitBankRefundForm = createAsyncThunk(
   "userDetails/submitBankRefundForm",
-  async (formData, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      console.log("formData from submitBankRefundForm", formData);
       const response = await axios.patch(
-        "/admissions/submitBankRefundForm",
-        formData
+        "/admissions/submitBankRefundForm"
+        
       );
       console.log("response from submitBankRefundForm", response);
 
@@ -131,6 +130,50 @@ export const submitBankRefundForm = createAsyncThunk(
     }
   }
 );
+// export const submitBankRefundForm = createAsyncThunk(
+//   "userDetails/submitBankRefundForm",
+//   async (formData, { rejectWithValue }) => {
+//     try {
+//       console.log("formData from submitBankRefundForm", formData);
+//       const response = await axios.patch(
+//         "/admissions/submitBankRefundForm",
+//         formData
+//       );
+//       console.log("response from submitBankRefundForm", response);
+
+//       const data = response.data;
+//       if (data.length !== 0) {
+//         return {
+//           dataExist: true, // Indicate data exists
+//           userData: {
+//             accountHolder: data?.accountHolder || "",
+//             acknowledgementNumber: data?.acknowledgementNumber || "",
+//             admissionRollNo: data?.admissionRollNo || "",
+//             enrollmentNumber: data?.enrollmentNumber || "",
+//             studentClass: data?.studentClass || "",
+//             program: data?.program || "",
+//             bankName: data?.bankName || "",
+//             accountNumber: data?.accountNumber || "",
+//             ifscCode: data?.ifscCode || "",
+//             relationWithStudent: data?.relationWithStudent || "",
+
+//             signatures: {
+//               admissionOfficer: data?.accountNumber || "",
+//               parent: data?.accountNumber || "",
+//             },
+//           },
+//         };
+//       }else{
+
+//         console.log("Testdata from redux", data);
+//         return;
+//       }
+//     } catch (error) {
+//       console.log("error .,.....,,,,,,,,,", error);
+//       return;
+//     }
+//   }
+// );
 
 export const submitFormData = createAsyncThunk(
   "userDetails/submitFormData",

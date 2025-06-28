@@ -368,7 +368,7 @@ const ApprovalRejectedComponent = () => {
                         </a>
                       </div>
                     )}
-                    {popupData.cancelledCheque && (
+                    {/* {popupData.cancelledCheque && (
                       <div>
                         <p className="font-medium">Cancelled Cheque</p>
                         <a
@@ -399,7 +399,7 @@ const ApprovalRejectedComponent = () => {
                           />
                         </a>
                       </div>
-                    )}
+                    )} */}
                     {popupData.studentAadhaar && (
                       <div>
                         <p className="font-medium">Student Aadhar</p>

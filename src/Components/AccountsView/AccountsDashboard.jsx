@@ -1,8 +1,9 @@
 import AdminSidebar from '../AdminView/AdminSidebar';
-import AmountPaidComponent from './AmountPaidComponent';
-import ManagerComponent from './ManagerComponent';
+import PaymentDashboard from '../AdminView/PaymentDashboard';
+import AccountsComponent from './AccountsComponent';
 
-const AmountPaidList = () => {
+
+const AccountsDashboard = () => {
   return (
     <div className="">
       <div className="grid grid-cols-6 flex-col">
@@ -10,8 +11,8 @@ const AmountPaidList = () => {
           <AdminSidebar />
         </div>
         <div className="col-span-5 flex-grow w-full ">
-            <AmountPaidComponent/>
-            {/* <ApprovalCompleteComponent/> */}
+          {/* <AccountsComponent/> */}
+          <PaymentDashboard/>
             
 
         </div>
@@ -20,7 +21,7 @@ const AmountPaidList = () => {
   );
 }
 
-export default AmountPaidList
+export default AccountsDashboard
 
 
 

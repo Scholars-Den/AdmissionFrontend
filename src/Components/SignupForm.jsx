@@ -121,7 +121,8 @@ const SignupForm = () => {
   // };
 
   useEffect(() => {
-    if (!userData && userData.acknowledgementNumber) {
+    console.log("userData", userData);
+    if ( userData?.studentName) {
       dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
     }
   }, [userData]);
@@ -262,10 +263,7 @@ const SignupForm = () => {
           "studentAdmissionApprovalDetaisl",
           studentAdmissionApprovalDetails
         )}
-        {console.log(
-          "studentAdmissionApprovalDetaisl",
-          studentAdmissionApprovalDetails !== undefined
-        )}
+      
         {studentAdmissionApprovalDetails?.studentDetails &&
           (studentAdmissionApprovalDetails?.studentDetails?.status ? (
             <div className="flex flex-col w-full gap-4 items-end  ">

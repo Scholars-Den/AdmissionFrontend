@@ -18,8 +18,8 @@ const ConsellorComponent = () => {
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
   const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
   const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
-    cancelledCheque: false,
-    passbookPhoto: false,
+    // cancelledCheque: false,
+    // passbookPhoto: false,
     studentAadhaar: false,
     parentAadhaar: false,
     studentPhoto: false,
@@ -41,9 +41,9 @@ const ConsellorComponent = () => {
 
   // const []
 
-  const onChangeOptions = (e) => {
-    setConsellorAssign(e.target.value);
-  };
+  // const onChangeOptions = (e) => {
+  //   setConsellorAssign(e.target.value);
+  // };
 
   const [options, setOptions] = useState([]);
 
@@ -88,8 +88,8 @@ const ConsellorComponent = () => {
     setStudentDetailsStatus(item?.studentDetails?.status);
     setSignatureDetailsStatus(item?.signatureDetails?.status);
     setDocumentsDetailsStatus({
-      cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
-      passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
+      // cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
+      // passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
       studentAadhaar: item?.documentsDetails?.studentAadhaar?.status || false,
       parentAadhaar: item?.documentsDetails?.parentAadhaar?.status || false,
       studentPhoto: item?.documentsDetails?.studentPhoto?.status || false,
@@ -111,10 +111,10 @@ const ConsellorComponent = () => {
     console.log("ShowMessagePopup", showMessagePopup);
     // Collect unverified document names
     const unverifiedDocs = [];
-    if (!documentsDetailsStatus.cancelledCheque)
-      unverifiedDocs.push("Cancelled Cheque");
-    if (!documentsDetailsStatus.passbookPhoto)
-      unverifiedDocs.push("Passbook Photo");
+    // if (!documentsDetailsStatus.cancelledCheque)
+    //   unverifiedDocs.push("Cancelled Cheque");
+    // if (!documentsDetailsStatus.passbookPhoto)
+    //   unverifiedDocs.push("Passbook Photo");
     if (!documentsDetailsStatus.studentAadhaar)
       unverifiedDocs.push("Student Aadhar");
     if (!documentsDetailsStatus.parentAadhaar)
@@ -133,18 +133,18 @@ const ConsellorComponent = () => {
     //   : `The student document could not be verified due to missing or invalid files: ${unverifiedDocs.map((docName) =>` ${docName}`)}.`;
 
     const documentDetailsStructure = {
-      cancelledCheque: {
-        status: documentsDetailsStatus.cancelledCheque,
-        message: documentsDetailsStatus.cancelledCheque
-          ? "Student info verified"
-          : "Student info not verified",
-      },
-      passbookPhoto: {
-        status: documentsDetailsStatus.passbookPhoto,
-        message: documentsDetailsStatus.passbookPhoto
-          ? "Student info verified"
-          : "Student info not verified",
-      },
+      // cancelledCheque: {
+      //   status: documentsDetailsStatus.cancelledCheque,
+      //   message: documentsDetailsStatus.cancelledCheque
+      //     ? "Student info verified"
+      //     : "Student info not verified",
+      // },
+      // passbookPhoto: {
+      //   status: documentsDetailsStatus.passbookPhoto,
+      //   message: documentsDetailsStatus.passbookPhoto
+      //     ? "Student info verified"
+      //     : "Student info not verified",
+      // },
       studentAadhaar: {
         status: documentsDetailsStatus.studentAadhaar,
         message: documentsDetailsStatus.studentAadhaar
@@ -194,18 +194,18 @@ const ConsellorComponent = () => {
           : "Bank info not verified",
       },
       documentsDetails: {
-        cancelledCheque: {
-          status: documentsDetailsStatus.cancelledCheque,
-          message: documentsDetailsStatus.cancelledCheque
-            ? "Student info verified"
-            : "Student info not verified",
-        },
-        passbookPhoto: {
-          status: documentsDetailsStatus.passbookPhoto,
-          message: documentsDetailsStatus.passbookPhoto
-            ? "Student info verified"
-            : "Student info not verified",
-        },
+        // cancelledCheque: {
+        //   status: documentsDetailsStatus.cancelledCheque,
+        //   message: documentsDetailsStatus.cancelledCheque
+        //     ? "Student info verified"
+        //     : "Student info not verified",
+        // },
+        // passbookPhoto: {
+        //   status: documentsDetailsStatus.passbookPhoto,
+        //   message: documentsDetailsStatus.passbookPhoto
+        //     ? "Student info verified"
+        //     : "Student info not verified",
+        // },
         studentAadhaar: {
           status: documentsDetailsStatus.studentAadhaar,
           message: documentsDetailsStatus.studentAadhaar
@@ -424,9 +424,7 @@ const ConsellorComponent = () => {
                         className="hover:cursor-pointer "
                         checked={studentDetailsStatus}
                         type="checkbox"
-                        onChange={() =>
-                          setStudentDetailsStatus((prev) => !prev)
-                        }
+                      
                       />
                     </div>
                   </div>
@@ -466,7 +464,6 @@ const ConsellorComponent = () => {
                         className="hover:cursor-pointer "
                         checked={parentDetailsStatus}
                         type="checkbox"
-                        onChange={() => setParentDetailsStatus((prev) => !prev)}
                       />
                     </div>
                   </div>
@@ -509,7 +506,6 @@ const ConsellorComponent = () => {
                         className="hover:cursor-pointer "
                         checked={bankDetailsStatus}
                         type="checkbox"
-                        onChange={() => setBankDetailsStatus((prev) => !prev)}
                       />
                     </div>
                   </div>
@@ -540,19 +536,7 @@ const ConsellorComponent = () => {
                         className="hover:cursor-pointer"
                         checked={allDocumentsApproved}
                         type="checkbox"
-                        onChange={() =>
-                          setDocumentsDetailsStatus((prev) => {
-                            const shouldUncheck =
-                              Object.values(prev).every(Boolean); // all true?
-                            return {
-                              cancelledCheque: !shouldUncheck,
-                              passbookPhoto: !shouldUncheck,
-                              studentAadhaar: !shouldUncheck,
-                              parentAadhaar: !shouldUncheck,
-                              studentPhoto: !shouldUncheck,
-                            };
-                          })
-                        }
+                        
                       />
                     </div>
                   </div>
@@ -565,12 +549,7 @@ const ConsellorComponent = () => {
                           <input
                             type="checkbox"
                             checked={documentsDetailsStatus.studentPhoto}
-                            onChange={() =>
-                              setDocumentsDetailsStatus((prev) => ({
-                                ...prev,
-                                studentPhoto: !prev.studentPhoto,
-                              }))
-                            }
+                          
                           />
                         </div>
                         <a
@@ -586,19 +565,14 @@ const ConsellorComponent = () => {
                         </a>
                       </div>
                     )}
-                    {popupData.cancelledCheque && (
+                    {/* {popupData.cancelledCheque && (
                       <div>
                         <div className="flex justify-between pr-2">
                           <p className="font-medium">Cancelled Cheque</p>
                           <input
                             type="checkbox"
                             checked={documentsDetailsStatus.cancelledCheque}
-                            onChange={() =>
-                              setDocumentsDetailsStatus((prev) => ({
-                                ...prev,
-                                cancelledCheque: !prev.cancelledCheque,
-                              }))
-                            }
+                         
                           />
                         </div>
                         <a
@@ -622,12 +596,7 @@ const ConsellorComponent = () => {
                           <input
                             type="checkbox"
                             checked={documentsDetailsStatus.passbookPhoto}
-                            onChange={() =>
-                              setDocumentsDetailsStatus((prev) => ({
-                                ...prev,
-                                passbookPhoto: !prev.passbookPhoto,
-                              }))
-                            }
+                         
                           />
                         </div>
                         <a
@@ -642,7 +611,7 @@ const ConsellorComponent = () => {
                           />
                         </a>
                       </div>
-                    )}
+                    )} */}
 
                     {popupData.studentAadhaar && (
                       <div>
@@ -651,12 +620,7 @@ const ConsellorComponent = () => {
                           <input
                             type="checkbox"
                             checked={documentsDetailsStatus.studentAadhaar}
-                            onChange={() =>
-                              setDocumentsDetailsStatus((prev) => ({
-                                ...prev,
-                                studentAadhaar: !prev.studentAadhaar,
-                              }))
-                            }
+                          
                           />
                         </div>
                         <a
@@ -680,12 +644,7 @@ const ConsellorComponent = () => {
                           <input
                             type="checkbox"
                             checked={documentsDetailsStatus.parentAadhaar}
-                            onChange={() =>
-                              setDocumentsDetailsStatus((prev) => ({
-                                ...prev,
-                                parentAadhaar: !prev.parentAadhaar,
-                              }))
-                            }
+                    
                           />
                         </div>
                         <a
@@ -714,9 +673,7 @@ const ConsellorComponent = () => {
                         className="hover:cursor-pointer "
                         checked={signatureDetailsStatus}
                         type="checkbox"
-                        onChange={() =>
-                          setSignatureDetailsStatus((prev) => !prev)
-                        }
+                     
                       />
                     </div>
                   </div>

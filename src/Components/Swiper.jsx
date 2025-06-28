@@ -22,7 +22,7 @@ const DocumentCarousel = ({
       slidesPerView={1}
       navigation
       pagination={{ clickable: true }}
-      className="w-full md:w-2/3 p-7"
+      className="w-full md:w-2/3 p-7 "
     >
       {documentRequired.map((doc) => {
         const uploadedImage = uploads[doc.name] || userDetails[doc.name];
@@ -54,32 +54,23 @@ const DocumentCarousel = ({
               
               */}
 
-
-
-
-<div className="w-full mb-2">
-  <h3 className="font-semibold ">
-    {doc.label.includes("(") ? (
-      <>
-        <span className="block text-xl">
-          {doc.label.split("(")[0].trim()}
-        </span>
-        <span className="block text-xs text-[#c61d23]">
-          {"("}{doc.label.split("(")[1].trim()}
-        </span>
-
-        
-      </>
-    ) : (
-      <span className="text-lg">{doc.label}</span>
-    )}
-  </h3>
-</div>
-
-
-
-
-
+              <div className="w-full mb-2">
+                <h3 className="font-semibold ">
+                  {doc.label.includes("(") ? (
+                    <>
+                      <span className="block text-xl">
+                        {doc.label.split("(")[0].trim()}
+                      </span>
+                      <span className="block text-xs text-[#c61d23]">
+                        {"("}
+                        {doc.label.split("(")[1].trim()}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg">{doc.label}</span>
+                  )}
+                </h3>
+              </div>
 
               {/* {uploadedImage !== "" ? (
                 <>

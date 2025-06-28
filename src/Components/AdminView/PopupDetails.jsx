@@ -215,8 +215,8 @@ export default function PopupDetails({
         onToggle={() => {
           const allChecked = Object.values(documentsDetailsStatus).every(Boolean);
           setDocumentsDetailsStatus({
-            cancelledCheque: !allChecked,
-            passbookPhoto: !allChecked,
+            // cancelledCheque: !allChecked,
+            // passbookPhoto: !allChecked,
             studentAadhaar: !allChecked,
             parentAadhaar: !allChecked,
             studentPhoto: !allChecked,
@@ -235,7 +235,7 @@ export default function PopupDetails({
               }))
             }
           />
-          <DocumentItem
+          {/* <DocumentItem
             label="Cancelled Cheque"
             src={popupData.cancelledCheque}
             checked={documentsDetailsStatus.cancelledCheque}
@@ -245,8 +245,8 @@ export default function PopupDetails({
                 cancelledCheque: !prev.cancelledCheque,
               }))
             }
-          />
-          <DocumentItem
+          /> */}
+          {/* <DocumentItem
             label="Passbook Photo"
             src={popupData.passbookPhoto}
             checked={documentsDetailsStatus.passbookPhoto}
@@ -256,7 +256,7 @@ export default function PopupDetails({
                 passbookPhoto: !prev.passbookPhoto,
               }))
             }
-          />
+          /> */}
           <DocumentItem
             label="Student Aadhaar"
             src={popupData.studentAadhaar}

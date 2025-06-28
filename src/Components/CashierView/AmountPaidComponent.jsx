@@ -350,7 +350,7 @@ const AmountPaidComponent = () => {
                 <section>
                   <h3 className="text-lg font-semibold mb-1">Documents</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    {popupData.cancelledCheque && (
+                    {/* {popupData.cancelledCheque && (
                       <div>
                         <p className="font-medium">Cancelled Cheque</p>
                         <a
@@ -381,7 +381,7 @@ const AmountPaidComponent = () => {
                           />
                         </a>
                       </div>
-                    )}
+                    )} */}
                     {popupData.studentAadhaar && (
                       <div>
                         <p className="font-medium">Student Aadhar</p>

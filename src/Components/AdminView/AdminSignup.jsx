@@ -11,6 +11,8 @@ const AdminSignup = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [showReloading, setShowReloading] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { adminDetails } = useSelector((state) => state.adminDetails);
@@ -19,6 +21,9 @@ const AdminSignup = () => {
       setError("Please enter a valid 10-digit contact number.");
       return;
     }
+
+    setShowReloading(true);
+
     try {
       setError("");
       const result = await dispatch(sendOtp({ contactNumber }));
@@ -31,6 +36,8 @@ const AdminSignup = () => {
       }
     } catch (err) {
       setError("Something went wrong.");
+    } finally {
+      setShowReloading(false);
     }
   };
 
@@ -47,7 +54,7 @@ const AdminSignup = () => {
         "verifyOTP.fullfilled.match(result)",
         verifyOtp.fulfilled.match(result)
       );
-      console.log("result",result)
+      console.log("result", result);
       if (verifyOtp.fulfilled.match(result)) {
         setSubmitMessage("OTP verified successfully.");
         const isLogin = await dispatch(submitAdminDetails(contactNumber));
@@ -62,12 +69,14 @@ const AdminSignup = () => {
         console.log("role from handleVerifyOTP", role);
         if (role === "admin") {
           navigate("/adminDashboard");
-        } else if (role === "manager") {
-          navigate("/managerDashboard");
+        } else if (role === "cashier") {
+          navigate("/cashierDashboard");
         } else if (role === "counsellor") {
           navigate("/consellorDashboard");
         } else if (role === "admissionHead") {
           navigate("/admissionHeadDasboard");
+        } else if (role === "accounts") {
+          navigate("/accountsDashboard");
         }
       } else {
         setError(result.payload?.message || "Invalid OTP.");
@@ -97,6 +106,11 @@ const AdminSignup = () => {
             placeholder="Enter 10-digit number"
           />
         </div>
+        {showReloading && (
+          <div className="flex justify-center items-center m-3">
+            <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+          </div>
+        )}
 
         {otpSent && (
           <div className="mb-4">
@@ -137,7 +151,7 @@ const AdminSignup = () => {
             >
               Verify OTP
             </button>
-           )}
+          )}
         </div>
       </div>
     </div>

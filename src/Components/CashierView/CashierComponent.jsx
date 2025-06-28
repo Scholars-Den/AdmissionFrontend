@@ -2,27 +2,25 @@ import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SelectField from "../../../utils/SelectField";
 
-const AdmissionHeadComponent = () => {
+const CashierComponent = () => {
   const [approval, setApproval] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [batch, setBatch] = useState("");
-  const [batchList, setBatchList] = useState([]);
 
   const [filterByAckNumber, setFilterByAckNumber] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // for popup content
-  const [enrollmentNo, setEnrollmentNo] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchApprovedData = async (page = 1) => {
     try {
-      const response = await axios.get(`/approval/paid?page=${page}`);
+      const response = await axios.get(
+        `/approval/completedApproval?page=${page}`
+      );
       const { data, totalPages } = response.data;
       console.log("response data from fetchApprovedData", response.data);
       setApproval(data);
@@ -33,20 +31,6 @@ const AdmissionHeadComponent = () => {
     } catch (error) {
       console.error("Error fetching pending approval data:", error);
     }
-  };
-
-  const getBatch = async () => {
-    const response = await fetch("https://erptestapi.scholarsden.in/batches", {
-      headers: {
-        Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwOTE2NTM1LCJpYXQiOjE3NTA4MzAxMzUsImp0aSI6ImU5ZDMzODY2OWYxMDRhNjliZTkwOThmODUwNzczNTk5IiwidXNlcl9pZCI6MX0.ZmFsyLn1j2OfuBXgsOFEavNRbwa83gZqVe9eEQ8RYHQ",
-      },
-    });
-
-    const data = await response.json();
-    setBatchList(data);
-
-    console.log("response from getBatch", data);
   };
 
   const fetchDetailsByAcknowledgement = async (ackNumber) => {
@@ -81,33 +65,45 @@ const AdmissionHeadComponent = () => {
   const [receiptId, setReceiptId] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await axios.post("/admission-admin/update-student", {
-        receiptId,
-        amountPaid,
-        acknowledgementNumber: selectedItem.acknowledgementNumber,
-      });
+  try {
+    const response = await axios.post("/admission-admin/update-student", {
+      receiptId,
+      amountPaid,
+      acknowledgementNumber: selectedItem.acknowledgementNumber,
+    });
 
-      console.log("response data", response);
+    console.log("response from Cashier Component", response);
 
-      toast.success("Amount and ReceiptId updated successfully!");
+    toast.success("Amount and ReceiptId updated successfully!");
 
-      fetchApprovedData();
-      setShowProfile(false);
-      setShowPopup(false);
-      setReceiptId("");
-      setAmountPaid("");
-    } catch (error) {
-      console.error("Error updating admission:", error);
-      toast.error("Failed to update admission. Please try again.");
-    }
+    fetchApprovedData();
+    setShowProfile(false);
+    setShowPopup(false);
+    setReceiptId("");
+    setAmountPaid("");
+    setFormattedAmount("");
+  } catch (error) {
+    console.error("Error updating admission:", error);
+    toast.error("Failed to update admission. Please try again.");
+  }
+};
+
+
+  const [formattedAmount, setFormattedAmount] = useState("");
+
+  const formatWithCommas = (value) => {
+    const number = parseInt(value.replace(/,/g, ""), 10);
+    if (isNaN(number)) return "";
+    return number.toLocaleString();
   };
 
-  const onChangeBatch = (e) => {
-    setBatch(e.target.value);
+  const handleAmountChange = (e) => {
+    const raw = e.target.value.replace(/,/g, "").replace(/\D/g, "");
+    setAmountPaid(raw);
+    setFormattedAmount(formatWithCommas(raw));
   };
 
   useEffect(() => {
@@ -120,7 +116,7 @@ const AdmissionHeadComponent = () => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "amountPaid",
+        status: "approved",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -140,21 +136,17 @@ const AdmissionHeadComponent = () => {
   useEffect(() => {
     console.log("filterData from useEffect", filterData);
   }, [filterData]);
-
-  useEffect(() => {
-    getBatch();
-  }, []);
-
   return (
     <div className="flex h-screen  justify-center bg-gray-100">
+
       <div className="p-6 pt-2 rounded w-full min-h-screen overflow-auto ">
-        <>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-          />
-        </>
+      <>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+        />
+      </>
         <div className="mb-6">
           <div className="flex flex-col ">
             <label className="text-base" htmlFor="">
@@ -175,47 +167,54 @@ const AdmissionHeadComponent = () => {
         {filterData?.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
-            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <tr>
-                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
-                <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-800 text-sm">
-              {filterData?.map((item, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-gray-200 hover:bg-gray-100 transition"
-                >
-                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
-
-                  <td className="py-3 px-6">
-                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
-                      ✅ Approved
-                    </span>
-                  </td>
-                  <td className="py-3 px-6">
-                    <div className="flex gap-1 flex-col">
-                      <button
-                        onClick={() => handleProfileClick(item)}
-                        className="text-sky-600 px-3 py-1 bg-gray-200 rounded hover:text-black hover:bg-white"
-                      >
-                        Profile
-                      </button>
-                      <button
-                        onClick={() => handleCardClick(item)}
-                        className="text-sky-600 px-3 py-1 bg-gray-200 rounded hover:text-black hover:bg-white"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+         <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+  <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+    <tr>
+      <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+      <th className="py-3 px-6 text-left">Status</th>
+      <th className="py-3 px-6 text-right">Actions</th>
+    </tr>
+  </thead>
+  <tbody className="text-gray-800 text-sm">
+    {filterData?.map((item, index) => (
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-200 cursor-pointer relative"
+      >
+        <td className="py-3 px-6 relative">
+          {item.acknowledgementNumber}
+          {/* Badge positioned absolutely inside this cell */}
+         
+        </td>
+        <td className="py-3 px-6"> {item.status.toLowerCase() === "approved" && (
+            <span className=" bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none whitespace-nowrap">
+              ✅ Approved
+            </span>
+          )}</td>
+        <td className="py-3 px-6 flex flex-col justify-end gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleProfileClick(item);
+            }}
+            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
+          >
+            Profile
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick(item);
+            }}
+            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
+          >
+            Add Payment
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
@@ -273,12 +272,6 @@ const AdmissionHeadComponent = () => {
                   </p>
                   <p>
                     <strong>Aadhaar ID:</strong> {popupData.aadhaarID}
-                  </p>
-                  <p>
-                    <strong>Amount Paid:</strong> {popupData.amountPaid}
-                  </p>
-                  <p>
-                    <strong>Receipt ID:</strong> {popupData.receiptId}
                   </p>
                   <p>
                     <strong>Student Name:</strong> {popupData.studentName}
@@ -460,52 +453,43 @@ const AdmissionHeadComponent = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">
-              Assign Batch ({selectedItem.acknowledgementNumber})
+              Enter Payment Details ({selectedItem.acknowledgementNumber})
             </h2>
             <form onSubmit={handleSubmit}>
-              {/* <div className="mb-4">
+              <div className="mb-4">
                 <label
                   htmlFor="receiptId"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Batch
+                  Receipt ID
                 </label>
                 <input
                   type="text"
-                  id="bacth"
+                  id="receiptId"
                   value={receiptId}
                   onChange={(e) => setReceiptId(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
-              </div> */}
-
-              <SelectField
-                label={"Select Batch"}
-                name={"Batch"}
-                value={batch}
-                options={batchList?.map((batch) => batch.batch_name)}
-                onChange={onChangeBatch}
-                classAdded={"bg-white"}
-              />
-
-              {/* <div className="mb-4">
+              </div>
+              <div className="mb-4">
                 <label
-                  htmlFor="enrollmentno"
+                  htmlFor="amountPaid"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Enrollment No
+                  Amount Paid
                 </label>
                 <input
                   type="text"
-                  id="enrollmentno"
-                  value={selectedItem.enrollnmentNo}
+                  id="amountPaid"
+                  value={formattedAmount}
+                  onChange={handleAmountChange}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled
+                  required
                 />
-              </div> */}
+              </div>
 
-              <div className="flex justify-end space-x-3 mt-3">
+              <div className="flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setShowPopup(false)}
@@ -528,4 +512,4 @@ const AdmissionHeadComponent = () => {
   );
 };
 
-export default AdmissionHeadComponent;
+export default CashierComponent;

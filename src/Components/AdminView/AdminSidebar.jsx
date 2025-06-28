@@ -9,19 +9,20 @@ const AdminSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const
 
   const sidebarElementList = {
     admin: [
       { to: "/adminDashboard", text: "Pending" },
       { to: "/approvalComplete", text: "Approved" },
       { to: "/approvalRejected", text: "Not Approved" },
+      { to: "/paymentCompleted", text: "Paid" },
     ],
-    manager: [
-      { to: "/managerDashboard", text: "Approved" },
+    cashier: [
+      { to: "/cashierDashboard", text: "Approved" },
       { to: "/amountPaid", text: "Paid" },
     ],
     counsellor: [{ to: "/consellorDashboard", text: "Assigned" }],
+    accounts: [{ to: "/accountsDashboard", text: "Amount Paid" }],
     admissionHead: [{ to: "/admissionHeadDasboard", text: "Admission Taken" }],
   };
 
@@ -54,9 +55,13 @@ const AdminSidebar = () => {
       <div className="flex flex-col gap-8 justify-center items-center">
         <div className="flex flex-col gap-1 items-center">
           <img className="w-16 h-16" src={scholarsDenLogo} alt="Scholars Den" />
-          <span className="text-white mt-3">
-            {role && `${formatRoleName(role)} Panel`}
+          <span className="text-white text-center mt-3">
+            {role && `${formatRoleName(role)} Dashboard`}
           </span>
+          <div className="flex gap-2">
+            {/* <span className="text-black"> Name : </span> */}
+            <span className="text-white  "> {adminDetails.name} </span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-7 w-full justify-end items-end">

@@ -2,8 +2,8 @@ import React from "react";
 
 const documents = [
   { label: "Student Photo", key: "studentPhoto" },
-  { label: "Cancelled Cheque", key: "cancelledCheque" },
-  { label: "Passbook Photo", key: "passbookPhoto" },
+  // { label: "Cancelled Cheque", key: "cancelledCheque" },
+  // { label: "Passbook Photo", key: "passbookPhoto" },
   { label: "Student Aadhar", key: "studentAadhaar" },
   { label: "Parent Aadhar", key: "parentAadhaar" },
 ];

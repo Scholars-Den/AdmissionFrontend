@@ -1,25 +1,27 @@
+import { useDispatch } from "react-redux";
 import axios from "../../../api/axios";
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import SelectField from "../../../utils/SelectField";
 
-const ManagerComponent = () => {
+const PaymentDashboard = () => {
   const [approval, setApproval] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null); // for popup content
   const [popupData, setPopupData] = useState(null); // fetched details
   const [showPopup, setShowPopup] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-
+  const [consellorAssign, setConsellorAssign] = useState("");
+  const [options, setOptions] = useState([]);
   const [filterByAckNumber, setFilterByAckNumber] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null); // for popup content
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // const dispatch = useDispatch
+
   const fetchApprovedData = async (page = 1) => {
     try {
       const response = await axios.get(
-        `/approval/completedApproval?page=${page}`
+        `/approval/paid?page=${page}`
       );
       const { data, totalPages } = response.data;
       console.log("response data from fetchApprovedData", response.data);
@@ -35,7 +37,6 @@ const ManagerComponent = () => {
 
   const fetchDetailsByAcknowledgement = async (ackNumber) => {
     try {
-      console.log("ackNumber", ackNumber);
       const response = await axios.get(`/approval/details/${ackNumber}`);
 
       console.log("response data data", response.data.data);
@@ -46,64 +47,16 @@ const ManagerComponent = () => {
     }
   };
 
-  const handleProfileClick = (item) => {
-    setShowProfile(true);
-    fetchDetailsByAcknowledgement(item.acknowledgementNumber);
-  };
-
   const handleCardClick = (item) => {
-    setShowPopup(true);
     setSelectedItem(item);
+    setShowPopup(true);
+    fetchDetailsByAcknowledgement(item.acknowledgementNumber);
   };
 
   const closePopup = () => {
     setShowPopup(false);
-    setShowProfile(false);
+    setSelectedItem(null);
     setPopupData(null);
-  };
-
-  const [receiptId, setReceiptId] = useState("");
-  const [amountPaid, setAmountPaid] = useState("");
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await axios.post("/admission-admin/update-student", {
-      receiptId,
-      amountPaid,
-      acknowledgementNumber: selectedItem.acknowledgementNumber,
-    });
-
-    console.log("response from manager Component", response);
-
-    toast.success("Amount and ReceiptId updated successfully!");
-
-    fetchApprovedData();
-    setShowProfile(false);
-    setShowPopup(false);
-    setReceiptId("");
-    setAmountPaid("");
-    setFormattedAmount("");
-  } catch (error) {
-    console.error("Error updating admission:", error);
-    toast.error("Failed to update admission. Please try again.");
-  }
-};
-
-
-  const [formattedAmount, setFormattedAmount] = useState("");
-
-  const formatWithCommas = (value) => {
-    const number = parseInt(value.replace(/,/g, ""), 10);
-    if (isNaN(number)) return "";
-    return number.toLocaleString();
-  };
-
-  const handleAmountChange = (e) => {
-    const raw = e.target.value.replace(/,/g, "").replace(/\D/g, "");
-    setAmountPaid(raw);
-    setFormattedAmount(formatWithCommas(raw));
   };
 
   useEffect(() => {
@@ -116,7 +69,7 @@ const handleSubmit = async (e) => {
     const data = await axios.post(
       `/approval/filterAdmissionApproval?page=${page}`,
       {
-        status: "approved",
+        status: "successful",
         acknowledgementNumber: filterByAckNumber,
       }
     );
@@ -138,15 +91,7 @@ const handleSubmit = async (e) => {
   }, [filterData]);
   return (
     <div className="flex h-screen  justify-center bg-gray-100">
-
       <div className="p-6 pt-2 rounded w-full min-h-screen overflow-auto ">
-      <>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-        />
-      </>
         <div className="mb-6">
           <div className="flex flex-col ">
             <label className="text-base" htmlFor="">
@@ -167,54 +112,65 @@ const handleSubmit = async (e) => {
         {filterData?.length === 0 ? (
           <p className="text-black text-center">No pending approvals</p>
         ) : (
-         <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
-  <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-    <tr>
-      <th className="py-3 px-6 text-left">Acknowledgement Number</th>
-      <th className="py-3 px-6 text-left">Status</th>
-      <th className="py-3 px-6 text-right">Actions</th>
-    </tr>
-  </thead>
-  <tbody className="text-gray-800 text-sm">
-    {filterData?.map((item, index) => (
-      <tr
-        key={index}
-        className="border-b border-gray-200 hover:bg-gray-200 cursor-pointer relative"
-      >
-        <td className="py-3 px-6 relative">
-          {item.acknowledgementNumber}
-          {/* Badge positioned absolutely inside this cell */}
-         
-        </td>
-        <td className="py-3 px-6"> {item.status.toLowerCase() === "approved" && (
-            <span className=" bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow select-none whitespace-nowrap">
-              ✅ Approved
-            </span>
-          )}</td>
-        <td className="py-3 px-6 flex flex-col justify-end gap-1">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleProfileClick(item);
-            }}
-            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
-          >
-            Profile
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCardClick(item);
-            }}
-            className="text-sky-600   rounded-lg hover:text-black hover:bg-white"
-          >
-            Add Payment
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+          // filterData?.map((item, index) => (
+          //   <div
+          //     key={index}
+          //     onClick={() => handleCardClick(item)}
+          //     className="bg-white rounded p-4 mb-4 shadow-md text-gray-800 cursor-pointer hover:bg-gray-200 transition relative"
+          //   >
+          //     <div className="absolute top-2 right-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+          //       ✅ Approved
+          //     </div>
+
+          //     <div>
+          //       <strong>Acknowledgement Number:</strong>{" "}
+          //       {item.acknowledgementNumber}
+          //     </div>
+          //     <div>
+          //       <strong>Status:</strong> {item.status}
+          //     </div>
+          //     <div>
+          //       <strong>Message:</strong> {item.message}
+          //     </div>
+          //   </div>
+          // ))
+
+          <table className="min-w-full bg-white shadow-md rounded overflow-hidden">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+              <tr>
+                <th className="py-3 px-6 text-left">Acknowledgement Number</th>
+                <th className="py-3 px-6 text-left">Status</th>
+                {/* <th className="py-3 px-6 text-left">Action</th> */}
+              </tr>
+            </thead>
+            <tbody className="text-gray-800 text-sm">
+              {filterData.map((item, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleCardClick(item)}
+                  className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer transition"
+                >
+                  <td className="py-3 px-6">{item.acknowledgementNumber}</td>
+                  <td className="py-3 px-6">
+                    <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium shadow">
+                      ⏳ {item.status}
+                    </span>
+                  </td>
+                  {/* <td className="py-3 px-6">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent row click too
+                    handleCardClick(item);
+                  }}
+                  className="text-blue-600 hover:underline"
+                >
+                  View Details
+                </button>
+              </td> */}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
         {totalPages > 1 && (
           <div className="flex justify-center gap-4 mt-4">
@@ -250,7 +206,7 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Modal */}
-      {showProfile && (
+      {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-md w-full relative">
             <button
@@ -354,7 +310,7 @@ const handleSubmit = async (e) => {
                 <section>
                   <h3 className="text-lg font-semibold mb-1">Documents</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    {popupData.cancelledCheque && (
+                    {/* {popupData.cancelledCheque && (
                       <div>
                         <p className="font-medium">Cancelled Cheque</p>
                         <a
@@ -385,7 +341,7 @@ const handleSubmit = async (e) => {
                           />
                         </a>
                       </div>
-                    )}
+                    )} */}
                     {popupData.studentAadhaar && (
                       <div>
                         <p className="font-medium">Student Aadhar</p>
@@ -404,7 +360,7 @@ const handleSubmit = async (e) => {
                     )}
                     {popupData.parentAadhaar && (
                       <div>
-                        <p className="font-medium">Parent Aadhar</p>
+                        <p className="font-medium">Parent Aadhaar</p>
                         <a
                           href={popupData.parentAadhaar}
                           target="_blank"
@@ -449,67 +405,8 @@ const handleSubmit = async (e) => {
           </div>
         </div>
       )}
-      {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">
-              Enter Payment Details ({selectedItem.acknowledgementNumber})
-            </h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="receiptId"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Receipt ID
-                </label>
-                <input
-                  type="text"
-                  id="receiptId"
-                  value={receiptId}
-                  onChange={(e) => setReceiptId(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="amountPaid"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Amount Paid
-                </label>
-                <input
-                  type="text"
-                  id="amountPaid"
-                  value={formattedAmount}
-                  onChange={handleAmountChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setShowPopup(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default ManagerComponent;
+export default PaymentDashboard;

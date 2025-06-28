@@ -1,5 +1,5 @@
 import AdminSidebar from '../AdminView/AdminSidebar';
-import AdmissionHeadComponent from './AdmissionHeadComponent';
+import CashierComponent from './CashierComponent';
 
 const CashierDashboard = () => {
   return (
@@ -9,7 +9,8 @@ const CashierDashboard = () => {
           <AdminSidebar />
         </div>
         <div className="col-span-5 flex-grow w-full ">
-            <AdmissionHeadComponent/>
+            <CashierComponent/>
+            {/* <ApprovalCompleteComponent/> */}
             
 
         </div>

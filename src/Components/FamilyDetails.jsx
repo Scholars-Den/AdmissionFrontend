@@ -57,7 +57,7 @@ const FamilyDetails = () => {
             type: "select",
             options: occupationOptions,
             required: true,
-            label: "Father Occupation",
+            label: "*Father Occupation",
           },
         ],
       },
@@ -69,16 +69,14 @@ const FamilyDetails = () => {
           {
             name: "motherName",
             type: "text",
-            placeholder: "*Mother’s Name",
-            required: true,
+            placeholder: "Mother’s Name",
             validation: validateName,
             label: "Mother Name",
           },
           {
             name: "motherAadhaarID",
             type: "text",
-            placeholder: "*Mother's Aadhaar ID",
-            required: true,
+            placeholder: "Mother's Aadhaar ID",
             validation: validateAadhaar,
             label: "Mother Aadhaar Id",
           },
@@ -87,7 +85,6 @@ const FamilyDetails = () => {
             name: "motherOccupations",
             type: "select",
             options: occupationOptions,
-            required: true,
             label: "Mother Occupation",
           },
         ],
@@ -125,39 +122,48 @@ const FamilyDetails = () => {
     }
   };
 
-  const validateForm = () => {
-    const formErrors = {};
-    let isValid = true;
-    familySections.forEach(({ fields }) => {
-      fields?.forEach(({ name, required, validation = "" }) => {
-        if (validation === "") {
-          if (required && !userData[name]?.trim()) {
-            formErrors[name] = `${name.replace(/([A-Z])/g, "$1")} is required`;
+const validateForm = () => {
+  const formErrors = {};
+  let isValid = true;
+
+  familySections.forEach((sectionArray) => {
+    sectionArray.forEach((section) => {
+      section.fields?.forEach(({ name, required, validation }) => {
+        const value = userData[name];
+
+        if (typeof validation === "function") {
+          const result = validation(value);
+
+          if (required && !result.isValid) {
+            formErrors[name] = result.message || `${name} is invalid`;
             isValid = false;
           }
         } else {
-          const isValidInput = validation(userData[name]);
-          console.log("isValidInput", isValidInput);
-
-          if (required && !isValidInput.isValid) {
-            formErrors[name] = isValidInput.message;
+          if (required && (!value || value.toString().trim() === "")) {
+            const label = name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            formErrors[name] = `${label} is required`;
             isValid = false;
           }
         }
       });
     });
+  });
 
-    console.log("formErrors", formErrors);
-    setErrors(formErrors);
-    return isValid;
-  };
+  setErrors(formErrors);
+  console.log("formErrors", formErrors);
+  return isValid;
+};
+
+
 
   useEffect(() => {
     dispatch(fetchUserDetails());
   }, []);
 
   useEffect(() => {
-    dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+    if (userData?.fatherName) {
+      dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+    }
   }, [userData]);
 
   return (

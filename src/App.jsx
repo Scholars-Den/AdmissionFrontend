@@ -15,14 +15,16 @@ import AdminSignup from "./Components/AdminView/AdminSignup";
 import AdminDashboard from "./Components/AdminView/AdminDashboard";
 import ApprovalComplete from "./Components/AdminView/ApprovalComplete";
 import ApprovalRejected from "./Components/AdminView/ApprovalRejected";
-import ManagerDashboard from "./Components/ManagerView/ManagerDashboard";
-import AmountPaidList from "./Components/ManagerView/AmountPaidList";
+import CashierDashboard from "./Components/CashierView/CashierDashboard";
+import AmountPaidList from "./Components/CashierView/AmountPaidList";
 import ConsellorDashboard from "./Components/Consellor/ConsellorDashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdmissionHeadDashboard from "./Components/AdmissionHead/AdmissionHeadDashboard";
 import ProtectedRouteForStudent from "./Components/ProtectedRouteForStudent";
 import LockNavigation from "../utils/LockNavigation";
 import ExistingStudent from "./Components/ExistingStudent/ExistingStudent";
+import PaymentCompleted from "./Components/AdminView/PaymentCompleted";
+import AccountsDashboard from "./Components/AccountsView/AccountsDashboard";
 
 
 function App() {
@@ -112,20 +114,28 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Manager Routes */}
           <Route
-            path="/managerDashboard"
+            path="/paymentCompleted"
             element={
-              <ProtectedRoute allowedRoles={["manager"]}>
-                <ManagerDashboard />
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <PaymentCompleted />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Cashier Routes */}
+          <Route
+            path="/cashierDashboard"
+            element={
+              <ProtectedRoute allowedRoles={["cashier"]}>
+                <CashierDashboard />
               </ProtectedRoute>
             }
           />
           <Route
             path="/amountPaid"
             element={
-              <ProtectedRoute allowedRoles={["manager"]}>
+              <ProtectedRoute allowedRoles={["cashier"]}>
                 <AmountPaidList />
               </ProtectedRoute>
             }
@@ -145,6 +155,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admissionHead"]}>
                 <AdmissionHeadDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accountsDashboard"
+            element={
+              <ProtectedRoute allowedRoles={["accounts"]}>
+                <AccountsDashboard />
               </ProtectedRoute>
             }
           />

@@ -5,6 +5,7 @@ import {
   fetchUserDetails,
   updateUserDetails,
   putFormData,
+  submitBankRefundForm,
 } from "../../redux/formDataSlice";
 
 import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
@@ -25,7 +26,7 @@ const DocumentUpload = ({ documentRequired }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [activeDoc, setActiveDoc] = useState(null);
-  const [cameraFacing, setCameraFacing] = useState("user");
+  const [cameraFacing, setCameraFacing] = useState("Front");
   const [isCapturing, setIsCapturing] = useState(false);
 
 const isAnyUploading = Object.values(uploading).some((v) => v);
@@ -130,9 +131,13 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
   );
 
 
-  const onClickNext = () =>{
+  const onClickNext = async() =>{
     console.log("ONCLickNext");
-    // navigate("/bankRefund")
+   const responseData = await  dispatch(submitBankRefundForm());
+
+   console.log("responseData", responseData);
+
+    navigate("/admissionComplete");
   }
 
   const activeDocLabel =
@@ -272,7 +277,7 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
               <button
                 onClick={() =>
                   setCameraFacing((prev) =>
-                    prev === "user" ? "environment" : "user"
+                    prev === "Front" ? "Back" : "Front"
                   )
                 }
                 className="bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
