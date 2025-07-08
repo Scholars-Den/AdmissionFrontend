@@ -84,7 +84,7 @@ const FamilyDetails = () => {
           {
             name: "motherOccupations",
             type: "select",
-            options: occupationOptions,
+            options: ["Business", "Service", "Housemaker", "Other"],
             label: "Mother Occupation",
           },
         ],
@@ -114,7 +114,7 @@ const FamilyDetails = () => {
       console.log("userData in onSumit ", userData);
 
       const result = await dispatch(putFormData(userData));
-      navigate("/siblingsDetails");
+      navigate("/bankRefund");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

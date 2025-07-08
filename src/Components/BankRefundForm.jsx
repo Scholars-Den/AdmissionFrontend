@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SignatureCanvas from "react-signature-canvas";
 import {
   fetchUserDetails,
+  submitAddressForm,
   submitBankRefundForm,
   updateUserDetails,
 } from "../../redux/formDataSlice";
@@ -73,36 +74,60 @@ const BankRefundForm = () => {
   //   }
   // };
 
+  // const handleChange = (e) => {
+  //   if (studentAdmissionApprovalDetails?.bankDetails?.status) {
+  //     return;
+  //   }
+  //   const { name, value, type, checked } = e.target;
+  //   console.log(
+  //     "name:",
+  //     name,
+  //     "value:",
+  //     value,
+  //     "type:",
+  //     type,
+  //     "checked:",
+  //     checked
+  //   );
+
+  //   if (type === "checkbox") {
+  //     dispatch(
+  //       updateUserDetails({
+  //         documents: {
+  //           ...userData?.documents, // Ensure previous document data is preserved
+  //           [name]: checked,
+  //         },
+  //       })
+  //     );
+  //   } else {
+  //     dispatch(updateUserDetails({ [name]: value }));
+  //   }
+
+  //   // Remove errors if the user fills the field
+  //   if (value.trim()) {
+  //     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  //   }
+  // };
+
   const handleChange = (e) => {
-    if (studentAdmissionApprovalDetails?.bankDetails?.status) {
-      return;
-    }
-    const { name, value, type, checked } = e.target;
-    console.log(
-      "name:",
-      name,
-      "value:",
-      value,
-      "type:",
-      type,
-      "checked:",
-      checked
-    );
+    const { name, value } = e.target;
 
-    if (type === "checkbox") {
-      dispatch(
-        updateUserDetails({
-          documents: {
-            ...userData?.documents, // Ensure previous document data is preserved
-            [name]: checked,
-          },
-        })
-      );
+    let updatedData;
+
+    if (name.startsWith("address.")) {
+      const field = name.split(".")[1];
+      updatedData = {
+        address: {
+          ...userData?.address,
+          [field]: value,
+        },
+      };
     } else {
-      dispatch(updateUserDetails({ [name]: value }));
+      updatedData = { [name]: value };
     }
 
-    // Remove errors if the user fills the field
+    dispatch(updateUserDetails(updatedData));
+
     if (value.trim()) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     }
@@ -128,73 +153,34 @@ const BankRefundForm = () => {
   //   }));
   // };
 
-  const validateForm = () => {
-    let formErrors = {};
-    let isValid = true;
+ const validateForm = () => {
+  let formErrors = {};
+  let isValid = true;
 
-    // Validate required text fields
-    const requiredTextFields = [
-      "accountHolder",
-      "bankName",
-      "accountNumber",
-      "ifscCode",
-      "relationWithStudent",
-    ];
+  // Validate required fields
+  const requiredFields = [
+    { name: "address.line1", label: "Address Line 1" },
+    { name: "address.city", label: "City" },
+    { name: "address.status", label: "Status" },
+    // { name: "isExistingStudent", label: "Is Existing Student" },
+    // { name: "schoolName", label: "School Name" },
+  ];
 
-    requiredTextFields.forEach((field) => {
-      if (!userData[field] || userData[field].trim() === "") {
-        formErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
-        isValid = false;
-      }
-    });
+  requiredFields.forEach(({ name, label }) => {
+    const keys = name.split(".");
+    const value = keys.length === 2 ? userData?.[keys[0]]?.[keys[1]] : userData?.[name];
 
-    // Field-specific validations
-    if (userData.accountNumber && !/^\d{9,18}$/.test(userData.accountNumber)) {
-      formErrors.accountNumber = "Enter a valid Account Number (9–18 digits)";
+    if (!value || value.trim() === "") {
+      formErrors[name] = `${label} is required`;
       isValid = false;
     }
+  });
 
-    if (
-      userData.ifscCode &&
-      !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(userData.ifscCode)
-    ) {
-      formErrors.ifscCode = "Enter a valid IFSC Code (e.g., ABCD0123456)";
-      isValid = false;
-    }
+  setErrors(formErrors);
+  console.log("formErrors", formErrors);
 
-    // Document validation (if needed)
-    // const requiredDocuments = [
-    //   "cancelledCheque",
-    //   "passbook",
-    //   "studentAadhaar",
-    //   "parentAadhaar",
-    //   "passportPhotos",
-    // ];
-
-    // const documentsChecked = requiredDocuments.every(
-    //   (doc) => userData.documents?.[doc]
-    // );
-
-    // if (!documentsChecked) {
-    //   formErrors.documents = "All required documents must be selected";
-    //   isValid = false;
-    // }
-
-    // Signature validation (if needed)
-    // const requiredSignatures = ["admissionHead", "parent"];
-    // requiredSignatures.forEach((key) => {
-    //   if (!userData.signatures?.[key]) {
-    //     formErrors[key] = `${key} signature is required`;
-    //     isValid = false;
-    //   }
-    // });
-
-    // Set and return errors
-    setErrors(formErrors);
-    console.log("formErrors", formErrors);
-
-    return isValid;
-  };
+  return isValid;
+};
 
   useEffect(() => {
     dispatch(fetchUserDetails()).then((action) => {
@@ -236,9 +222,12 @@ const BankRefundForm = () => {
     try {
       const formData = { ...userData, signatures };
 
-      const testdata = await dispatch(submitBankRefundForm(formData));
+      const testdata = await dispatch(submitAddressForm(formData));
+
+
+      console.log("testdata from onSubmit button", testdata);
       console.log("Test Data", testdata);
-      navigate("/admissionComplete");
+      // navigate("/admissionComplete");
     } catch (error) {
       console.log("Error submitting form:", error);
     }
@@ -248,130 +237,155 @@ const BankRefundForm = () => {
   };
 
   return (
-    <div className="w-full ">
+    // <div className="w-full ">
+    //   {loading && <Spinner />}
+    //   <form
+    //     className="flex flex-col px-4 items-center gap-2 py-2 text-white"
+    //     onSubmit={onSubmit}
+    //   >
+    //     <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
+    //       Address Details
+    //     </h2>
+    //     {studentAdmissionApprovalDetails?.bankDetails &&
+    //       (studentAdmissionApprovalDetails?.bankDetails?.status ? (
+    //         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+    //           {/* <span className="text-white">
+    //        {  studentAdmissionApprovalDetails?.bankDetails.message}
+    //       </span> */}
+    //           <span
+    //             className={`${
+    //               studentAdmissionApprovalDetails?.bankDetails?.status
+    //                 ? "bg-green-500 "
+    //                 : "bg-red-500 text-white"
+    //             } p-2 rounded-xl`}
+    //           >
+    //             {studentAdmissionApprovalDetails?.bankDetails?.status
+    //               ? "Approved"
+    //               : "Rejected"}
+    //           </span>
+    //         </div>
+    //       ) : (
+    //         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
+    //           {/* <span className="text-white">
+    //        {  studentAdmissionApprovalDetails?.bankDetails.message}
+    //       </span> */}
+    //           <span
+    //             className={`${
+    //               studentAdmissionApprovalDetails?.bankDetails?.status
+    //                 ? "bg-green-500 "
+    //                 : "bg-red-500 text-white"
+    //             } p-2 rounded-xl`}
+    //           >
+    //             {studentAdmissionApprovalDetails?.bankDetails?.message}
+    //           </span>
+    //         </div>
+    //       ))}
+    //     {/* <h3 className="mt-6 text-lg font-semibold">Address Details</h3> */}
+    //     {[
+    //       { label: "Address Line 1", name: "address.line1" },
+    //       { label: "City", name: "address.city" },
+    //       { label: "Status", name: "address.status" },
+    //     ].map(({ label, name }) => (
+    //       <InputField
+    //         key={name}
+    //         name={name}
+    //         value={
+    //           name.startsWith("address.")
+    //             ? userData?.address?.[name.split(".")[1]] || ""
+    //             : userData?.[name] || ""
+    //         }
+    //         label={label}
+    //         onChange={handleChange}
+    //         placeholder={label}
+    //         error={errors[name]}
+    //       />
+    //     ))}
+
+    //     {/* <div className="grid md:grid-cols-2 gap-4">
+    //         {["admissionHead", "parent"].map((key) => (
+    //           <div key={key} className="flex flex-col items-center">
+    //             <h3 className="text-md font-semibold mb-2">
+    //               {key === "parent"
+    //                 ? "Signature of Parent (Should match with PAN)"
+    //                 : "Signature of Admission Head"}
+    //             </h3>
+    //             <div className="border w-64 h-24 bg-white">
+    //               <SignatureCanvas
+    //                 ref={signatureRefs[key]}
+    //                 penColor="black"
+    //                 canvasProps={{ className: "w-full h-full" }}
+    //                 onEnd={() => handleSignatureEnd(key)}
+    //               />
+    //             </div>
+    //             <button
+    //               type="button"
+    //               onClick={() => clearSignature(key)}
+    //               className="mt-2 bg-red-500 text-white px-4 py-1 rounded"
+    //             >
+    //               Clear Signature
+    //             </button>
+    //           </div>
+    //         ))}
+    //       </div> */}
+    //     <div className="flex w-full justify-between ">
+    //       <button
+    //         className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+    //         onClick={() => navigate("/documentUpload")}
+    //       >
+    //         Back
+    //       </button>
+    //       <button
+    //         className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
+    //         onClick={onSubmit}
+    //       >
+    //         Submit
+    //       </button>
+    //     </div>
+    //   </form>
+    // </div>
+
+    <div className="w-full">
       {loading && <Spinner />}
       <form
         className="flex flex-col px-4 items-center gap-2 py-2 text-white"
         onSubmit={onSubmit}
       >
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
-          Bank Account Details for Caution Money Refund
+          Address Details
         </h2>
-        {studentAdmissionApprovalDetails?.bankDetails &&
-          (studentAdmissionApprovalDetails?.bankDetails?.status ? (
-            <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
-              {/* <span className="text-white">
-           {  studentAdmissionApprovalDetails?.bankDetails.message}
-          </span> */}
-              <span
-                className={`${
-                  studentAdmissionApprovalDetails?.bankDetails?.status
-                    ? "bg-green-500 "
-                    : "bg-red-500 text-white"
-                } p-2 rounded-xl`}
-              >
-                {studentAdmissionApprovalDetails?.bankDetails?.status
-                  ? "Approved"
-                  : "Rejected"}
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
-              {/* <span className="text-white">
-           {  studentAdmissionApprovalDetails?.bankDetails.message}
-          </span> */}
-              <span
-                className={`${
-                  studentAdmissionApprovalDetails?.bankDetails?.status
-                    ? "bg-green-500 "
-                    : "bg-red-500 text-white"
-                } p-2 rounded-xl`}
-              >
-                {studentAdmissionApprovalDetails?.bankDetails?.message}
-              </span>
-            </div>
-          ))}
-        <div className="flex flex-col w-full md:w-2/3 gap-4 items-center">
+
+        <div className="flex flex-col w-full md:w-2/3 gap-4 items-center text-white">
           {[
-            { label: "Account Holder Name", name: "accountHolder" },
-            { label: "Bank Name", name: "bankName" },
-            { label: "Account Number", name: "accountNumber" },
-            { label: "IFSC Code", name: "ifscCode" },
-            { label: "Relation with Student", name: "relationWithStudent" },
+            { label: "Address Line 1", name: "address.line1" },
+            { label: "City", name: "address.city" },
+            { label: "Status", name: "address.status" },
           ].map(({ label, name }) => (
             <InputField
               key={name}
               name={name}
-              value={userData?.[name] || ""}
+              value={userData?.address?.[name.split(".")[1]] || ""}
               label={label}
               onChange={handleChange}
               placeholder={label}
               error={errors[name]}
             />
           ))}
-          {/* <h3 className="mt-4">Document Checklist (Please Tick)</h3> */}
-          {/* <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: "Cancelled Cheque", name: "cancelledCheque" },
-            { label: "Photocopy of Passbook", name: "passbook" },
-            { label: "Photocopy of Student’s Aadhar", name: "studentAadhaar" },
-            { label: "Photocopy of Parent’s Aadhar", name: "parentAadhaar" },
-            { label: "Two Passport Size Photographs", name: "passportPhotos" },
-          ].map(({ label, name }) => (
-            <CheckboxField
-              type="checkbox"
-              name={name}
-              checked={userData?.documents?.[name] || false}
-              onChange={handleChange}
-              label={label}
-            />
-          ))}
-          </div> */}
-          <div className="col-span-3 text-center">
-            {errors.documents && (
-              <p className="text-[#ffdd00] text-xs">{errors.documents}</p>
-            )}{" "}
-            {/* Display error */}
-          </div>
         </div>
-        {/* <div className="grid md:grid-cols-2 gap-4">
-            {["admissionHead", "parent"].map((key) => (
-              <div key={key} className="flex flex-col items-center">
-                <h3 className="text-md font-semibold mb-2">
-                  {key === "parent"
-                    ? "Signature of Parent (Should match with PAN)"
-                    : "Signature of Admission Head"}
-                </h3>
-                <div className="border w-64 h-24 bg-white">
-                  <SignatureCanvas
-                    ref={signatureRefs[key]}
-                    penColor="black"
-                    canvasProps={{ className: "w-full h-full" }}
-                    onEnd={() => handleSignatureEnd(key)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => clearSignature(key)}
-                  className="mt-2 bg-red-500 text-white px-4 py-1 rounded"
-                >
-                  Clear Signature
-                </button>
-              </div>
-            ))}
-          </div> */}
-        <div className="flex w-full justify-between ">
+
+        <div className="flex w-full justify-between">
           <button
+            type="button"
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={() => navigate("/documentUpload")}
+            onClick={() => navigate("/familyDetails")}
           >
             Back
           </button>
           <button
+            type="submit"
+            // onClick={() => navigate("/siblingsDetails")}
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={onSubmit}
           >
-            Submit
+            Next
           </button>
         </div>
       </form>

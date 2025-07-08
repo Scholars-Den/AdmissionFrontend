@@ -23,6 +23,31 @@ export function validateName(name) {
 
   return { isValid: true, message: "Valid name" };
 }
+export function validateSchoolName(schoolName) {
+  const schoolNameRegex = /^[A-Za-z\s]+$/; // Only letters and spaces allowed
+
+  if (!schoolName) {
+    return { isValid: false, message: "School Name is required" };
+  }
+
+  if (schoolName.length < 3) {
+    return { isValid: false, message: "School Name must be at least 3 characters long" };
+  }
+
+  if (!schoolNameRegex.test(schoolName)) {
+    return { isValid: false, message: "School Name can only contain letters and spaces" };
+  }
+
+  if (schoolName.startsWith(" ") || schoolName.endsWith(" ")) {
+    return { isValid: false, message: "School Name should not start or end with a space" };
+  }
+
+  if (schoolName.includes("  ")) {
+    return { isValid: false, message: "School Name should not have consecutive spaces" };
+  }
+
+  return { isValid: true, message: "Valid School Name" };
+}
 
 
 

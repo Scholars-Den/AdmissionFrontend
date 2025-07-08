@@ -7,7 +7,7 @@ const ProtectedRouteForStudent = ({ children }) => {
   const userRole = getCookie("token");
 
   if (!userRole ) {
-    return <Navigate to="/adminsignup" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

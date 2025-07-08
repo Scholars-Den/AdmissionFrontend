@@ -28,6 +28,7 @@ export const fetchAdminDetails = createAsyncThunk(
   }
 );
 
+
 export const submitAdminDetails = createAsyncThunk(
   "adminDetails/submitAdminDetails",
   async (contactNumber, { rejectWithValue }) => {

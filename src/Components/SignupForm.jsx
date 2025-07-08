@@ -14,11 +14,14 @@ import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
 import InputField from "../../utils/InputField";
 import SelectField from "../../utils/SelectField";
+import CheckboxField from "../../utils/CheckboxField";
 import {
   validateAadhaar,
   validateName,
   validatePhoneNo,
+  validateSchoolName,
 } from "../../utils/validation/inputValidation";
+import YesNoField from "../../utils/YesNoField";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -55,6 +58,30 @@ const SignupForm = () => {
     dispatch(updateUserDetails({ [name]: value }));
 
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  const radioChange = (e) => {
+    const { name, value } = e.target;
+
+    let updatedData;
+
+    if (name.startsWith("address.")) {
+      const field = name.split(".")[1];
+      updatedData = {
+        address: {
+          ...userData?.address,
+          [field]: value,
+        },
+      };
+    } else {
+      updatedData = { [name]: value };
+    }
+
+    dispatch(updateUserDetails(updatedData));
+
+    if (value.trim()) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    }
   };
 
   // let subjectOptions =
@@ -107,6 +134,9 @@ const SignupForm = () => {
   // console.log(subjectOptionsRoman);
 
   let subjectOptions = ["Foundation", "JEE(Main & Adv)", "NEET(UG)"];
+
+  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+
   // const convertToRoman = (num) => {
   //   const romanNumerals = {
   //     6: "VI",
@@ -122,7 +152,7 @@ const SignupForm = () => {
 
   useEffect(() => {
     console.log("userData", userData);
-    if ( userData?.studentName) {
+    if (userData?.studentName) {
       dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
     }
   }, [userData]);
@@ -155,14 +185,15 @@ const SignupForm = () => {
       validation: validateAadhaar,
       label: "*Aadhaar ID",
     },
-    // { name: "email", type: "email", placeholder: "Email ID", required: false },
-    // {
-    //   name: "studentContactNumber",
-    //   type: "number",
-    //   placeholder: "Enter Your Contact Number",
-    //   required: true,
-    //   validation: validatePhoneNo,
-    // },
+    { name: "email", type: "email", placeholder: "Email ID", label: "Email" },
+    {
+      name: "schoolName",
+      type: "text",
+      placeholder: "Enter Your School Name",
+      required: true,
+      validation: validateSchoolName,
+      label: "Current/Last Attended School",
+    },
   ];
 
   const selectFields = [
@@ -180,6 +211,15 @@ const SignupForm = () => {
       name: "category",
       label: "*Select Category",
       options: ["General", "OBC", "SC", "ST", "ETS"],
+      value: userData.category,
+      onChange: { handleChange },
+      error: errors.category,
+      required: true,
+    },
+    {
+      name: "bloodGroup",
+      label: "*Select Your Blood Group",
+      options: bloodGroupOptions,
       value: userData.category,
       onChange: { handleChange },
       error: errors.category,
@@ -204,15 +244,26 @@ const SignupForm = () => {
     },
   ];
 
+  const checkboxFields = [
+    {
+      label: "Existing Student",
+      name: "existingStudent",
+      onChange: { handleChange },
+    },
+  ];
+
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
     formFields.forEach(({ name, required, validation }) => {
-      const isValidInput = validation(userData[name]);
-      if (required && !isValidInput.isValid) {
-        formErrors[name] = isValidInput.message;
-        isValid = false;
+      console.log("validation", validation);
+      if (validation != undefined) {
+        const isValidInput = validation(userData[name]);
+        if (required && !isValidInput.isValid) {
+          formErrors[name] = isValidInput.message;
+          isValid = false;
+        }
       }
     });
     selectFields.forEach(({ name, required }) => {
@@ -224,10 +275,10 @@ const SignupForm = () => {
       }
     });
 
-    // if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-    //   formErrors.email = "Email must be valid";
-    //   isValid = false;
-    // }
+    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+      formErrors.email = "Email must be valid";
+      isValid = false;
+    }
 
     setErrors(formErrors);
     return isValid;
@@ -263,7 +314,7 @@ const SignupForm = () => {
           "studentAdmissionApprovalDetaisl",
           studentAdmissionApprovalDetails
         )}
-      
+
         {studentAdmissionApprovalDetails?.studentDetails &&
           (studentAdmissionApprovalDetails?.studentDetails?.status ? (
             <div className="flex flex-col w-full gap-4 items-end  ">
@@ -305,6 +356,27 @@ const SignupForm = () => {
               />
             ))}
 
+            {checkboxFields?.map((field) => (
+              // <CheckboxField
+              //   key={field.name}
+              //   name={field.name}
+              //   type="radio"
+              //   value={userData?.[field.name] || ""}
+              //   onChange={handleChange}
+              //   error={errors[field.name]}
+              //   label={field.label}
+              // />
+
+              // console.log("field", field.name)
+              <YesNoField
+                label={field.label}
+                name={field.name}
+                value={userData?.existingStudent || ""}
+                onChange={radioChange}
+                error={errors[field.name]}
+              />
+            ))}
+
             {submitMessage && (
               <p className="text-sm text-[#ffdd00] text-center">
                 {submitMessage}
@@ -312,26 +384,6 @@ const SignupForm = () => {
             )}
           </div>
         </fieldset>
-
-        {/* <div className="flex gap-1 justify-center items-center">
-          <input
-            type="checkbox"
-            name="termsAndCondition"
-            value={Boolean(userData?.termsAndCondition)}
-            checked={Boolean(userData?.termsAndCondition)} // Ensure it's a boolean
-            onChange={handleChange}
-            className="cursor-pointer"
-          />
-          <label className="p-1">
-            I agree to{" "}
-            <Link to="/termsAndConditions" className="text-[#ffdd00] underline">
-              Terms & Conditions
-            </Link>
-          </label>
-        </div>
-        {errors.termsAndCondition && (
-          <span className="text-white text-sm">{errors.termsAndCondition}</span>
-        )} */}
 
         <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
           <button

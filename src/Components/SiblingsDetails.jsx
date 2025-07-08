@@ -478,7 +478,7 @@ const SiblingsDetails = () => {
           <button
             type="button"
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={() => navigate("/familyDetails")}
+            onClick={() => navigate("/bankRefund")}
           >
             Back
           </button>

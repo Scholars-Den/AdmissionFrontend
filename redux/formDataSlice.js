@@ -32,6 +32,16 @@ export const fetchUserDetails = createAsyncThunk(
 
             aadhaarID: data?.aadhaarID || "",
             studentContactNumber: data?.studentContactNumber || "",
+            email: data.email || "",
+            bloodGroup: data.bloodGroup || "",
+            existingStudent: data.existingStudent || "",
+            schoolName: data?.schoolName || "",
+            address: {
+              line1: data?.newAdmission?.address?.line1 || "",
+              city: data?.newAdmission?.address?.city || "",
+              status: data?.newAdmission?.address?.status || "",
+            },
+
             gender: data?.gender || "",
             category: data?.category || "",
             studentClass: data?.studentClass || "",
@@ -91,10 +101,7 @@ export const submitBankRefundForm = createAsyncThunk(
   "userDetails/submitBankRefundForm",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(
-        "/admissions/submitBankRefundForm"
-        
-      );
+      const response = await axios.patch("/admissions/submitBankRefundForm");
       console.log("response from submitBankRefundForm", response);
 
       const data = response.data;
@@ -119,8 +126,7 @@ export const submitBankRefundForm = createAsyncThunk(
             },
           },
         };
-      }else{
-
+      } else {
         console.log("Testdata from redux", data);
         return;
       }
@@ -130,6 +136,96 @@ export const submitBankRefundForm = createAsyncThunk(
     }
   }
 );
+// export const submitAddressForm = createAsyncThunk(
+//   "userDetails/submitAddressForm",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.patch("/admissions/submitAddressForm");
+//       console.log("response from submitAddressForm", response);
+
+//       const data = response.data;
+//       if (data.length !== 0) {
+//         return {
+//           dataExist: true, // Indicate data exists
+//           userData: {
+//             accountHolder: data?.accountHolder || "",
+//             acknowledgementNumber: data?.acknowledgementNumber || "",
+//             admissionRollNo: data?.admissionRollNo || "",
+//             enrollmentNumber: data?.enrollmentNumber || "",
+//             studentClass: data?.studentClass || "",
+//             program: data?.program || "",
+//             bankName: data?.bankName || "",
+//             accountNumber: data?.accountNumber || "",
+//             ifscCode: data?.ifscCode || "",
+//             relationWithStudent: data?.relationWithStudent || "",
+
+//             signatures: {
+//               admissionOfficer: data?.accountNumber || "",
+//               parent: data?.accountNumber || "",
+//             },
+//           },
+//         };
+//       } else {
+//         console.log("Testdata from redux", data);
+//         return;
+//       }
+//     } catch (error) {
+//       console.log("error .,.....,,,,,,,,,", error);
+//       return;
+//     }
+//   }
+// );
+
+
+
+
+
+
+
+export const submitAddressForm = createAsyncThunk(
+  "userDetails/submitAddressForm",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch("/admissions/submitAddressForm");
+      
+      console.log("response from submitAddressForm", response);
+
+      const data = response.data;
+
+      if (data && Object.keys(data).length !== 0) {
+        return {
+          dataExist: true,
+          userData: {
+            address: {
+              line1: data?.address?.line1 || "",
+              city: data?.address?.city || "",
+              status: data?.address?.status || "",
+            },
+            isExistingStudent: data?.isExistingStudent || "",
+            schoolName: data?.schoolName || "",
+          },
+        };
+      } else {
+        console.log("No data returned from API");
+        return rejectWithValue("No data found");
+      }
+    } catch (error) {
+      console.log("Error in submitAddressForm:", error);
+      return rejectWithValue(error?.response?.data || "Failed to submit address form");
+    }
+  }
+);
+
+
+
+
+
+
+
+
+
+
+
 // export const submitBankRefundForm = createAsyncThunk(
 //   "userDetails/submitBankRefundForm",
 //   async (formData, { rejectWithValue }) => {
@@ -201,6 +297,15 @@ export const submitFormData = createAsyncThunk(
             aadhaarID: data?.newAdmission?.aadhaarID || "",
             studentContactNumber:
               data?.newAdmission?.studentContactNumber || "",
+            email: data?.newAdmission?.email || "",
+            existingStudent: data?.newAdmission?.existingStudent || "",
+            schoolName: data?.newAdmission?.schoolName || "",
+            address: {
+              line1: data?.newAdmission?.address?.line1 || "",
+              city: data?.newAdmission?.address?.city || "",
+              status: data?.newAdmission?.address?.status || "",
+            },
+            bloodGroup: data?.newAdmission?.bloodGroup || "",
             gender: data?.newAdmission?.gender || "",
             category: data?.newAdmission?.Category || "",
             dob: data?.newAdmission?.dob || "",
@@ -252,9 +357,6 @@ export const putFormData = createAsyncThunk(
       console.log("formData from submitFormData", formData);
       const response = await axios.patch("/admissions/putFormData", formData);
 
-
-
-
       console.log("response from submitsuserDetails", response);
 
       const data = response.data.user;
@@ -266,6 +368,16 @@ export const putFormData = createAsyncThunk(
             studentName: data?.studentName || "",
             aadhaarID: data?.aadhaarID || "",
             studentContactNumber: data?.studentContactNumber || "",
+            email: data?.email || "",
+            existingStudent: data?.existingStudent || "",
+            schoolName: data?.schoolName || "",
+            address: {
+              line1: data?.newAdmission?.address?.line1 || "",
+              city: data?.newAdmission?.address?.city || "",
+              status: data?.newAdmission?.address?.status || "",
+            },
+
+            bloodGroup: data?.bloodGroup || "",
 
             gender: data?.gender || "",
             category: data?.Category || "",
