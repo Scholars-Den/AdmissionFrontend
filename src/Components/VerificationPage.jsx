@@ -29,8 +29,8 @@ const VerificationPage = () => {
   const [codeEntered, setCodeEntered] = useState(false);
 
   // For enable OTP
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -169,8 +169,8 @@ const VerificationPage = () => {
     e.preventDefault();
 
     // For enable OTP
-    // let codeChecked = await checkVerificationCode();
-    let codeChecked = true;
+    let codeChecked = await checkVerificationCode();
+    // let codeChecked = true;
 
     console.log("codeChecked", codeChecked);
     if (codeChecked === false) {
@@ -248,7 +248,6 @@ const VerificationPage = () => {
   }, []);
 
   const handleOTPChange = async (e) => {
- 
     if (e.target.value.length <= 4) {
       setCode(e.target.value);
     }
@@ -319,7 +318,10 @@ const VerificationPage = () => {
           {/* OTP Field */}
           {showCodeBox && (
             <div className="space-y-2">
-              <label htmlFor="otp" className="block text-sm text-black font-medium">
+              <label
+                htmlFor="otp"
+                className="block text-sm text-white  font-medium"
+              >
                 *Verification Code
               </label>
               <input
@@ -332,21 +334,20 @@ const VerificationPage = () => {
                 className="w-full bg-white/5 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
               {/* <button
-              type="button"
-              onClick={checkVerificationCode}
-              className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md text-white"
-            >
-              Verify
-            </button> */}
+                type="button"
+                onClick={checkVerificationCode}
+                className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md text-white"
+              >
+                Verify
+              </button> */}
             </div>
           )}
-          
+
           {showReloading && (
             <div className="flex justify-center items-center">
               <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
             </div>
           )}
-
 
           {/* Submit Message */}
           {submitMessage && (
@@ -357,16 +358,16 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-     { /*  {showCodeBox && (  */}
+          {showCodeBox && (
             <button
               type="button"
               onClick={onSubmit}
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              // disabled={!codeEntered}
+              disabled={!codeEntered}
             >
               Next
             </button>
-          {/* )} */}
+          )}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
