@@ -105,14 +105,14 @@ const TermsAndConditionPage = () => {
       </p>
 
       {/* Agree Button */}
-      <div className="flex justify-center mt-4">
+      {/* <div className="flex justify-center mt-4">
         <button
           className="w-full sm:w-auto hover:bg-[#ffdd00] hover:text-black border-2 py-2 px-4 rounded-lg transition duration-300"
           onClick={() => handleChange("termsAndCondition", true)}
         >
           Agree
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
