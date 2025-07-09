@@ -294,31 +294,29 @@ const ApprovalRejectedComponent = () => {
 
                 <section>
                   <div className="flex justify-between pr-5 relative">
-                    <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                    <h3 className="text-lg font-semibold mb-1">Address Details</h3>
                     <div
                       className={`absolute top-2 right-2  ${
-                        approvalData?.bankDetails?.status
+                        approvalData?.addressDetails?.status
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700 "
                       } text-xs px-2 py-1 rounded-full font-medium shadow`}
                     >
-                      {approvalData?.bankDetails?.status
+                      {approvalData?.addressDetails?.status
                         ? "✅ Approved"
                         : "❌ Not Approved"}
                     </div>
                   </div>
                   <p>
-                    <strong>Bank Name:</strong> {popupData.bankName}
+                    <strong>Address Line1:</strong> {popupData.address.line1}
                   </p>
                   <p>
-                    <strong>Account Holder:</strong> {popupData.accountHolder}
+                    <strong>City:</strong> {popupData.address.city}
                   </p>
                   <p>
-                    <strong>Account Number:</strong> {popupData.accountNumber}
+                    <strong>State:</strong> {popupData.address.state}
                   </p>
-                  <p>
-                    <strong>IFSC Code:</strong> {popupData.ifscCode}
-                  </p>
+               
                 </section>
                 {/* 
                 <section>

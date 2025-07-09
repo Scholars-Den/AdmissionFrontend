@@ -4,7 +4,7 @@ import DocumentSection from "./DocumentSection";
 import SignatureSection from "./SignatureSection";
 import StatusBadge from "../../../utils/StatusBadge";
 
-const TABS = ["Student", "Parent", "Bank", "Documents", "Signatures"];
+const TABS = ["Student", "Parent", "Address", "Documents", "Signatures"];
 
 const StudentDetailsModal = ({
   selectedStudent,
@@ -36,12 +36,12 @@ const StudentDetailsModal = ({
       ["Mother's Occupation", selectedStudent.motherOccupations],
       ["Contact Number", selectedStudent.parentsContactNumber],
     ],
-    Bank: [
-      ["Account Holder", selectedStudent.accountHolder],
-      ["Account Number", selectedStudent.accountNumber],
-      ["Bank Name", selectedStudent.bankName],
-      ["IFSC Code", selectedStudent.ifscCode],
-      ["Relation with Student", selectedStudent.relationWithStudent],
+    Address: [
+      ["Address Line1", selectedStudent.address.line1],
+      ["City", selectedStudent.address.city],
+      ["State", selectedStudent.address.state],
+      // ["IFSC Code", selectedStudent.ifscCode],
+      // ["Relation with Student", selectedStudent.relationWithStudent],
     ],
   };
 
@@ -75,9 +75,9 @@ const StudentDetailsModal = ({
                 <p className="text-sm text-gray-600">
                   Class: {selectedStudent.studentClass}
                 </p>
-                <p className="text-sm text-gray-600">
-                  Class: {selectedStudent.studentClass}
-                </p>
+                {/* <p className="text-sm text-gray-600">
+                  Program: {selectedStudent.studentClass}
+                </p> */}
               </div>
               {selectedStudent?.approvalStatus && (
                 <StatusBadge
@@ -113,8 +113,8 @@ const StudentDetailsModal = ({
             {activeTab === "Parent" && (
               <InfoSection title="Parent Details" data={sectionData.Parent} />
             )}
-            {activeTab === "Bank" && (
-              <InfoSection title="Bank Details" data={sectionData.Bank} />
+            {activeTab === "Address" && (
+              <InfoSection title="Address Details" data={sectionData.Address} />
             )}
             {activeTab === "Documents" && (
               <DocumentSection
@@ -130,7 +130,8 @@ const StudentDetailsModal = ({
           {/* Footer */}
 
           <div className="flex justify-end">
-            {admisionStatus?.data?.status !== "approved" && (
+            {(admisionStatus?.data?.status !== "approved" &&
+              admisionStatus?.data?.status !== "successful") && (
               <button
                 onClick={onEdit}
                 disabled={admisionStatus?.data?.status === "pending"}

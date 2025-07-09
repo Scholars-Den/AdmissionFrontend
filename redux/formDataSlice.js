@@ -37,9 +37,9 @@ export const fetchUserDetails = createAsyncThunk(
             existingStudent: data.existingStudent || "",
             schoolName: data?.schoolName || "",
             address: {
-              line1: data?.newAdmission?.address?.line1 || "",
-              city: data?.newAdmission?.address?.city || "",
-              status: data?.newAdmission?.address?.status || "",
+              line1: data?.address?.line1 || "",
+              city: data?.address?.city || "",
+              state: data?.address?.state || "",
             },
 
             gender: data?.gender || "",
@@ -49,7 +49,7 @@ export const fetchUserDetails = createAsyncThunk(
             dob: data?.dob || "",
             bloogGroup: data?.bloogGroup || "",
             scholarship: data?.scholarship || "",
-            termsAndCondition: data?.TermsAndCondition || "",
+            termsAndCondition: data?.termsAndCondition || "",
             fatherName: data?.fatherName || "",
             fatherAadhaarID: data?.fatherAadhaarID || "",
             fatherDob: data?.fatherDob || "",
@@ -119,6 +119,7 @@ export const submitBankRefundForm = createAsyncThunk(
             accountNumber: data?.accountNumber || "",
             ifscCode: data?.ifscCode || "",
             relationWithStudent: data?.relationWithStudent || "",
+            termsAndCondition: data?.termsAndCondition || "",
 
             signatures: {
               admissionOfficer: data?.accountNumber || "",
@@ -176,18 +177,16 @@ export const submitBankRefundForm = createAsyncThunk(
 //   }
 // );
 
-
-
-
-
-
-
 export const submitAddressForm = createAsyncThunk(
   "userDetails/submitAddressForm",
-  async (_, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.patch("/admissions/submitAddressForm");
-      
+      console.log("formData", formData);
+      const response = await axios.patch(
+        "/admissions/submitAddressForm",
+        formData
+      );
+
       console.log("response from submitAddressForm", response);
 
       const data = response.data;
@@ -199,7 +198,7 @@ export const submitAddressForm = createAsyncThunk(
             address: {
               line1: data?.address?.line1 || "",
               city: data?.address?.city || "",
-              status: data?.address?.status || "",
+              state: data?.address?.state || "",
             },
             isExistingStudent: data?.isExistingStudent || "",
             schoolName: data?.schoolName || "",
@@ -211,20 +210,12 @@ export const submitAddressForm = createAsyncThunk(
       }
     } catch (error) {
       console.log("Error in submitAddressForm:", error);
-      return rejectWithValue(error?.response?.data || "Failed to submit address form");
+      return rejectWithValue(
+        error?.response?.data || "Failed to submit address form"
+      );
     }
   }
 );
-
-
-
-
-
-
-
-
-
-
 
 // export const submitBankRefundForm = createAsyncThunk(
 //   "userDetails/submitBankRefundForm",
@@ -303,7 +294,7 @@ export const submitFormData = createAsyncThunk(
             address: {
               line1: data?.newAdmission?.address?.line1 || "",
               city: data?.newAdmission?.address?.city || "",
-              status: data?.newAdmission?.address?.status || "",
+              state: data?.newAdmission?.address?.state || "",
             },
             bloodGroup: data?.newAdmission?.bloodGroup || "",
             gender: data?.newAdmission?.gender || "",
@@ -374,7 +365,7 @@ export const putFormData = createAsyncThunk(
             address: {
               line1: data?.newAdmission?.address?.line1 || "",
               city: data?.newAdmission?.address?.city || "",
-              status: data?.newAdmission?.address?.status || "",
+              state: data?.newAdmission?.address?.state || "",
             },
 
             bloodGroup: data?.bloodGroup || "",

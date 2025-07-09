@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   fetchUserDetails,
   updateUserDetails,
@@ -29,8 +29,7 @@ const DocumentUpload = ({ documentRequired }) => {
   const [cameraFacing, setCameraFacing] = useState("Front");
   const [isCapturing, setIsCapturing] = useState(false);
 
-const isAnyUploading = Object.values(uploading).some((v) => v);
-
+  const isAnyUploading = Object.values(uploading).some((v) => v);
 
   useEffect(() => {
     dispatch(fetchUserDetails());
@@ -38,8 +37,12 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
 
   useEffect(() => {
     if (userDetails?.acknowledgementNumber) {
-      dispatch(fetchAdmissionApprovalMessage(userDetails?.acknowledgementNumber));
+      dispatch(
+        fetchAdmissionApprovalMessage(userDetails?.acknowledgementNumber)
+      );
     }
+
+    console.log("userDetaisls", userDetails);
   }, [userDetails]);
 
   useEffect(() => {
@@ -88,15 +91,40 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
     }
   };
 
+  const handleChange = (e) => {
+    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
+      return;
+    }
+    const { name, value, checked } = e.target;
+
+    console.log("name, checked", name, checked);
+
+    if (name === "termsAndCondition") {
+      dispatch(updateUserDetails({ [name]: e.target.checked }));
+      return;
+    }
+
+    dispatch(updateUserDetails({ [name]: value }));
+
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
   const uploadToCloudinary = async (dataUrl, docType) => {
     setUploading((prev) => ({ ...prev, [docType]: true }));
     try {
       const blob = await (await fetch(dataUrl)).blob();
       const formData = new FormData();
-      formData.append("file", blob, `${userDetails.studentName}_${docType}.png`);
+      formData.append(
+        "file",
+        blob,
+        `${userDetails.studentName}_${docType}.png`
+      );
       formData.append("upload_preset", "ProfilePictures");
       formData.append("cloud_name", "dtytgoj3f");
-      formData.append("folder", `admissionsDoc/${userDetails.acknowledgementNumber}`);
+      formData.append(
+        "folder",
+        `admissionsDoc/${userDetails.acknowledgementNumber}`
+      );
 
       const response = await fetch(
         "https://api.cloudinary.com/v1_1/dtytgoj3f/image/upload",
@@ -113,7 +141,9 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
         setUploads(updated);
 
         await dispatch(updateUserDetails({ [docType]: data.secure_url }));
-        await dispatch(putFormData({ ...userDetails, [docType]: data.secure_url }));
+        await dispatch(
+          putFormData({ ...userDetails, [docType]: data.secure_url })
+        );
       } else {
         setShowError("Upload failed. Try again.");
       }
@@ -130,52 +160,54 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
     (doc) => uploads[doc.name] || userDetails[doc.name]
   );
 
-
-  const onClickNext = async() =>{
+  const onClickNext = async () => {
     console.log("ONCLickNext");
-   const responseData = await  dispatch(submitBankRefundForm());
+    await dispatch(putFormData(userDetails));
+    const responseData = await dispatch(submitBankRefundForm());
 
-   console.log("responseData", responseData);
+    console.log("responseData", responseData);
 
     navigate("/admissionComplete");
-  }
+  };
 
   const activeDocLabel =
     documentRequired.find((doc) => doc.name === activeDoc)?.label || activeDoc;
 
-    return (
-  <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center relative">
-    {isAnyUploading && (
-      <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-        <div className="flex flex-col items-center gap-3">
-          <svg
-            className="animate-spin h-12 w-12 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8z"
-            />
-          </svg>
-          <p className="text-white text-lg font-semibold">Uploading Document...</p>
+  return (
+    <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center relative">
+      {isAnyUploading && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="flex flex-col items-center gap-3">
+            <svg
+              className="animate-spin h-12 w-12 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8z"
+              />
+            </svg>
+            <p className="text-white text-lg font-semibold">
+              Uploading Document...
+            </p>
+          </div>
         </div>
-      </div>
-    )}
-    
-    {/* Your rest of the UI */}
+      )}
 
-    {/* <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center"> */}
+      {/* Your rest of the UI */}
+
+      {/* <div className="w-full min-h-screen bg-[#c61d23] px-4 py-6 flex flex-col items-center"> */}
       {studentAdmissionApprovalDetails?.documentsDetails && (
         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4">
           <span
@@ -206,7 +238,7 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
         setActiveDoc={setActiveDoc}
       />
 
-      <div className="flex w-full justify-between">
+      {/* <div className="flex w-full justify-between">
         <button
           type="button"
           className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
@@ -223,6 +255,53 @@ const isAnyUploading = Object.values(uploading).some((v) => v);
           type="button"
           onClick={() => onClickNext()}
           disabled={!allUploaded}
+        >
+          Next
+        </button>
+      </div> */}
+
+      <div className="flex gap-1 text-xl mt-5  justify-center items-center">
+        <input
+          type="checkbox"
+          name="termsAndCondition"
+          value={Boolean(userDetails?.termsAndCondition)}
+          checked={Boolean(userDetails?.termsAndCondition)} // Ensure it's a boolean
+          onChange={handleChange}
+          className="cursor-pointer"
+        />
+        <label className="p-1 text-white ">
+          I agree to{" "}
+          <Link to="/termsAndConditions" className="text-[#ffdd00]  underline">
+            Terms & Conditions
+          </Link>
+        </label>
+      </div>
+      {/* {errors.termsAndCondition && (
+          <span className="text-white text-sm">{errors.termsAndCondition}</span>
+        )} */}
+
+      <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+        <button
+          onClick={() => navigate("/siblingsDetails")}
+          type="button"
+          className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+        >
+          Back
+        </button>
+
+        {console.log(
+          "userDetaisl.termsAndConditions",
+          userDetails.termsAndCondition
+        )}
+        <button
+          className={`w-full sm:w-2/3 border  hover:bg-yellow-600 text-black py-2 rounded-xl transition-all  ${
+            allUploaded && userDetails.termsAndCondition
+              ? "bg-[#ffd700] text-black hover:bg-[#ffdd00]"
+              : "bg-yellow-600 text-gray-600 cursor-not-allowed"
+          }`}
+          type="button"
+          onClick={() => onClickNext()}
+          disabled={!allUploaded && !userDetails.termsAndCondition}
         >
           Next
         </button>

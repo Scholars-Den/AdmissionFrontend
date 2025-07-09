@@ -54,6 +54,8 @@ const getStatusConfig = (status) => {
 const StatusBadge = ({ status, message }) => {
   const { colorClass, icon, label } = getStatusConfig(status);
 
+  console.log("STATUS, MESSAGE", status, message);
+
   return (
     <div className="flex flex-col items-end text-right">
       <div
@@ -62,11 +64,7 @@ const StatusBadge = ({ status, message }) => {
         {icon}
         <span>{label}</span>
       </div>
-      {message && (
-        <span className="text-xs text-gray-600 mt-1">
-          {message}
-        </span>
-      )}
+      {message && <span className="text-xs text-gray-600 mt-1">{message}</span>}
     </div>
   );
 };

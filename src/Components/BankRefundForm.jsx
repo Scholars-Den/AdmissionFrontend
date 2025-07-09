@@ -4,7 +4,6 @@ import SignatureCanvas from "react-signature-canvas";
 import {
   fetchUserDetails,
   submitAddressForm,
-  submitBankRefundForm,
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { useNavigate } from "react-router-dom";
@@ -75,7 +74,7 @@ const BankRefundForm = () => {
   // };
 
   // const handleChange = (e) => {
-  //   if (studentAdmissionApprovalDetails?.bankDetails?.status) {
+  //   if (studentAdmissionApprovalDetails?.addressDetails?.status) {
   //     return;
   //   }
   //   const { name, value, type, checked } = e.target;
@@ -153,34 +152,35 @@ const BankRefundForm = () => {
   //   }));
   // };
 
- const validateForm = () => {
-  let formErrors = {};
-  let isValid = true;
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
 
-  // Validate required fields
-  const requiredFields = [
-    { name: "address.line1", label: "Address Line 1" },
-    { name: "address.city", label: "City" },
-    { name: "address.status", label: "Status" },
-    // { name: "isExistingStudent", label: "Is Existing Student" },
-    // { name: "schoolName", label: "School Name" },
-  ];
+    // Validate required fields
+    const requiredFields = [
+      { name: "address.line1", label: "Address Line 1" },
+      { name: "address.city", label: "City" },
+      { name: "address.status", label: "Status" },
+      // { name: "isExistingStudent", label: "Is Existing Student" },
+      // { name: "schoolName", label: "School Name" },
+    ];
 
-  requiredFields.forEach(({ name, label }) => {
-    const keys = name.split(".");
-    const value = keys.length === 2 ? userData?.[keys[0]]?.[keys[1]] : userData?.[name];
+    requiredFields.forEach(({ name, label }) => {
+      const keys = name.split(".");
+      const value =
+        keys.length === 2 ? userData?.[keys[0]]?.[keys[1]] : userData?.[name];
 
-    if (!value || value.trim() === "") {
-      formErrors[name] = `${label} is required`;
-      isValid = false;
-    }
-  });
+      if (!value || value.trim() === "") {
+        formErrors[name] = `${label} is required`;
+        isValid = false;
+      }
+    });
 
-  setErrors(formErrors);
-  console.log("formErrors", formErrors);
+    setErrors(formErrors);
+    console.log("formErrors", formErrors);
 
-  return isValid;
-};
+    return isValid;
+  };
 
   useEffect(() => {
     dispatch(fetchUserDetails()).then((action) => {
@@ -222,8 +222,9 @@ const BankRefundForm = () => {
     try {
       const formData = { ...userData, signatures };
 
-      const testdata = await dispatch(submitAddressForm(formData));
+      console.log("formData from onSubmit ", formData);
 
+      const testdata = await dispatch(submitAddressForm(formData));
 
       console.log("testdata from onSubmit button", testdata);
       console.log("Test Data", testdata);
@@ -236,6 +237,51 @@ const BankRefundForm = () => {
     // }
   };
 
+
+ const indianStates = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu",
+    "Lakshadweep",
+    "Delhi",
+    "Puducherry",
+    "Ladakh",
+    "Jammu and Kashmir",
+  ];
+
+
+
+
+
+
   return (
     // <div className="w-full ">
     //   {loading && <Spinner />}
@@ -246,20 +292,20 @@ const BankRefundForm = () => {
     //     <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
     //       Address Details
     //     </h2>
-    //     {studentAdmissionApprovalDetails?.bankDetails &&
-    //       (studentAdmissionApprovalDetails?.bankDetails?.status ? (
+    //     {studentAdmissionApprovalDetails?.addressDetails &&
+    //       (studentAdmissionApprovalDetails?.addressDetails?.status ? (
     //         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
     //           {/* <span className="text-white">
-    //        {  studentAdmissionApprovalDetails?.bankDetails.message}
+    //        {  studentAdmissionApprovalDetails?.addressDetails.message}
     //       </span> */}
     //           <span
     //             className={`${
-    //               studentAdmissionApprovalDetails?.bankDetails?.status
+    //               studentAdmissionApprovalDetails?.addressDetails?.status
     //                 ? "bg-green-500 "
     //                 : "bg-red-500 text-white"
     //             } p-2 rounded-xl`}
     //           >
-    //             {studentAdmissionApprovalDetails?.bankDetails?.status
+    //             {studentAdmissionApprovalDetails?.addressDetails?.status
     //               ? "Approved"
     //               : "Rejected"}
     //           </span>
@@ -267,16 +313,16 @@ const BankRefundForm = () => {
     //       ) : (
     //         <div className="flex flex-col w-full gap-4 justify-end items-end mb-4 ">
     //           {/* <span className="text-white">
-    //        {  studentAdmissionApprovalDetails?.bankDetails.message}
+    //        {  studentAdmissionApprovalDetails?.addressDetails.message}
     //       </span> */}
     //           <span
     //             className={`${
-    //               studentAdmissionApprovalDetails?.bankDetails?.status
+    //               studentAdmissionApprovalDetails?.addressDetails?.status
     //                 ? "bg-green-500 "
     //                 : "bg-red-500 text-white"
     //             } p-2 rounded-xl`}
     //           >
-    //             {studentAdmissionApprovalDetails?.bankDetails?.message}
+    //             {studentAdmissionApprovalDetails?.addressDetails?.message}
     //           </span>
     //         </div>
     //       ))}

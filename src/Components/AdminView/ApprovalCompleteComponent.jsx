@@ -283,19 +283,17 @@ const [options, setOptions] = useState([]);
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                  <h3 className="text-lg font-semibold mb-1">Address Details</h3>
                   <p>
-                    <strong>Bank Name:</strong> {popupData.bankName}
+                    <strong>Address Line1:</strong> {popupData?.address?.line1}
                   </p>
                   <p>
-                    <strong>Account Holder:</strong> {popupData.accountHolder}
+                    <strong>City:</strong> {popupData?.address?.city}
                   </p>
                   <p>
-                    <strong>Account Number:</strong> {popupData.accountNumber}
+                    <strong>State:</strong> {popupData?.address?.state}
                   </p>
-                  <p>
-                    <strong>IFSC Code:</strong> {popupData.ifscCode}
-                  </p>
+                
                 </section>
 
                 <section>

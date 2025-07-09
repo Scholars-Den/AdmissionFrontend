@@ -16,7 +16,7 @@ const ConsellorComponent = () => {
 
   const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
-  const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
+  const [addressDetailsStatus, setAddressDetailsStatus] = useState(false);
   const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
     // cancelledCheque: false,
     // passbookPhoto: false,
@@ -83,7 +83,7 @@ const ConsellorComponent = () => {
 
     console.log("handleCick", item);
     console.log("handleCick", item);
-    setBankDetailsStatus(item?.bankDetails?.status);
+    setaddressDetailsStatus(item?.addressDetails?.status);
     setParentDetailsStatus(item?.parentDetails?.status);
     setStudentDetailsStatus(item?.studentDetails?.status);
     setSignatureDetailsStatus(item?.signatureDetails?.status);
@@ -187,9 +187,9 @@ const ConsellorComponent = () => {
           ? "Parent info verified"
           : "Parent info not verified",
       },
-      bankDetails: {
-        status: bankDetailsStatus,
-        message: bankDetailsStatus
+      addressDetails: {
+        status: addressDetailsStatus,
+        message: addressDetailsStatus
           ? "Bank info verified"
           : "Bank info not verified",
       },
@@ -239,14 +239,14 @@ const ConsellorComponent = () => {
     console.log("Response FOR SUBMITmESSAGE", response);
 
     console.log(
-      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      "studentDetailsStatus parentDetailsStatus addressDetailsStatus documentsDetailsStatus",
       studentDetailsStatus,
       parentDetailsStatus,
-      bankDetailsStatus,
+      addressDetailsStatus,
       documentsDetailsStatus
     );
     console.log(
-      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      "studentDetailsStatus parentDetailsStatus addressDetailsStatus documentsDetailsStatus",
       response
     );
 
@@ -272,7 +272,7 @@ const ConsellorComponent = () => {
     setShowMessagePopup(
       parentDetailsStatus &&
         studentDetailsStatus &&
-        bankDetailsStatus &&
+        addressDetailsStatus &&
         signatureDetailsStatus &&
         allDocumentsApproved
         ? "approved"
@@ -504,7 +504,7 @@ const ConsellorComponent = () => {
                       <label htmlFor="">Approved </label>
                       <input
                         className="hover:cursor-pointer "
-                        checked={bankDetailsStatus}
+                        checked={addressDetailsStatus}
                         type="checkbox"
                       />
                     </div>

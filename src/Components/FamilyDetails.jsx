@@ -114,7 +114,7 @@ const FamilyDetails = () => {
       console.log("userData in onSumit ", userData);
 
       const result = await dispatch(putFormData(userData));
-      navigate("/bankRefund");
+      navigate("/addressDetails");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

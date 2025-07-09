@@ -7,7 +7,6 @@ import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
-import BankRefundComponents from "./Components/BankRefundComponents";
 import VerificationPage from "./Components/VerificationPage";
 import SuccessComponent from "./Components/SuccessComponent";
 import DocumentDetails from "./Components/DocumentDetails";
@@ -25,6 +24,7 @@ import LockNavigation from "../utils/LockNavigation";
 import ExistingStudent from "./Components/ExistingStudent/ExistingStudent";
 import PaymentCompleted from "./Components/AdminView/PaymentCompleted";
 import AccountsDashboard from "./Components/AccountsView/AccountsDashboard";
+import AddressComponent from "./Components/AddressComponent";
 
 
 function App() {
@@ -64,10 +64,10 @@ function App() {
             }
           />
           <Route
-            path="/bankRefund"
+            path="/addressDetails"
             element={
               <ProtectedRouteForStudent>
-                <BankRefundComponents />
+                <AddressComponent />
               </ProtectedRouteForStudent>
             }
           />

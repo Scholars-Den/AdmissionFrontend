@@ -474,11 +474,11 @@ const SiblingsDetails = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between ">
+        {/* <div className="flex justify-between ">
           <button
             type="button"
             className="mt-6 hover:bg-[#ffdd00] hover:text-black text-white border-2 px-4 py-2 rounded"
-            onClick={() => navigate("/bankRefund")}
+            onClick={() => navigate("/addressDetails")}
           >
             Back
           </button>
@@ -488,10 +488,26 @@ const SiblingsDetails = () => {
           >
             Next
           </button>
+        </div> */}
+
+        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
+          <button
+            onClick={() => navigate("/addressDetails")}
+            type="button"
+            className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+          >
+            Next
+          </button>
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
 export default SiblingsDetails;

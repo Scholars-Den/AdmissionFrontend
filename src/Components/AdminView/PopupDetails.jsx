@@ -136,8 +136,8 @@ export default function PopupDetails({
   setStudentDetailsStatus,
   parentDetailsStatus,
   setParentDetailsStatus,
-  bankDetailsStatus,
-  setBankDetailsStatus,
+  addressDetailsStatus,
+  setaddressDetailsStatus,
   documentsDetailsStatus,
   setDocumentsDetailsStatus,
   allDocumentsApproved,
@@ -169,11 +169,17 @@ export default function PopupDetails({
     "Mother's Occupations": popupData.motherOccupations,
   };
 
-  const bankDetails = {
-    "Bank Name": popupData.bankName,
-    "Account Holder": popupData.accountHolder,
-    "Account Number": popupData.accountNumber,
-    "IFSC Code": popupData.ifscCode,
+  // const bankDetails = {
+  //   "Bank Name": popupData.bankName,
+  //   "Account Holder": popupData.accountHolder,
+  //   "Account Number": popupData.accountNumber,
+  //   "IFSC Code": popupData.ifscCode,
+  // };
+
+  const addressDetails = {
+    "Address Line1": popupData.address.line1,
+    "City": popupData.address.city,
+    "State": popupData.address.state,
   };
 
   return (
@@ -203,10 +209,10 @@ export default function PopupDetails({
 
       <SectionWrapper
         title="Bank Details"
-        approved={bankDetailsStatus}
-        onToggle={() => setBankDetailsStatus((prev) => !prev)}
+        approved={addressDetailsStatus}
+        onToggle={() => setAddressDetailsStatus((prev) => !prev)}
       >
-        <DetailList details={bankDetails} />
+        <DetailList details={addressDetails} />
       </SectionWrapper>
 
       <SectionWrapper

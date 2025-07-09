@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updateUserDetails } from "../../redux/formDataSlice";
+import { putFormData, updateUserDetails } from "../../redux/formDataSlice";
 
 const TermsAndConditionPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.userDetails);
 
-  const handleChange = (name, value) => {
-    dispatch(updateUserDetails({ [name]: value }));
-    navigate("/");
+  const handleChange = async (name, value) => {
+    console.log("name value", name, value);
+    await dispatch(updateUserDetails({ [name]: value }));
+    // await dispatch(putFormData(userData));
+
+    navigate("/documentUpload");
   };
 
   useEffect(() => {
@@ -27,7 +30,7 @@ const TermsAndConditionPage = () => {
       {/* Close Button */}
       <button
         className="absolute top-2 right-6 text-lg sm:text-2xl border-2 px-3 py-1 sm:py-2 rounded-full text-white hover:bg-[#ffdd00] hover:text-black"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/documentUpload")}
       >
         X
       </button>
@@ -39,13 +42,18 @@ const TermsAndConditionPage = () => {
           be allowed to attend classes. Scholars Den reserves the right to file
           a lawsuit to recover the remaining amount.
         </li>
-        <li>If the payment of fees is made after the due date, late payment fees apply:</li>
+        <li>
+          If the payment of fees is made after the due date, late payment fees
+          apply:
+        </li>
         <ul className="list-disc pl-6 sm:pl-10">
           <li>For the first 7 days: ₹100 per day</li>
           <li>From 8th to 15th day: ₹500 per day</li>
           <li>After 15 days: ₹10,000 penalty + ₹1,000 per day late fee</li>
         </ul>
-        <li>Scholarships are valid only till the announced date of validity.</li>
+        <li>
+          Scholarships are valid only till the announced date of validity.
+        </li>
         <li>Refund of caution money requires an application with NOC.</li>
         <li>Refunds will be processed within 45 days (if eligible).</li>
         <li>No interest is paid on caution money refunds.</li>
@@ -57,7 +65,9 @@ const TermsAndConditionPage = () => {
         <li>Refunds will be made as per the schedule below:</li>
         <ul className="list-disc pl-6 sm:pl-10">
           <li>Classes 6th-10th: From 1st September of the financial year.</li>
-          <li>Classes 11th and above: From 1st September of the financial year.</li>
+          <li>
+            Classes 11th and above: From 1st September of the financial year.
+          </li>
         </ul>
         <li>
           If a cheque is dishonored, a penalty of ₹2000 applies, with cash
@@ -68,7 +78,10 @@ const TermsAndConditionPage = () => {
           requests are accepted.
         </li>
         <li>All legal matters are subject to Moradabad (UP) jurisdiction.</li>
-        <li>No refund will be provided in case of expulsion due to disciplinary reasons.</li>
+        <li>
+          No refund will be provided in case of expulsion due to disciplinary
+          reasons.
+        </li>
         <li>Tuition Fee Refund Policy:</li>
         <ul className="list-disc pl-6 sm:pl-10">
           <li>No refund after 30 days of batch commencement.</li>
@@ -87,8 +100,8 @@ const TermsAndConditionPage = () => {
         conditions.
       </p>
       <p className="font-bold text-center text-base sm:text-lg">
-        मै/हम माणत करता/करती/करते है कि हमने उक्त नयम व शत को भली भांत पढ़ लया है व
-        उनका पालन करेंगे।
+        मै/हम माणत करता/करती/करते है कि हमने उक्त नयम व शत को भली भांत पढ़ लया है
+        व उनका पालन करेंगे।
       </p>
 
       {/* Agree Button */}

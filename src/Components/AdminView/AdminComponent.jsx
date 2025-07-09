@@ -16,7 +16,7 @@ const AdminComponent = () => {
 
   const [studentDetailsStatus, setStudentDetailsStatus] = useState(false);
   const [parentDetailsStatus, setParentDetailsStatus] = useState(false);
-  const [bankDetailsStatus, setBankDetailsStatus] = useState(false);
+  const [addressDetailsStatus, setAddressDetailsStatus] = useState(false);
   const [documentsDetailsStatus, setDocumentsDetailsStatus] = useState({
     // cancelledCheque: false,
     // passbookPhoto: false,
@@ -78,6 +78,7 @@ const AdminComponent = () => {
       console.log("response data data", response.data.data);
 
       setPopupData(response.data.data[0]);
+      
     } catch (error) {
       console.error("Error fetching approval details:", error);
     }
@@ -88,10 +89,11 @@ const AdminComponent = () => {
 
     console.log("handleCick", item);
     console.log("handleCick", item);
-    setBankDetailsStatus(item?.bankDetails?.status);
+    setAddressDetailsStatus(item?.addressDetails?.status);
     setParentDetailsStatus(item?.parentDetails?.status);
     setStudentDetailsStatus(item?.studentDetails?.status);
     setSignatureDetailsStatus(item?.signatureDetails?.status);
+    setConsellorAssign(item.assignedCounsellor)
     setDocumentsDetailsStatus({
       // cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
       // passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
@@ -193,11 +195,11 @@ const AdminComponent = () => {
           ? "Parent info verified"
           : "Parent info not verified",
       },
-      bankDetails: {
-        status: bankDetailsStatus,
-        message: bankDetailsStatus
-          ? "Bank info verified"
-          : "Bank info not verified",
+      addressDetails: {
+        status: addressDetailsStatus,
+        message: addressDetailsStatus
+          ? "Address info verified"
+          : "Address info not verified",
       },
       documentsDetails: {
         // cancelledCheque: {
@@ -245,14 +247,14 @@ const AdminComponent = () => {
     console.log("Response FOR SUBMITmESSAGE", response);
 
     console.log(
-      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      "studentDetailsStatus parentDetailsStatus addressDetailsStatus documentsDetailsStatus",
       studentDetailsStatus,
       parentDetailsStatus,
-      bankDetailsStatus,
+      addressDetailsStatus,
       documentsDetailsStatus
     );
     console.log(
-      "studentDetailsStatus parentDetailsStatus bankDetailsStatus documentsDetailsStatus",
+      "studentDetailsStatus parentDetailsStatus addressDetailsStatus documentsDetailsStatus",
       response
     );
 
@@ -302,7 +304,7 @@ const AdminComponent = () => {
       setShowMessagePopup(
         parentDetailsStatus &&
           studentDetailsStatus &&
-          bankDetailsStatus &&
+          addressDetailsStatus &&
           signatureDetailsStatus &&
           allDocumentsApproved
           ? "approved"
@@ -625,31 +627,29 @@ const AdminComponent = () => {
 
                 <section>
                   <div className="flex justify-around">
-                    <h3 className="text-lg font-semibold mb-1">Bank Details</h3>
+                    <h3 className="text-lg font-semibold mb-1">Address Details</h3>
 
                     <div className="flex gap-2 items-center">
                       <label htmlFor="">Approved </label>
                       <input
                         className="hover:cursor-pointer "
-                        checked={bankDetailsStatus}
+                        checked={addressDetailsStatus}
                         type="checkbox"
-                        onChange={() => setBankDetailsStatus((prev) => !prev)}
+                        onChange={() => setAddressDetailsStatus((prev) => !prev)}
                       />
                     </div>
                   </div>
 
                   <p>
-                    <strong>Bank Name:</strong> {popupData.bankName}
+                    <strong>Address Line1 :</strong> {popupData?.address?.line1}
                   </p>
                   <p>
-                    <strong>Account Holder:</strong> {popupData.accountHolder}
+                    <strong>City :</strong> {popupData?.address?.city}
                   </p>
                   <p>
-                    <strong>Account Number:</strong> {popupData.accountNumber}
+                    <strong>State:</strong> {popupData?.address?.state}
                   </p>
-                  <p>
-                    <strong>IFSC Code:</strong> {popupData.ifscCode}
-                  </p>
+                
                 </section>
 
                 <section></section>
@@ -877,7 +877,7 @@ const AdminComponent = () => {
                   </button>
                   <button
                     className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl disabled:bg-gray-400" 
-                    disabled = {   !(parentDetailsStatus && studentDetailsStatus && bankDetailsStatus && signatureDetailsStatus && allDocumentsApproved)}
+                    disabled = {   !(parentDetailsStatus && studentDetailsStatus && addressDetailsStatus && signatureDetailsStatus && allDocumentsApproved)}
                     onClick={() => submitButtonClickHandler()}
                   >
                     Approved
