@@ -126,41 +126,77 @@ const SiblingsDetails = () => {
     },
   ];
 
+  // const validateForm = () => {
+  //   const formErrors = {};
+  //   let isValid = true;
+  //   const newSignatures = { ...signatures };
+
+  //   // // Validate text fields
+  //   // siblingsData.forEach(({ name, label, required }) => {
+  //   //   if (required && !userData[name]) {
+  //   //     formErrors[name] = `${label} is required`;
+  //   //     isValid = false;
+  //   //   }
+  //   // });
+
+  //   // Ensure all signatures are captured
+  //   Object.keys(signatureRefs).forEach((key) => {
+  //     const signatureData = signatureRefs[key]?.current?.toDataURL();
+
+  //     console.log(`Signature data for ${key}:`, signatureData);
+  //     console.log("signatureData.current.isEmpty()", signatureData.current.isEmpty()
+  //     );
+
+  //     if (
+  //       !signatureData ||
+  //       signatureData === "data:," ||
+  //       signatureData.length < 100 ||
+  //       signatureData.current.isEmpty()
+  //     ) {
+  //       formErrors[key] = "Signature is required";
+  //       isValid = false;
+  //     } else {
+  //       newSignatures[key] = signatureData;
+  //     }
+  //   });
+
+  //   console.log("Updated signatures:", newSignatures);
+
+  //   setSignatures(newSignatures); // Update the state with extracted signatures
+  //   setErrors(formErrors);
+
+  //   return isValid;
+  // };
+
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
     const newSignatures = { ...signatures };
 
-    // // Validate text fields
-    // siblingsData.forEach(({ name, label, required }) => {
-    //   if (required && !userData[name]) {
-    //     formErrors[name] = `${label} is required`;
-    //     isValid = false;
-    //   }
-    // });
-
-    // Ensure all signatures are captured
+    // Loop through each signature ref
     Object.keys(signatureRefs).forEach((key) => {
-      const signatureData = signatureRefs[key]?.current?.toDataURL();
+      const sigRef = signatureRefs[key]?.current;
 
-      console.log(`Signature data for ${key}:`, signatureData);
+      console.log("sigRef", sigRef);
 
-      if (
-        !signatureData ||
-        signatureData === "data:," ||
-        signatureData.length < 100
-      ) {
+      if (!sigRef || sigRef.isEmpty()) {
         formErrors[key] = "Signature is required";
         isValid = false;
       } else {
+        // Only save the signature if it's not empty
+        const signatureData = sigRef.toDataURL();
         newSignatures[key] = signatureData;
       }
     });
 
+    // Log for debugging
     console.log("Updated signatures:", newSignatures);
 
-    setSignatures(newSignatures); // Update the state with extracted signatures
+    // Set state
+    setSignatures(newSignatures);
     setErrors(formErrors);
+
+    console.log("isValid", isValid);
 
     return isValid;
   };

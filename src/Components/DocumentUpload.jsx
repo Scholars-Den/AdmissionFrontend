@@ -300,7 +300,11 @@ const DocumentUpload = ({ documentRequired }) => {
               : "bg-yellow-600 text-gray-600 cursor-not-allowed"
           }`}
           type="button"
-          onClick={() => onClickNext()}
+          onClick={() => {
+
+            console.log("allUploaded userDetails.termsAndCondition", allUploaded, userDetails.termsAndCondition)
+            if (allUploaded && userDetails.termsAndCondition) onClickNext();
+          }}
           disabled={!allUploaded && !userDetails.termsAndCondition}
         >
           Next

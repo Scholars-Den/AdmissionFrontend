@@ -47,8 +47,7 @@ const FamilyDetails = () => {
             name: "fatherAadhaarID",
             type: "text",
             placeholder: "*Father's Aadhaar ID",
-            required: true,
-            validation: validateAadhaar,
+              validation: validateAadhaar,
             label: "*Father Aadhaar Id",
           },
 

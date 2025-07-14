@@ -178,10 +178,9 @@ const AddressDetails = () => {
         onSubmit={onSubmit}
       >
         <h2 className="text-2xl sm:text-3xl font-semibold">Address Details</h2>
-        
-        <div className="flex flex-col w-full gap-4 items-center text-white">
 
-   {studentAdmissionApprovalDetails?.parentDetails &&
+        <div className="flex flex-col w-full gap-4 items-center text-white">
+          {studentAdmissionApprovalDetails?.parentDetails &&
             (studentAdmissionApprovalDetails?.addressDetails?.status ? (
               <div className="flex flex-col w-full gap-4 items-end  ">
                 <span className="bg-green-500 p-2 rounded-xl">Approved</span>
@@ -193,7 +192,6 @@ const AddressDetails = () => {
                 </span>
               </div>
             ))}
-
 
           {[
             { label: "Address Line 1", name: "address.line1" },
@@ -229,7 +227,9 @@ const AddressDetails = () => {
               ))}
             </select>
             {errors["address.state"] && (
-              <p className="text-red-500 text-sm">{errors["address.state"]}</p>
+              <span className="text-[#ffdd00] text-sm mt-1">
+                {errors["address.state"]}
+              </span>
             )}
           </div>
         </div>

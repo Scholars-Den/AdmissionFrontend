@@ -186,6 +186,7 @@ const SignupForm = () => {
       label: "*Aadhaar ID",
     },
     { name: "email", type: "email", placeholder: "Email ID", label: "Email" },
+    { name: "dob", type: "date", placeholder: "Enter your Date Of Birth", label: "Date Of Birth" },
     {
       name: "schoolName",
       type: "text",
@@ -223,7 +224,6 @@ const SignupForm = () => {
       value: userData.category,
       onChange: { handleChange },
       error: errors.category,
-      required: true,
     },
     {
       name: "program",
@@ -243,6 +243,12 @@ const SignupForm = () => {
       required: true,
     },
   ];
+
+    const dataField = [
+      {
+        
+      }
+    ]
 
   const checkboxFields = [
     {
