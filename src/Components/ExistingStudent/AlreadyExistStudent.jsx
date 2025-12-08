@@ -73,7 +73,10 @@ const AlreadyExistStudent = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAlreadyExistingStudent());
+    const number =
+      userData.fatherContactNumber || userData.studentContactNumber;
+
+    dispatch(fetchAlreadyExistingStudent(number));
   }, []);
 
   useEffect(() => {
@@ -172,14 +175,14 @@ const AlreadyExistStudent = () => {
       {/* <button className="absolute top-0 right-0">
         <img src={logout} alt="" />
       </button> */}
-    <div className="flex justify-end mr-4 mt-4">
-  <button
-    onClick={createNewUser}
-    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1"
-  >
-    + New Application
-  </button>
-</div>
+      <div className="flex justify-end mr-4 mt-4">
+        <button
+          onClick={createNewUser}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1"
+        >
+          + New Application
+        </button>
+      </div>
 
       <div className="flex flex-wrap justify-center text-xs bg-white mx-4 rounded-xl sm:px-4 gap-4 overflow-auto h-96 relative">
         {Array.isArray(existingStudent) && existingStudent.length > 0 ? (
@@ -294,14 +297,12 @@ const AlreadyExistStudent = () => {
 
       {/* Modal for full details */}
 
-<StudentDetailsModal
-  selectedStudent={selectedStudent}
-  admisionStatus={admisionStatus}
-  onClose={closeModal}
-  onEdit={handleEditClick}
-/>
-
-
+      <StudentDetailsModal
+        selectedStudent={selectedStudent}
+        admisionStatus={admisionStatus}
+        onClose={closeModal}
+        onEdit={handleEditClick}
+      />
 
       <div className="w-full flex justify-end items-end p-3">
         {/* <span

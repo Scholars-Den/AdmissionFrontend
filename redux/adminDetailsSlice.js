@@ -45,8 +45,10 @@ export const submitAdminDetails = createAsyncThunk(
       //       );
 
       console.log("adminLogin", adminLogin);
-      document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
-      document.cookie = `role=${adminLogin.data.admin.role}; path=/; secure; samesite=strict`;
+      document.cookie = `token=${adminLogin.data.token}; path=/;`;
+      document.cookie = `role=${adminLogin.data.admin.role}; path=/; `;
+      // document.cookie = `token=${adminLogin.data.token}; path=/; secure; samesite=strict`;
+      // document.cookie = `role=${adminLogin.data.admin.role}; path=/; secure; samesite=strict`;
 
       if (adminLogin) {
         return {

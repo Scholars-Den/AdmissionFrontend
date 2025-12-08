@@ -36,11 +36,9 @@ const SignupForm = () => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Aadhaar example: 835824268440
+  // Aadhaar example: ¸
 
-  useEffect(() => {
-    console.log("userData", userData);
-  }, [userData]);
+
 
   const handleChange = (e) => {
     if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
@@ -151,19 +149,12 @@ const SignupForm = () => {
   // };
 
   useEffect(() => {
-    console.log("userData", userData);
     if (userData?.studentName) {
       dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
     }
   }, [userData]);
 
-  useEffect(() => {
-    console.log(
-      "studentAdmissionApprovalDetails",
-      studentAdmissionApprovalDetails
-    );
-  }, [studentAdmissionApprovalDetails]);
-
+ 
   useEffect(() => {
     dispatch(fetchUserDetails());
   }, []);
@@ -263,7 +254,6 @@ const SignupForm = () => {
     let isValid = true;
 
     formFields.forEach(({ name, required, validation }) => {
-      console.log("validation", validation);
       if (validation != undefined) {
         const isValidInput = validation(userData[name]);
         if (required && !isValidInput.isValid) {
@@ -316,10 +306,7 @@ const SignupForm = () => {
         className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
         onSubmit={onSubmit}
       >
-        {console.log(
-          "studentAdmissionApprovalDetaisl",
-          studentAdmissionApprovalDetails
-        )}
+       
 
         {studentAdmissionApprovalDetails?.studentDetails &&
           (studentAdmissionApprovalDetails?.studentDetails?.status ? (

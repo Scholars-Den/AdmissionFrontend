@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 
 export const fetchAlreadyExistingStudent = createAsyncThunk(
   "alreadyExistStudent/fetchExistStudent",
-  async (_, { rejectWithValue }) => {
+  async (studentContactNumber, { rejectWithValue }) => {
     try {
       const alreadyExistStudent = await axios.post(
-        "/admissions/getStudentByPhone"
+      "/admissions/getStudentByPhone", studentContactNumber
       );
 
       console.log(

@@ -11,7 +11,7 @@ const AdminSidebar = () => {
   const dispatch = useDispatch();
 
   const sidebarElementList = {
-    admin: [
+    "admin": [
       { to: "/adminDashboard", text: "Pending" },
       { to: "/approvalComplete", text: "Approved" },
       { to: "/approvalRejected", text: "Not Approved" },
@@ -65,6 +65,9 @@ const AdminSidebar = () => {
         </div>
 
         <div className="flex flex-col gap-7 w-full justify-end items-end">
+
+          {console.log("sidebarElementList[role]", sidebarElementList[role])}
+          {console.log("sidebarElementList[role]", role)}
           {sidebarElementList[role]?.map((element, index) => (
             <Link
               key={index}

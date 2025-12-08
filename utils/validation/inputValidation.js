@@ -1,5 +1,5 @@
 export function validateName(name) {
-  const nameRegex = /^[A-Za-z\s]+$/; // Only letters and spaces allowed
+  const nameRegex = /^[A-Za-z.\s]+$/; // Letters, periods, and spaces allowed
 
   if (!name) {
     return { isValid: false, message: "Name is required" };
@@ -10,7 +10,7 @@ export function validateName(name) {
   }
 
   if (!nameRegex.test(name)) {
-    return { isValid: false, message: "Name can only contain letters and spaces" };
+    return { isValid: false, message: "Name can only contain letters, periods, and spaces" };
   }
 
   if (name.startsWith(" ") || name.endsWith(" ")) {
@@ -23,8 +23,9 @@ export function validateName(name) {
 
   return { isValid: true, message: "Valid name" };
 }
+
 export function validateSchoolName(schoolName) {
-  const schoolNameRegex = /^[A-Za-z\s]+$/; // Only letters and spaces allowed
+  const schoolNameRegex = /^[A-Za-z.\s]+$/; // Only letters and spaces allowed
 
   if (!schoolName) {
     return { isValid: false, message: "School Name is required" };

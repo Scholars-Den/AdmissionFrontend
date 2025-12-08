@@ -14,6 +14,7 @@ import {
   validateAadhaar,
   validateDateOfBirth,
   validateName,
+  validatePhoneNo,
 } from "../../utils/validation/inputValidation";
 import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 
@@ -41,14 +42,14 @@ const FamilyDetails = () => {
             placeholder: "*Father’s Name",
             required: true,
             validation: validateName,
-            label: "*Father Name",
+            label: "*Father's Name",
           },
           {
             name: "fatherAadhaarID",
             type: "text",
             placeholder: "*Father's Aadhaar ID",
-              validation: validateAadhaar,
-            label: "*Father Aadhaar Id",
+            validation: validateAadhaar,
+            label: "*Father's Aadhaar Id",
           },
 
           {
@@ -56,7 +57,16 @@ const FamilyDetails = () => {
             type: "select",
             options: occupationOptions,
             required: true,
-            label: "*Father Occupation",
+            label: "*Father's Occupation",
+          },
+
+          {
+            name: "fatherContactNumber",
+            type: "number",
+            required: true,
+            label: "*Father's Contact Number",
+            placeholder: "*Enter Father's Contact Number",
+            validation: validatePhoneNo,
           },
         ],
       },
@@ -70,32 +80,47 @@ const FamilyDetails = () => {
             type: "text",
             placeholder: "Mother’s Name",
             validation: validateName,
-            label: "Mother Name",
+            label: "Mother's Name",
           },
           {
             name: "motherAadhaarID",
             type: "text",
             placeholder: "Mother's Aadhaar ID",
             validation: validateAadhaar,
-            label: "Mother Aadhaar Id",
+            label: "Mother's Aadhaar Id",
           },
 
           {
             name: "motherOccupations",
             type: "select",
             options: ["Business", "Service", "Housemaker", "Other"],
-            label: "Mother Occupation",
+            label: "Mother's Occupation",
+          },
+          {
+            name: "motherContactNumber",
+            type: "number",
+            required: true,
+            label: "*Mother's Contact Number",
+            placeholder: "*Enter Mother's Contact Number",
+            validation: validatePhoneNo,
           },
         ],
       },
     ],
   ];
-
   const handleChange = (e) => {
     if (studentAdmissionApprovalDetails?.parentDetails?.status) {
       return;
     }
+
     const { name, value } = e.target;
+
+    if (name === "fatherContactNumber" || name === "motherContactNumber" ) {
+      if (value.length > 10) {
+        return;
+      }
+    }
+
     console.log("name", name, "value", value);
     dispatch(updateUserDetails({ [name]: value }));
     if (value.trim())
@@ -121,39 +146,39 @@ const FamilyDetails = () => {
     }
   };
 
-const validateForm = () => {
-  const formErrors = {};
-  let isValid = true;
+  const validateForm = () => {
+    const formErrors = {};
+    let isValid = true;
 
-  familySections.forEach((sectionArray) => {
-    sectionArray.forEach((section) => {
-      section.fields?.forEach(({ name, required, validation }) => {
-        const value = userData[name];
+    familySections.forEach((sectionArray) => {
+      sectionArray.forEach((section) => {
+        section.fields?.forEach(({ name, required, validation }) => {
+          const value = userData[name];
 
-        if (typeof validation === "function") {
-          const result = validation(value);
+          if (typeof validation === "function") {
+            const result = validation(value);
 
-          if (required && !result.isValid) {
-            formErrors[name] = result.message || `${name} is invalid`;
-            isValid = false;
+            if (required && !result.isValid) {
+              formErrors[name] = result.message || `${name} is invalid`;
+              isValid = false;
+            }
+          } else {
+            if (required && (!value || value.toString().trim() === "")) {
+              const label = name
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase());
+              formErrors[name] = `${label} is required`;
+              isValid = false;
+            }
           }
-        } else {
-          if (required && (!value || value.toString().trim() === "")) {
-            const label = name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
-            formErrors[name] = `${label} is required`;
-            isValid = false;
-          }
-        }
+        });
       });
     });
-  });
 
-  setErrors(formErrors);
-  console.log("formErrors", formErrors);
-  return isValid;
-};
-
-
+    setErrors(formErrors);
+    console.log("formErrors", formErrors);
+    return isValid;
+  };
 
   useEffect(() => {
     dispatch(fetchUserDetails());
@@ -192,7 +217,7 @@ const validateForm = () => {
             ))}
 
           <fieldset className="text-white border-2 w-full px-6">
-            <legend> Father Details </legend>
+            <legend> {familySections[0]?.title} </legend>
             {familySections[0].map((section, sectionIndex) => (
               <div key={sectionIndex} className="mb-6 w-full">
                 {/* <h3 className="text-lg sm:text-xl font-semibold mb-4">

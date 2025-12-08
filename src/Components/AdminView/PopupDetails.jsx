@@ -160,13 +160,14 @@ export default function PopupDetails({
   };
 
   const parentDetails = {
-    "Parent's Contact": popupData.parentsContactNumber,
     "Father's Name": popupData.fatherName,
     "Father's Aadhaar Card": popupData.fatherAadhaarID,
     "Father's Occupations": popupData.fatherOccupations,
+    "Father's Contact": popupData.fatherContactNumber,
     "Mother's Name": popupData.motherName,
     "Mother's Aadhaar Card": popupData.motherAadhaarID,
     "Mother's Occupations": popupData.motherOccupations,
+    "Mother's Contact": popupData.motherContactNumber,
   };
 
   // const bankDetails = {

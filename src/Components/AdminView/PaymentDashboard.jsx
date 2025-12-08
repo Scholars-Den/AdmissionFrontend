@@ -245,8 +245,8 @@ const PaymentDashboard = () => {
                     <strong>Category:</strong> {popupData.category}
                   </p>
                   <p>
-                    <strong>Parent's Contact:</strong>{" "}
-                    {popupData.parentsContactNumber}
+                    <strong>Contact Number :</strong>{" "}
+                    {popupData.studentContactNumber}
                   </p>
                 </section>
 

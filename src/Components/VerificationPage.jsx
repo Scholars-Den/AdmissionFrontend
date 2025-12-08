@@ -29,8 +29,8 @@ const VerificationPage = () => {
   const [codeEntered, setCodeEntered] = useState(false);
 
   // For enable OTP
-  // const [codeVerified, setCodeVerified] = useState(true);
-  const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -44,7 +44,7 @@ const VerificationPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "fatherContactNumber") {
+    if (name === "fatherContactNumber" ) {
       if (value.length > 10) {
         return;
       }
@@ -77,7 +77,6 @@ const VerificationPage = () => {
       console.log("userData[name]", validation(userData[name]));
 
       const isValidInput = validation(userData[name]);
-      console.log("isValidInput", isValidInput);
       if (required && !isValidInput.isValid) {
         formErrors[name] = isValidInput.message;
         console.log("formErrors[name]", formErrors[name]);
@@ -169,8 +168,8 @@ const VerificationPage = () => {
     e.preventDefault();
 
     // For enable OTP
-    let codeChecked = await checkVerificationCode();
-    // let codeChecked = true;
+    // let codeChecked = await checkVerificationCode();
+    let codeChecked = true;
 
     console.log("codeChecked", codeChecked);
     if (codeChecked === false) {
@@ -196,6 +195,9 @@ const VerificationPage = () => {
       // Check if the action was successful
       if (submitFormData.fulfilled.match(resultAction)) {
         const { message } = resultAction.payload;
+
+        console.log("message from verification page ", message);
+        console.log("iuserDat verification page ", userData)
 
         if (message) {
           console.log("message k..................", message);
@@ -316,7 +318,7 @@ const VerificationPage = () => {
           </div>
 
           {/* OTP Field */}
-          {showCodeBox && (
+          {/* {showCodeBox && (
             <div className="space-y-2">
               <label
                 htmlFor="otp"
@@ -333,15 +335,15 @@ const VerificationPage = () => {
                 placeholder="Enter OTP"
                 className="w-full bg-white/5 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
-              {/* <button
+              <button
                 type="button"
                 onClick={checkVerificationCode}
                 className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md text-white"
               >
                 Verify
-              </button> */}
+              </button> 
             </div>
-          )}
+          )} */}
 
           {showReloading && (
             <div className="flex justify-center items-center">
@@ -358,16 +360,16 @@ const VerificationPage = () => {
 
           {/* Submit Button */}
 
-          {showCodeBox && (
+          {/* {showCodeBox && ( */}
             <button
               type="button"
               onClick={onSubmit}
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              disabled={!codeEntered}
+              // disabled={!codeEntered}
             >
               Next
             </button>
-          )}
+          {/* )} */}
         </form>
         <div className="flex justify-center items-center py-4">
           <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />

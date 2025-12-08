@@ -78,7 +78,6 @@ const AdminComponent = () => {
       console.log("response data data", response.data.data);
 
       setPopupData(response.data.data[0]);
-      
     } catch (error) {
       console.error("Error fetching approval details:", error);
     }
@@ -93,7 +92,7 @@ const AdminComponent = () => {
     setParentDetailsStatus(item?.parentDetails?.status);
     setStudentDetailsStatus(item?.studentDetails?.status);
     setSignatureDetailsStatus(item?.signatureDetails?.status);
-    setConsellorAssign(item.assignedCounsellor)
+    setConsellorAssign(item.assignedCounsellor);
     setDocumentsDetailsStatus({
       // cancelledCheque: item?.documentsDetails?.cancelledCheque?.status || false,
       // passbookPhoto: item?.documentsDetails?.passbookPhoto?.status || false,
@@ -573,6 +572,9 @@ const AdminComponent = () => {
                     <strong>Gender:</strong> {popupData.gender}
                   </p>
                   <p>
+                    <strong>Student Contact Number:</strong> {popupData.studentContactNumber}
+                  </p>
+                  <p>
                     <strong>Program:</strong> {popupData.program}
                   </p>
                   <p>
@@ -596,10 +598,6 @@ const AdminComponent = () => {
                       />
                     </div>
                   </div>
-                  <p>
-                    <strong>Parent's Contact:</strong>{" "}
-                    {popupData.parentsContactNumber}
-                  </p>
 
                   <p>
                     <strong>Father's Name:</strong> {popupData.fatherName}
@@ -613,6 +611,10 @@ const AdminComponent = () => {
                     {popupData.fatherOccupations}
                   </p>
                   <p>
+                    <strong>Father's Contact:</strong>{" "}
+                    {popupData.fatherContactNumber}
+                  </p>
+                  <p>
                     <strong>Mother's Name:</strong> {popupData.motherName}
                   </p>
                   <p>
@@ -623,11 +625,17 @@ const AdminComponent = () => {
                     <strong>Mother's Occupations:</strong>{" "}
                     {popupData.motherOccupations}
                   </p>
+                  <p>
+                    <strong>Mother's Contact:</strong>{" "}
+                    {popupData.motherContactNumber}
+                  </p>
                 </section>
 
                 <section>
                   <div className="flex justify-around">
-                    <h3 className="text-lg font-semibold mb-1">Address Details</h3>
+                    <h3 className="text-lg font-semibold mb-1">
+                      Address Details
+                    </h3>
 
                     <div className="flex gap-2 items-center">
                       <label htmlFor="">Approved </label>
@@ -635,7 +643,9 @@ const AdminComponent = () => {
                         className="hover:cursor-pointer "
                         checked={addressDetailsStatus}
                         type="checkbox"
-                        onChange={() => setAddressDetailsStatus((prev) => !prev)}
+                        onChange={() =>
+                          setAddressDetailsStatus((prev) => !prev)
+                        }
                       />
                     </div>
                   </div>
@@ -649,7 +659,6 @@ const AdminComponent = () => {
                   <p>
                     <strong>State:</strong> {popupData?.address?.state}
                   </p>
-                
                 </section>
 
                 <section></section>
@@ -876,8 +885,16 @@ const AdminComponent = () => {
                     Not Approved
                   </button>
                   <button
-                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl disabled:bg-gray-400" 
-                    disabled = {   !(parentDetailsStatus && studentDetailsStatus && addressDetailsStatus && signatureDetailsStatus && allDocumentsApproved)}
+                    className="p-3 hover:bg-[#ffdd00] bg-[#f1df68] rounded-xl disabled:bg-gray-400"
+                    disabled={
+                      !(
+                        parentDetailsStatus &&
+                        studentDetailsStatus &&
+                        addressDetailsStatus &&
+                        signatureDetailsStatus &&
+                        allDocumentsApproved
+                      )
+                    }
                     onClick={() => submitButtonClickHandler()}
                   >
                     Approved

@@ -217,7 +217,7 @@ const AddressDetails = () => {
               name="address.state"
               value={userData?.address?.state || ""}
               onChange={handleChange}
-              className="w-full p-2 text-black rounded"
+              className="w-full p-2 text-black rounded appearance-none "
             >
               <option value="">Select a State</option>
               {indianStates.map((state) => (

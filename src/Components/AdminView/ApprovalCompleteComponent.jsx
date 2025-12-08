@@ -251,8 +251,8 @@ const [options, setOptions] = useState([]);
                     <strong>Category:</strong> {popupData.category}
                   </p>
                   <p>
-                    <strong>Parent's Contact:</strong>{" "}
-                    {popupData.parentsContactNumber}
+                    <strong>Student's Contact:</strong>{" "}
+                    {popupData.studentContactNumber}
                   </p>
                 </section>
 
