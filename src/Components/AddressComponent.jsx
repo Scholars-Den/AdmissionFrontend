@@ -1,6 +1,6 @@
 import React from 'react'
 
-import SignupForm from "./SignupForm";
+import SignupForm from "./BasicDetailsForm";
 import SignupDetailsPage from "./SignupDetailsPage";
 
 

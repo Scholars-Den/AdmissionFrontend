@@ -1,278 +1,92 @@
+
+// SignupForm Component (similar to SignupRight but with VerificationPage logic)
+
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
-import {
-  updateUserDetails,
-  submitFormData,
-  putFormData,
-  fetchUserDetails,
-} from "../../redux/formDataSlice";
-
-import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
+import { updateUserDetails, submitFormData } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
-import Spinner from "../../api/Spinner";
-import InputField from "../../utils/InputField";
-import SelectField from "../../utils/SelectField";
-import CheckboxField from "../../utils/CheckboxField";
+import { updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice";
+import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import {
-  validateAadhaar,
-  validateName,
-  validatePhoneNo,
-  validateSchoolName,
-} from "../../utils/validation/inputValidation";
-import YesNoField from "../../utils/YesNoField";
+  Phone,
+  Shield,
+  CheckCircle2,
+  Loader2,
+  ChevronRight,
+  AlertCircle,
+  GraduationCap,
+} from "lucide-react";
 
-const SignupForm = () => {
+const SignupForm = ({ logoSrc }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userData } = useSelector((state) => state.userDetails);
-  const { existingStudent } = useSelector((state) => state.alreadyExistStudent);
+  const { userData, message } = useSelector((state) => state.userDetails);
+  const { loading } = useSelector((state) => state.loadingDetails);
 
-  const { studentAdmissionApprovalDetails } = useSelector(
-    (state) => state.alreadyExistStudent
-  );
+  // State management
+  const [codeVerified, setCodeVerified] = useState(false);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [codeEntered, setCodeEntered] = useState(false);
+  const [showReloading, setShowReloading] = useState(false);
+  const [resendAttempts, setResendAttempts] = useState(0);
+  const [resendCooldown, setResendCooldown] = useState(30);
+  const [cooldownActive, setCooldownActive] = useState(false);
 
+  const [code, setCode] = useState("");
+  const [errors, setErrors] = useState({
+    fatherContactNumber: "",
+  });
+  const [showCodeBox, setShowCodeBox] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
-  const [errors, setErrors] = useState({});
 
-  // Aadhaar example: ¸
+  // Clear cookies on mount
+  useEffect(() => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    console.log("userData", userData);
+  }, []);
 
-
+  // Cooldown timer
+  useEffect(() => {
+    let timer;
+    if (cooldownActive && resendCooldown > 0) {
+      timer = setInterval(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+    } else if (resendCooldown === 0) {
+      setCooldownActive(false);
+    }
+    return () => clearInterval(timer);
+  }, [cooldownActive, resendCooldown]);
 
   const handleChange = (e) => {
-    if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
-      return;
-    }
     const { name, value } = e.target;
-    if (name === "aadhaarID") {
-      if (value.length > 12) return;
-    }
-    if (name === "termsAndCondition") {
-      dispatch(updateUserDetails({ [e.target.name]: e.target.checked }));
-      return;
-    }
+    if (name === "fatherContactNumber" && value.length > 10) return;
 
     dispatch(updateUserDetails({ [name]: value }));
-
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value ? "" : `${name} is required`,
+    }));
   };
-
-  const radioChange = (e) => {
-    const { name, value } = e.target;
-
-    let updatedData;
-
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      updatedData = {
-        address: {
-          ...userData?.address,
-          [field]: value,
-        },
-      };
-    } else {
-      updatedData = { [name]: value };
-    }
-
-    dispatch(updateUserDetails(updatedData));
-
-    if (value.trim()) {
-      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    }
-  };
-
-  // let subjectOptions =
-  //   userData?.studentClass >= 6 && userData?.studentClass <= 10
-  //     ? ["Foundation"]
-  //     : ["Engineering", "Medical"];
-
-  let subjectOptionsForClass = {
-    Foundation: ["VI", "VII", "VIII", "IX", "X"],
-    "JEE(Main & Adv)": [
-      "XI Engineering",
-      "XII Engineering",
-      "XII Passed Engineering",
-    ],
-
-    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
-  };
-
-  // userData?.program === "Engineering" || userData?.program === "Medical"
-  //   ? [...Array.from({ length: 1 }, (_, i) => i + 11), "12 Passed"]
-  //   : [...Array.from({ length: 5 }, (_, i) => i + 6)];
-
-  const convertToRoman = (num) => {
-    const romanNumerals = {
-      6: "VI",
-      7: "VII",
-      8: "VIII",
-      9: "IX",
-      10: "X",
-      11: "XI",
-      12: "XII",
-    };
-    return romanNumerals[num] || num;
-  };
-
-  // let subjectOptionsRoman = subjectOptionsForClass.flatMap((item) => {
-  //   if (typeof item === "number") {
-  //     console.log("item", item);
-  //     return convertToRoman(item);
-  //   } else if (typeof item === "string") {
-  //     const match = item.match(/^(\d+)\s+(.*)/);
-  //     if (match) {
-  //       const roman = convertToRoman(parseInt(match[1]));
-  //       return [roman, `${roman} ${match[2]}`]; // Now in correct order
-  //     }
-  //   }
-  //   return item; // fallback
-  // });
-
-  // console.log(subjectOptionsRoman);
-
-  let subjectOptions = ["Foundation", "JEE(Main & Adv)", "NEET(UG)"];
-
-  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
-
-  // const convertToRoman = (num) => {
-  //   const romanNumerals = {
-  //     6: "VI",
-  //     7: "VII",
-  //     8: "VIII",
-  //     9: "IX",
-  //     10: "X",
-  //     11: "XI",
-  //     12: "XII",
-  //   };
-  //   return romanNumerals[num];
-  // };
-
-  useEffect(() => {
-    if (userData?.studentName) {
-      dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
-    }
-  }, [userData]);
-
- 
-  useEffect(() => {
-    dispatch(fetchUserDetails());
-  }, []);
-  // Define form fields
-  const formFields = [
-    {
-      name: "studentName",
-      type: "text",
-      placeholder: "*Student Name",
-      required: true,
-      validation: validateName,
-      label: "*Student Name",
-    },
-    {
-      name: "aadhaarID",
-      type: "text",
-      placeholder: "*Aadhaar ID",
-      required: true,
-      validation: validateAadhaar,
-      label: "*Aadhaar ID",
-    },
-    { name: "email", type: "email", placeholder: "Email ID", label: "Email" },
-    { name: "dob", type: "date", placeholder: "Enter your Date Of Birth", label: "Date Of Birth" },
-    {
-      name: "schoolName",
-      type: "text",
-      placeholder: "Enter Your School Name",
-      required: true,
-      validation: validateSchoolName,
-      label: "Current/Last Attended School",
-    },
-  ];
-
-  const selectFields = [
-    {
-      name: "gender",
-      label: "*Select Gender",
-      options: ["Male", "Female"],
-      value: userData.gender,
-      onChange: { handleChange },
-      error: errors.gender,
-      required: true,
-    },
-
-    {
-      name: "category",
-      label: "*Select Category",
-      options: ["General", "OBC", "SC", "ST", "ETS"],
-      value: userData.category,
-      onChange: { handleChange },
-      error: errors.category,
-      required: true,
-    },
-    {
-      name: "bloodGroup",
-      label: "*Select Your Blood Group",
-      options: bloodGroupOptions,
-      value: userData.category,
-      onChange: { handleChange },
-      error: errors.category,
-    },
-    {
-      name: "program",
-      label: "*Select Program",
-      options: subjectOptions,
-      value: userData.program,
-      onChange: { handleChange },
-      error: errors.program,
-      required: true,
-    },
-    {
-      name: "studentClass",
-      label: "*Select Class",
-      options: subjectOptionsForClass[userData?.program] || [],
-      onChange: handleChange, // Remove curly braces around handleChange
-      error: errors.class,
-      required: true,
-    },
-  ];
-
-    const dataField = [
-      {
-        
-      }
-    ]
-
-  const checkboxFields = [
-    {
-      label: "Existing Student",
-      name: "existingStudent",
-      onChange: { handleChange },
-    },
-  ];
 
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
-    formFields.forEach(({ name, required, validation }) => {
-      if (validation != undefined) {
-        const isValidInput = validation(userData[name]);
-        if (required && !isValidInput.isValid) {
-          formErrors[name] = isValidInput.message;
-          isValid = false;
-        }
-      }
-    });
-    selectFields.forEach(({ name, required }) => {
-      if (required && !userData[name]?.trim()) {
-        formErrors[name] = `${name
-          .replace(/([A-Z])/g, " $1") // Add space before capital letters
-          .replace(/^./, (char) => char.toUpperCase())} is required`;
-        isValid = false;
-      }
-    });
+    if (!userData?.fatherContactNumber) {
+      formErrors.fatherContactNumber = "Contact Number is required";
+      isValid = false;
+    }
 
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-      formErrors.email = "Email must be valid";
+    if (
+      userData?.fatherContactNumber &&
+      userData.fatherContactNumber.length !== 10
+    ) {
+      formErrors.fatherContactNumber =
+        "Contact Number must be exactly 10 digits";
       isValid = false;
     }
 
@@ -280,127 +94,400 @@ const SignupForm = () => {
     return isValid;
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  // Send OTP
+  const verifyPhoneNo = async () => {
+    if (userData?.fatherContactNumber?.length !== 10) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fatherContactNumber: "The length must be exactly 10 digits",
+      }));
+      return;
+    }
+
+    if (cooldownActive) return;
 
     try {
-      dispatch(setLoading(true));
+      setShowReloading(true);
+      setSubmitMessage("");
 
-      await dispatch(putFormData(userData));
-      if (document.cookie) {
-        navigate("/familyDetails");
+      dispatch(setLoading(true));
+      const response = await axios.post("/admissions/sendVerification", {
+        mobileNumber: userData.fatherContactNumber,
+      });
+
+      if (response.status === 200) {
+        setShowCodeBox(true);
+        setCodeVerified(false);
+        setSubmitMessage("OTP sent successfully!");
+
+        const nextCooldown = 30 * Math.pow(2, resendAttempts);
+        setResendCooldown(nextCooldown);
+        setCooldownActive(true);
+        setResendAttempts((prev) => prev + 1);
       }
     } catch (error) {
-      console.log("Error submitting form:", error);
+      console.log("error", error);
+      setSubmitMessage(error.response?.data?.message || "Error sending OTP");
     } finally {
       dispatch(setLoading(false));
+      setShowReloading(false);
+      setCode("");
+    }
+  };
+
+  // Verify OTP
+  const checkVerificationCode = async () => {
+    try {
+      console.log("Verifying OTP for:", userData.fatherContactNumber);
+
+      const response = await axios.post("/admissions/verifyNumber", {
+        mobileNumber: userData.fatherContactNumber,
+        otp: code,
+      });
+
+      console.log("OTP verification response:", response);
+
+      if (response.status === 200) {
+        setCodeVerified(true);
+        setShowCodeBox(false);
+        setSubmitMessage("Phone number verified successfully!");
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      setSubmitMessage(
+        error.response?.data?.message || "Error verifying phone number"
+      );
+      return false;
+    }
+  };
+
+  // Form submission
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      console.log("Form validation failed");
+      return;
+    }
+
+    try {
+      setIsSubmittingForm(true);
+      setSubmitMessage("");
+
+      // Check OTP if code box is shown and not yet verified
+      if (showCodeBox && !codeVerified) {
+        if (!code || code.length < 4) {
+          setSubmitMessage("Please enter the 4-digit OTP");
+          setIsSubmittingForm(false);
+          return;
+        }
+
+        const otpVerified = await checkVerificationCode();
+        if (!otpVerified) {
+          setCodeVerified(false);
+          setCodeEntered(false);
+          setSubmitMessage("Invalid OTP. Please try again.");
+          setCode("");
+          setIsSubmittingForm(false);
+          return;
+        }
+      }
+
+      console.log("Submitting form with userData:", userData);
+
+      dispatch(setLoading(true));
+      const resultAction = await dispatch(submitFormData(userData));
+
+      // Check if the action was successful
+      if (submitFormData.fulfilled.match(resultAction)) {
+        const { message } = resultAction.payload;
+
+        console.log("message from verification page:", message);
+        console.log("userData from verification page:", userData);
+
+        if (message) {
+          console.log("Student already exists, redirecting...");
+          navigate("/alreadyExist");
+        } else {
+          console.log("New student, redirecting to basic details...");
+          navigate("/basicDetails");
+        }
+      } else {
+        console.error("Form submission failed:", resultAction.payload);
+      }
+
+      // Additional check if cookie exists
+      if (document.cookie) {
+        const alreadyExistStudent = await axios.post(
+          "/user/getStudentByPhone",
+          { fatherContactNumber: userData.fatherContactNumber }
+        );
+
+        console.log("Existing student check:", alreadyExistStudent);
+
+        if (alreadyExistStudent.data.data && alreadyExistStudent.data.data.length > 0) {
+          dispatch(updateAlreadyExistStudent(alreadyExistStudent.data.data));
+          navigate("/alreadyExist");
+        } else {
+          navigate("/basicDetails");
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      let errorMsg = "Registration failed. Please try again.";
+
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+
+      setSubmitMessage(errorMsg);
+    } finally {
+      dispatch(setLoading(false));
+      setIsSubmittingForm(false);
+    }
+  };
+
+  const handleOTPChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 4 && /^\d*$/.test(value)) {
+      setCode(value);
+    }
+
+    if (value.length === 4) {
+      setCodeEntered(true);
+      setSubmitMessage("");
+    } else {
+      setCodeEntered(false);
     }
   };
 
   return (
-    <div className="w-full p-2 sm:p-6">
-      {/* {loading && <Spinner />} */}
-
-      <form
-        className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
-        onSubmit={onSubmit}
-      >
-       
-
-        {studentAdmissionApprovalDetails?.studentDetails &&
-          (studentAdmissionApprovalDetails?.studentDetails?.status ? (
-            <div className="flex flex-col w-full gap-4 items-end  ">
-              <span className="bg-green-500 p-2 rounded-xl">Approved</span>
+    <div className="w-full h-full flex justify-center px-4 py-4 overflow-x-hidden">
+      <div className="w-full max-w-md">
+        {/* Branding Section */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center justify-center mb-3">
+            <div className="relative pt-5">
+              <div className="w-48 h-20 sm:w-48 sm:h-20 rounded-2xl shadow-xl border-4 border-[#ffdd00]/40 flex items-center justify-center bg-[#c61d23] p-2">
+                {logoSrc ? (
+                  <img
+                    src={logoSrc}
+                    alt="Scholar's Den"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <GraduationCap className="w-full h-full text-white" />
+                )}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-[#ffdd00] to-amber-400 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircle2 className="w-4 h-4 text-gray-900" />
+              </div>
             </div>
-          ) : (
-            <div className="flex flex-col w-full gap-4 items-end  ">
-              <span className="text-[#c61d23] bg-white shadow-xl p-2 rounded-xl">
-                {studentAdmissionApprovalDetails?.studentDetails?.message}
-              </span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
+            Phone Number Verification
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-600">
+            Verify contact to continue
+          </p>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-white shadow-xl border border-gray-200 p-5 sm:p-6 rounded-2xl space-y-4">
+          {/* Contact Number Field */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-900">
+              <Phone className="w-4 h-4 text-[#c61d23]" />
+              Contact No. (Parent)<span className="text-[#c61d23]">*</span>
+            </label>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-600 text-sm font-bold">+91</span>
+                </div>
+                <input
+                  type="number"
+                  name="fatherContactNumber"
+                  value={userData?.fatherContactNumber || ""}
+                  onChange={handleChange}
+                  placeholder="10-digit Number"
+                  className="w-full pl-12 pr-3 py-2.5 text-sm border-2 border-gray-200 rounded-lg focus:border-[#c61d23] focus:ring-2 focus:ring-[#c61d23]/20 transition-all outline-none bg-white disabled:bg-gray-50 font-medium"
+                  maxLength={10}
+                  disabled={showCodeBox || isSubmittingForm}
+                  inputMode="numeric"
+                />
+              </div>
+
+              {!showCodeBox && !codeVerified && (
+                <button
+                  type="button"
+                  onClick={verifyPhoneNo}
+                  disabled={
+                    showReloading ||
+                    isSubmittingForm ||
+                    !userData?.fatherContactNumber ||
+                    userData.fatherContactNumber.length !== 10
+                  }
+                  className="w-full sm:w-auto whitespace-nowrap px-5 py-2.5 text-sm rounded-lg bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white font-bold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {showReloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <span>Send OTP</span>
+                  )}
+                </button>
+              )}
+
+              {codeVerified && (
+                <div className="flex items-center justify-center px-4 py-2.5 bg-emerald-50 border-2 border-emerald-500 rounded-lg">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                </div>
+              )}
             </div>
-          ))}
 
-        <fieldset className="text-white border-2 w-full px-2 py-2 sm:px-6 sm:py-4 pb-7">
-          <legend> Student Details </legend>
-          <div className="flex flex-col w-full gap-4 items-center">
-            {formFields?.map((field) => (
-              <InputField
-                key={field.name}
-                name={field.name}
-                value={userData?.[field.name] || ""}
-                onChange={handleChange}
-                error={errors[field.name]}
-                type={field.type}
-                placeholder={field.placeholder}
-                label={field.label}
-              />
-            ))}
-
-            {selectFields?.map((field) => (
-              <SelectField
-                key={field.name}
-                name={field.name}
-                value={userData?.[field.name] || ""}
-                onChange={handleChange}
-                options={field.options}
-                error={errors[field.name]}
-                label={field.label}
-              />
-            ))}
-
-            {checkboxFields?.map((field) => (
-              // <CheckboxField
-              //   key={field.name}
-              //   name={field.name}
-              //   type="radio"
-              //   value={userData?.[field.name] || ""}
-              //   onChange={handleChange}
-              //   error={errors[field.name]}
-              //   label={field.label}
-              // />
-
-              // console.log("field", field.name)
-              <YesNoField
-                label={field.label}
-                name={field.name}
-                value={userData?.existingStudent || ""}
-                onChange={radioChange}
-                error={errors[field.name]}
-              />
-            ))}
-
-            {submitMessage && (
-              <p className="text-sm text-[#ffdd00] text-center">
-                {submitMessage}
-              </p>
+            {errors?.fatherContactNumber && (
+              <div className="flex items-start gap-1.5 p-2 bg-red-50 border-l-4 border-red-500 rounded">
+                <AlertCircle className="w-3.5 h-3.5 text-red-600 mt-0.5 flex-shrink-0" />
+                <p className="text-red-700 text-xs font-medium">
+                  {errors.fatherContactNumber}
+                </p>
+              </div>
             )}
           </div>
-        </fieldset>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 mt-6 w-full">
-          <button
-            onClick={() => navigate(-1)}
-            type="button"
-            className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
-            disabled
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
-          >
-            Next
-          </button>
+          {/* OTP Input */}
+          {showCodeBox && !codeVerified && (
+            <div className="space-y-2">
+              <label className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-900">
+                Verification Code <span className="text-[#c61d23]">*</span>
+              </label>
+              <input
+                type="text"
+                id="otp"
+                name="otp"
+                value={code}
+                onChange={handleOTPChange}
+                placeholder="• • • •"
+                className="w-full px-3 py-3 text-2xl border-2 border-gray-200 rounded-lg focus:border-[#c61d23] focus:ring-2 focus:ring-[#c61d23]/20 transition-all outline-none bg-white text-center tracking-[0.5em] font-bold"
+                maxLength={4}
+                disabled={isSubmittingForm}
+                inputMode="numeric"
+                autoFocus
+              />
+
+              {/* OTP Progress */}
+              <div className="flex gap-1.5 justify-center">
+                {[...Array(4)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={`h-1.5 flex-1 max-w-12 rounded-full transition-all ${
+                      code.length > idx ? "bg-[#c61d23]" : "bg-gray-200"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Loading Spinner */}
+          {showReloading && (
+            <div className="flex justify-center items-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#c61d23]"></div>
+            </div>
+          )}
+
+          {/* Submit Message */}
+          {submitMessage && (
+            <div
+              className={`text-xs sm:text-sm text-center font-semibold p-3 rounded-lg border-2 ${
+                submitMessage.includes("success") ||
+                submitMessage.includes("verified")
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-red-50 text-red-700 border-red-200"
+              }`}
+            >
+              {submitMessage}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          {showCodeBox && (
+            <button
+              type="button"
+              onClick={onSubmit}
+              disabled={isSubmittingForm || !codeEntered}
+              className={`w-full font-bold py-3 rounded-lg transition-all text-sm shadow-lg flex items-center justify-center gap-2 ${
+                isSubmittingForm || !codeEntered
+                  ? "bg-gray-300 cursor-not-allowed text-gray-600"
+                  : "bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white hover:shadow-xl"
+              }`}
+            >
+              {isSubmittingForm ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Verify & Continue</span>
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Resend OTP */}
+          {showCodeBox && !codeVerified && (
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <p className="text-xs text-gray-600">Didn't receive code?</p>
+              <button
+                type="button"
+                onClick={verifyPhoneNo}
+                disabled={cooldownActive || isSubmittingForm}
+                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 ${
+                  cooldownActive || isSubmittingForm
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-[#ffdd00] hover:bg-amber-400 text-gray-900"
+                }`}
+              >
+                {cooldownActive ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>{resendCooldown}s</span>
+                  </>
+                ) : (
+                  "Resend"
+                )}
+              </button>
+            </div>
+          )}
         </div>
-      </form>
 
-      {/* <div className="w-24">
-          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
+        {/* Footer */}
+        {/* <div className="text-center mt-4">
+          <p className="text-xs text-gray-600">
+            Need help?{" "}
+            <a
+              href="/contact"
+              className="text-[#c61d23] hover:text-[#a01818] font-bold hover:underline cursor-pointer transition-colors"
+            >
+              Contact Support
+            </a>
+          </p>
         </div> */}
+      </div>
     </div>
   );
 };
+
+
 
 export default SignupForm;

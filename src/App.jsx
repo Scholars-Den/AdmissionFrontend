@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Signup from "./Components/Signup";
+import BasicDetailsPage from "./Components/BasicDetailsPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FamilyComponents from "./Components/FamilyComponents";
 import SiblingsDetailsComponents from "./Components/SiblingsDetailsComponents";
 import TermsAndConditionPage from "./Components/TermsAndConditionPage";
-import VerificationPage from "./Components/VerificationPage";
+import Signup from "./Components/Signup";
 import SuccessComponent from "./Components/SuccessComponent";
 import DocumentDetails from "./Components/DocumentDetails";
 import AdminSignup from "./Components/AdminView/AdminSignup";
@@ -38,9 +38,9 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<VerificationPage />} />
+          <Route path="/" element={<Signup />} />
           <Route path="/alreadyExist" element={<ExistingStudent />} />
-          <Route path="/basicDetails" element={<Signup />} />
+          <Route path="/basicDetails" element={<BasicDetailsPage />} />
           <Route
             path="/termsAndConditions"
             element={<TermsAndConditionPage />}

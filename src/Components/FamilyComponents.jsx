@@ -1,5 +1,5 @@
 import React from "react";
-import SignupForm from "./SignupForm";
+import SignupForm from "./BasicDetailsForm";
 import SignupDetailsPage from "./SignupDetailsPage";
 import FamilyDetails from "./FamilyDetails";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
