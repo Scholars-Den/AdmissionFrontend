@@ -1,6 +1,4 @@
-
 // SignupForm Component (similar to SignupRight but with VerificationPage logic)
-
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -164,92 +162,177 @@ const SignupForm = ({ logoSrc }) => {
   };
 
   // Form submission
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) {
+  //     console.log("Form validation failed");
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsSubmittingForm(true);
+  //     setSubmitMessage("");
+
+  //     // Check OTP if code box is shown and not yet verified
+  //     if (showCodeBox && !codeVerified) {
+  //       if (!code || code.length < 4) {
+  //         setSubmitMessage("Please enter the 4-digit OTP");
+  //         setIsSubmittingForm(false);
+  //         return;
+  //       }
+
+  //       const otpVerified = await checkVerificationCode();
+
+  //       console.log("otpVerified ", otpVerified);
+
+  //       if (!otpVerified) {
+  //         setCodeVerified(false);
+  //         setCodeEntered(false);
+  //         setSubmitMessage("Invalid OTP. Please try again.");
+  //         setCode("");
+  //         setIsSubmittingForm(false);
+  //         return;
+  //       }
+  //     }
+
+  //     console.log("Submitting form with userData:", userData);
+
+  //     dispatch(setLoading(true));
+  //     const resultAction = await dispatch(submitFormData(userData));
+
+  //     // Check if the action was successful
+  //     if (submitFormData.fulfilled.match(resultAction)) {
+  //       const { message } = resultAction.payload;
+
+  //       console.log("message from verification page:", message);
+  //       console.log("userData from verification page:", userData);
+
+  //       if (message) {
+  //         console.log("Student already exists, redirecting...");
+  //         navigate("/alreadyExist");
+  //       } else {
+  //         console.log("New student, redirecting to basic details...");
+  //         navigate("/basicDetails");
+  //       }
+  //     } else {
+  //       console.error("Form submission failed:", resultAction.payload);
+  //     }
+
+  //     // Additional check if cookie exists
+  //     if (document.cookie) {
+  //       const alreadyExistStudent = await axios.post(
+  //         "/user/getStudentByPhone",
+  //         { fatherContactNumber: userData.fatherContactNumber }
+  //       );
+
+  //       console.log("Existing student check:", alreadyExistStudent);
+
+  //       if (
+  //         alreadyExistStudent.data.data &&
+  //         alreadyExistStudent.data.data.length > 0
+  //       ) {
+  //         const data = await dispatch(
+  //           updateAlreadyExistStudent(alreadyExistStudent.data.data)
+  //         );
+
+  //         console.log("data from onSubmmit", data);
+  //         navigate("/alreadyExist");
+  //       } else {
+  //         navigate("/basicDetails");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     let errorMsg = "Registration failed. Please try again.";
+
+  //     if (error.response?.data?.message) {
+  //       errorMsg = error.response.data.message;
+  //     } else if (error.message) {
+  //       errorMsg = error.message;
+  //     }
+
+  //     setSubmitMessage(errorMsg);
+  //   } finally {
+  //     dispatch(setLoading(false));
+  //     setIsSubmittingForm(false);
+  //   }
+  // };
+
+
   const onSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      console.log("Form validation failed");
-      return;
-    }
-
-    try {
-      setIsSubmittingForm(true);
-      setSubmitMessage("");
-
-      // Check OTP if code box is shown and not yet verified
-      if (showCodeBox && !codeVerified) {
-        if (!code || code.length < 4) {
-          setSubmitMessage("Please enter the 4-digit OTP");
-          setIsSubmittingForm(false);
-          return;
-        }
-
-        const otpVerified = await checkVerificationCode();
-        if (!otpVerified) {
-          setCodeVerified(false);
-          setCodeEntered(false);
-          setSubmitMessage("Invalid OTP. Please try again.");
-          setCode("");
-          setIsSubmittingForm(false);
-          return;
-        }
+  e.preventDefault();
+  
+  if (!validateForm()) {
+    console.log("Form validation failed");
+    return;
+  }
+  
+  try {
+    setIsSubmittingForm(true);
+    setSubmitMessage("");
+    
+    // Check OTP if code box is shown and not yet verified
+    if (showCodeBox && !codeVerified) {
+      if (!code || code.length < 4) {
+        setSubmitMessage("Please enter the 4-digit OTP");
+        setIsSubmittingForm(false);
+        return;
       }
-
-      console.log("Submitting form with userData:", userData);
-
-      dispatch(setLoading(true));
-      const resultAction = await dispatch(submitFormData(userData));
-
-      // Check if the action was successful
-      if (submitFormData.fulfilled.match(resultAction)) {
-        const { message } = resultAction.payload;
-
-        console.log("message from verification page:", message);
-        console.log("userData from verification page:", userData);
-
-        if (message) {
-          console.log("Student already exists, redirecting...");
-          navigate("/alreadyExist");
-        } else {
-          console.log("New student, redirecting to basic details...");
-          navigate("/basicDetails");
-        }
+      
+      const otpVerified = await checkVerificationCode();
+      console.log("otpVerified ", otpVerified);
+      
+      if (!otpVerified) {
+        setCodeVerified(false);
+        setCodeEntered(false);
+        setSubmitMessage("Invalid OTP. Please try again.");
+        setCode("");
+        setIsSubmittingForm(false);
+        return;
+      }
+    }
+    
+    console.log("Submitting form with userData:", userData);
+    dispatch(setLoading(true));
+    
+    const resultAction = await dispatch(submitFormData(userData));
+    
+    // Check if the action was successful
+    if (submitFormData.fulfilled.match(resultAction)) {
+      const { message } = resultAction.payload;
+      console.log("message from verification page:", message);
+      console.log("userData from verification page:", userData);
+      
+      if (message) {
+        console.log("Student already exists, redirecting...");
+        navigate("/alreadyExist");
       } else {
-        console.error("Form submission failed:", resultAction.payload);
+        console.log("New student, redirecting to basic details...");
+        navigate("/basicDetails");
       }
-
-      // Additional check if cookie exists
-      if (document.cookie) {
-        const alreadyExistStudent = await axios.post(
-          "/user/getStudentByPhone",
-          { fatherContactNumber: userData.fatherContactNumber }
-        );
-
-        console.log("Existing student check:", alreadyExistStudent);
-
-        if (alreadyExistStudent.data.data && alreadyExistStudent.data.data.length > 0) {
-          dispatch(updateAlreadyExistStudent(alreadyExistStudent.data.data));
-          navigate("/alreadyExist");
-        } else {
-          navigate("/basicDetails");
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      let errorMsg = "Registration failed. Please try again.";
-
-      if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      } else if (error.message) {
-        errorMsg = error.message;
-      }
-
-      setSubmitMessage(errorMsg);
-    } finally {
-      dispatch(setLoading(false));
-      setIsSubmittingForm(false);
+    } else {
+      console.error("Form submission failed:", resultAction.payload);
+      // Handle the error case properly
+      throw new Error(resultAction.payload || "Form submission failed");
     }
-  };
+    
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    let errorMsg = "Registration failed. Please try again.";
+    
+    if (error.response?.data?.message) {
+      errorMsg = error.response.data.message;
+    } else if (error.message) {
+      errorMsg = error.message;
+    }
+    
+    setSubmitMessage(errorMsg);
+  } finally {
+    dispatch(setLoading(false));
+    setIsSubmittingForm(false);
+  }
+};
 
   const handleOTPChange = (e) => {
     const value = e.target.value;
@@ -323,7 +406,7 @@ const SignupForm = ({ logoSrc }) => {
                 />
               </div>
 
-              {!showCodeBox && !codeVerified && (
+              {/* {!showCodeBox && !codeVerified && (
                 <button
                   type="button"
                   onClick={verifyPhoneNo}
@@ -350,7 +433,7 @@ const SignupForm = ({ logoSrc }) => {
                 <div className="flex items-center justify-center px-4 py-2.5 bg-emerald-50 border-2 border-emerald-500 rounded-lg">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                 </div>
-              )}
+              )} */}
             </div>
 
             {errors?.fatherContactNumber && (
@@ -362,9 +445,8 @@ const SignupForm = ({ logoSrc }) => {
               </div>
             )}
           </div>
-
           {/* OTP Input */}
-          {showCodeBox && !codeVerified && (
+          {/* {showCodeBox && !codeVerified && (
             <div className="space-y-2">
               <label className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-900">
                 Verification Code <span className="text-[#c61d23]">*</span>
@@ -383,7 +465,6 @@ const SignupForm = ({ logoSrc }) => {
                 autoFocus
               />
 
-              {/* OTP Progress */}
               <div className="flex gap-1.5 justify-center">
                 {[...Array(4)].map((_, idx) => (
                   <div
@@ -395,15 +476,13 @@ const SignupForm = ({ logoSrc }) => {
                 ))}
               </div>
             </div>
-          )}
-
+          )} */}
           {/* Loading Spinner */}
           {showReloading && (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#c61d23]"></div>
             </div>
           )}
-
           {/* Submit Message */}
           {submitMessage && (
             <div
@@ -417,33 +496,34 @@ const SignupForm = ({ logoSrc }) => {
               {submitMessage}
             </div>
           )}
-
           {/* Submit Button */}
-          {showCodeBox && (
-            <button
-              type="button"
-              onClick={onSubmit}
-              disabled={isSubmittingForm || !codeEntered}
-              className={`w-full font-bold py-3 rounded-lg transition-all text-sm shadow-lg flex items-center justify-center gap-2 ${
-                isSubmittingForm || !codeEntered
-                  ? "bg-gray-300 cursor-not-allowed text-gray-600"
-                  : "bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white hover:shadow-xl"
-              }`}
-            >
-              {isSubmittingForm ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <>
-                  <span>Verify & Continue</span>
-                  <ChevronRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          )}
-
+          {/* {showCodeBox && ( */}
+          <button
+            type="button"
+            onClick={onSubmit}
+            // disabled={isSubmittingForm || !codeEntered}
+            // className={`w-full font-bold py-3 rounded-lg transition-all text-sm shadow-lg flex items-center justify-center gap-2 ${
+            //   isSubmittingForm || !codeEntered
+            //     ? "bg-gray-300 cursor-not-allowed text-gray-600"
+            //     : "bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white hover:shadow-xl"
+            // }`}
+            className={`w-full font-bold py-3 rounded-lg transition-all text-sm shadow-lg flex items-center justify-center gap-2 
+                  bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white hover:shadow-xl
+              `}
+          >
+            {isSubmittingForm ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Processing...</span>
+              </>
+            ) : (
+              <>
+                <span>Verify & Continue</span>
+                <ChevronRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
+          {/* )} */}
           {/* Resend OTP */}
           {showCodeBox && !codeVerified && (
             <div className="flex items-center justify-between gap-2 pt-1">
@@ -488,6 +568,12 @@ const SignupForm = ({ logoSrc }) => {
   );
 };
 
-
-
 export default SignupForm;
+
+
+
+
+
+
+
+

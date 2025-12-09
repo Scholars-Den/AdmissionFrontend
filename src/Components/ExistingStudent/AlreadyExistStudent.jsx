@@ -17,20 +17,10 @@ const AlreadyExistStudent = () => {
 
   const navigate = useNavigate();
   const [admisionStatus, setAdmissionStatus] = useState(null);
+  const { userData } = useSelector((state) => state.userDetails);
+  const dispatch = useDispatch();
 
-  // const fetchAdmissionMessage = async () => {
-  //   console.log("selectedStudent from fetchAdmissionMessage", selectedStudent);
-  //   console.log(
-  //     "selectedStudent from fetchAdmissionMessage",
-  //     selectedStudent.acknowledgementNumber
-  //   );
-
-  //   const response = await axios.post(
-  //     "/approval/getAdmissionApprovalByAcknowledgementNumber",
-  //     { acknowledgementNumber: selectedStudent.acknowledgementNumber }
-  //   );
-  //   console.log("resoponse from fetchAdmissionMessage", response);
-  // };
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const fetchAdmissionMessage = async (ackNumber) => {
     try {
@@ -59,34 +49,6 @@ const AlreadyExistStudent = () => {
   useEffect(() => {
     console.log("admissionStatusMap ", admissionStatusMap);
   }, [admissionStatusMap]);
-
-  // useEffect(()=>{
-
-  //   console.log("Testdata fro admissionStatusMap");
-  //   fetchAdmissionMessage(admissionStatusMap);
-
-  // },[admissionStatusMap])
-
-  const { userData } = useSelector((state) => state.userDetails);
-  const dispatch = useDispatch();
-
-  const [selectedStudent, setSelectedStudent] = useState(null);
-
-  useEffect(() => {
-    const number =
-      userData.fatherContactNumber || userData.studentContactNumber;
-
-    dispatch(fetchAlreadyExistingStudent(number));
-  }, []);
-
-  useEffect(() => {
-    console.log("existing student", existingStudent);
-  }, [existingStudent]);
-
-  // useEffect(() => {
-  //   console.log("existing Student ", existingStudent);
-  //   fetchAdmissionMessage();
-  // }, [selectedStudent]);
 
   // const handleCardClick = (student) => {
   //   setSelectedStudent(student);
@@ -169,6 +131,29 @@ const AlreadyExistStudent = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
     navigate("/");
   };
+
+  useEffect(() => {
+    console.log("userData frin useEffect", userData);
+  }, []);
+
+  useEffect(() => {
+    const number =
+      userData.fatherContactNumber || userData.studentContactNumber;
+
+    console.log("useEffect from alreadyExistStudent number ", number);
+    console.log("useEffect from alreadyExistStudent userData", userData);
+
+    dispatch(fetchAlreadyExistingStudent(number));
+  }, []);
+
+  useEffect(() => {
+    console.log("existing student", existingStudent);
+  }, [existingStudent]);
+
+  useEffect(() => {
+    console.log("existing Student ", existingStudent);
+    fetchAdmissionMessage();
+  }, [selectedStudent]);
 
   return (
     <div className="w-full h-full flex flex-col bg-[#c61d23]">
