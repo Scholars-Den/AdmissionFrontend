@@ -1,30 +1,4 @@
-// import React from "react";
-// import BasicDetailsForm from "./BasicDetailsForm";
-// import SignupDetailsPage from "./SignupDetailsPage";
-// import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 
-// const BasicDetailsPage = () => {
-//   return (
-//     <div className="w-full min-h-screen flex flex-col  from-[#fdf5f6] via-white to-[#f5eff0]">
-//       {/* Signup Details Page (Top Section) */}
-//       <div className="flex-grow">
-//         <SignupDetailsPage />
-//       </div>
-
-//       {/* Signup Form (Middle Section) */}
-//       <div className="flex-grow">
-//         <BasicDetailsForm />
-//       </div>
-
-//       {/* Footer (Logo at Bottom) */}
-//       <div className="flex justify-center items-center py-4">
-//         <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BasicDetailsPage;
 
 import { useState, useEffect } from "react";
 import {
@@ -46,86 +20,30 @@ import {
   ChevronDown
 } from "lucide-react";
 
-// Move these components OUTSIDE the main component
-const InputField = ({ icon: Icon, label, name, type = "text", placeholder, required = false, maxLength, value, onChange, error }) => (
-  <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-    <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
-      <Icon size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-      <span className="flex-1">{label}</span>
-      {required && <span className="text-[#c61d23]">*</span>}
-    </label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      maxLength={maxLength}
-      className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-2.5 sm:p-3 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all"
-    />
-    {error && (
-      <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
-        <AlertCircle size={14} />
-        {error}
-      </div>
-    )}
-  </div>
-);
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
+import {
+  updateUserDetails,
+  submitFormData,
+  putFormData,
+  fetchUserDetails,
+} from "../../redux/formDataSlice";
 
-const SelectField = ({ icon: Icon, label, name, options, required = false, disabled = false, value, onChange, error }) => (
-  <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-    <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
-      <Icon size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-      <span className="flex-1">{label}</span>
-      {required && <span className="text-[#c61d23]">*</span>}
-    </label>
-    <div className="relative">
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className="w-full text-sm sm:text-base appearance-none border border-gray-200 rounded-lg p-2.5 sm:p-3 pr-10 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all bg-white cursor-pointer disabled:bg-gray-50 disabled:cursor-not-allowed"
-      >
-        <option value="">Select {label}</option>
-        {options.map(option => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
-      <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-    </div>
-    {error && (
-      <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
-        <AlertCircle size={14} />
-        {error}
-      </div>
-    )}
-  </div>
-);
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
+import { setLoading } from "../../redux/loadingSlice";
+import Spinner from "../../api/Spinner";
+import InputField from "../../utils/InputField";
+import SelectField from "../../utils/SelectField";
+import CheckboxField from "../../utils/CheckboxField";
+import {
+  validateAadhaar,
+  validateName,
+  validatePhoneNo,
+  validateSchoolName,
+} from "../../utils/validation/inputValidation";
+import YesNoField from "../../utils/YesNoField";
 
-const YesNoField = ({ label, name, value, onChange }) => (
-  <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-    <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-3">
-      <UserCheck size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-      <span className="flex-1">{label}</span>
-    </label>
-    <div className="flex gap-4">
-      {["Yes", "No"].map(option => (
-        <label key={option} className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="radio"
-            name={name}
-            value={option}
-            checked={value === option}
-            onChange={onChange}
-            className="w-4 h-4 text-[#c61d23] focus:ring-[#c61d23]"
-          />
-          <span className="text-sm text-gray-700">{option}</span>
-        </label>
-      ))}
-    </div>
-  </div>
-);
 
 const BasicDetailsPage = () => {
   const [formData, setFormData] = useState({
@@ -142,6 +60,8 @@ const BasicDetailsPage = () => {
     existingStudent: ""
   });
 
+
+  const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -276,36 +196,36 @@ const BasicDetailsPage = () => {
     return isValid;
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-  //   if (!validateForm()) {
-  //     setSubmitMessage("Please fill all required fields correctly");
-  //     return;
-  //   }
+    if (!validateForm()) {
+      setSubmitMessage("Please fill all required fields correctly");
+      return;
+    }
 
-  //   setIsSubmitting(true);
-  //   setSubmitMessage("");
+    setIsSubmitting(true);
+    setSubmitMessage("");
 
-  //   try {
-  //     // Simulate API call
-  //     await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-  //     // Here you would normally dispatch your Redux action
-  //     // await dispatch(putFormData(formData));
+      // Here you would normally dispatch your Redux action
+      // await dispatch(putFormData(formData));
       
-  //     setSubmitMessage("Form submitted successfully!");
+      setSubmitMessage("Form submitted successfully!");
       
-  //     // Navigate to next page after successful submission
-  //     // navigate("/familyDetails");
+      // Navigate to next page after successful submission
+      // navigate("/familyDetails");
       
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     setSubmitMessage("Error submitting form. Please try again.");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitMessage("Error submitting form. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
 
@@ -398,7 +318,7 @@ const BasicDetailsPage = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
+          <form onSubmit={onSubmit} className="flex flex-col gap-4 sm:gap-5">
             {/* Personal Information */}
             <InputField
               icon={User}

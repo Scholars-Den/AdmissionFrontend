@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { updateUserDetails, submitFormData } from "../../redux/formDataSlice";
 import { setLoading } from "../../redux/loadingSlice";
-import { updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice";
+import { fetchAlreadyExistingStudent, updateAlreadyExistStudent } from "../../redux/alreadyExistStudentSlice";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import {
   Phone,
@@ -260,7 +260,179 @@ const SignupForm = ({ logoSrc }) => {
   // };
 
 
-  const onSubmit = async (e) => {
+//   const onSubmit = async (e) => {
+//   e.preventDefault();
+  
+//   if (!validateForm()) {
+//     console.log("Form validation failed");
+//     return;
+//   }
+  
+//   try {
+//     setIsSubmittingForm(true);
+//     setSubmitMessage("");
+    
+//     // Check OTP if code box is shown and not yet verified
+//     if (showCodeBox && !codeVerified) {
+//       if (!code || code.length < 4) {
+//         setSubmitMessage("Please enter the 4-digit OTP");
+//         setIsSubmittingForm(false);
+//         return;
+//       }
+      
+//       const otpVerified = await checkVerificationCode();
+//       console.log("otpVerified ", otpVerified);
+      
+//       if (!otpVerified) {
+//         setCodeVerified(false);
+//         setCodeEntered(false);
+//         setSubmitMessage("Invalid OTP. Please try again.");
+//         setCode("");
+//         setIsSubmittingForm(false);
+//         return;
+//       }
+//     }
+    
+//     console.log("Submitting form with userData:", userData);
+//     dispatch(setLoading(true));
+    
+//     const resultAction = await dispatch(submitFormData(userData));
+    
+//     // Check if the action was successful
+//     if (submitFormData.fulfilled.match(resultAction)) {
+//       const { message } = resultAction.payload;
+//       console.log("message from verification page:", message);
+//       console.log("userData from verification page:", userData);
+      
+//       if (message) {
+//         console.log("Student already exists, redirecting...");
+//         navigate("/alreadyExist");
+//       } else {
+//         console.log("New student, redirecting to basic details...");
+//         navigate("/basicDetails");
+//       }
+//     } else {
+//       console.error("Form submission failed:", resultAction.payload);
+//       // Handle the error case properly
+//       throw new Error(resultAction.payload || "Form submission failed");
+//     }
+    
+//   } catch (error) {
+//     console.error("Error submitting form:", error);
+//     let errorMsg = "Registration failed. Please try again.";
+    
+//     if (error.response?.data?.message) {
+//       errorMsg = error.response.data.message;
+//     } else if (error.message) {
+//       errorMsg = error.message;
+//     }
+    
+//     setSubmitMessage(errorMsg);
+//   } finally {
+//     dispatch(setLoading(false));
+//     setIsSubmittingForm(false);
+//   }
+// };
+
+
+
+
+// const onSubmit = async (e) => {
+//   e.preventDefault();
+  
+//   if (!validateForm()) {
+//     console.log("Form validation failed");
+//     return;
+//   }
+  
+//   try {
+//     setIsSubmittingForm(true);
+//     setSubmitMessage("");
+    
+//     // Check OTP if code box is shown and not yet verified
+//     if (showCodeBox && !codeVerified) {
+//       if (!code || code.length < 4) {
+//         setSubmitMessage("Please enter the 4-digit OTP");
+//         setIsSubmittingForm(false);
+//         return;
+//       }
+      
+//       const otpVerified = await checkVerificationCode();
+//       console.log("otpVerified ", otpVerified);
+      
+//       if (!otpVerified) {
+//         setCodeVerified(false);
+//         setCodeEntered(false);
+//         setSubmitMessage("Invalid OTP. Please try again.");
+//         setCode("");
+//         setIsSubmittingForm(false);
+//         return;
+//       }
+//     }
+    
+//     console.log("Submitting form with userData:", userData);
+//     dispatch(setLoading(true));
+    
+//     const resultAction = await dispatch(submitFormData(userData));
+    
+//     // Check if the action was successful
+//     if (submitFormData.fulfilled.match(resultAction)) {
+//       const { message, token } = resultAction.payload;
+//       console.log("message from verification page:", message);
+//       console.log("userData from verification page:", userData);
+      
+//       // Store token in cookie
+//       if (token) {
+//         document.cookie = `token=${token}; path=/`;
+//       }
+      
+//       if (message) {
+//         console.log("Student already exists, fetching data before redirect...");
+        
+//         // Get the contact number
+//         const number =  userData?.fatherContactNumber || userData?.studentContactNumber;
+        
+//         // Fetch existing student data and wait for it to complete
+//         const fetchResult = await dispatch(fetchAlreadyExistingStudent(number)).unwrap();
+//         console.log("Fetched existing students:", fetchResult);
+        
+//         // Store userData in Redux to ensure it's available after navigation
+//         dispatch(updateUserDetails({
+//           ...userData,
+//           fatherContactNumber: number
+//         }));
+        
+//         // Now navigate with data already loaded
+//         navigate("/alreadyExist");
+//       } else {
+//         console.log("New student, redirecting to basic details...");
+//         navigate("/basicDetails");
+//       }
+//     } else {
+//       console.error("Form submission failed:", resultAction.payload);
+//       throw new Error(resultAction.payload || "Form submission failed");
+//     }
+    
+//   } catch (error) {
+//     console.error("Error submitting form:", error);
+//     let errorMsg = "Registration failed. Please try again.";
+    
+//     if (error.response?.data?.message) {
+//       errorMsg = error.response.data.message;
+//     } else if (error.message) {
+//       errorMsg = error.message;
+//     }
+    
+//     setSubmitMessage(errorMsg);
+//   } finally {
+//     dispatch(setLoading(false));
+//     setIsSubmittingForm(false);
+//   }
+// };
+
+
+
+const onSubmit = async (e) => {
   e.preventDefault();
   
   if (!validateForm()) {
@@ -300,12 +472,44 @@ const SignupForm = ({ logoSrc }) => {
     
     // Check if the action was successful
     if (submitFormData.fulfilled.match(resultAction)) {
-      const { message } = resultAction.payload;
+      const { message, token, data } = resultAction.payload;
       console.log("message from verification page:", message);
       console.log("userData from verification page:", userData);
+      console.log("data from resultAction:", data);
       
-      if (message) {
-        console.log("Student already exists, redirecting...");
+      // Store token in cookie
+      if (token) {
+        document.cookie = `token=${token}; path=/`;
+      }
+      
+      if (message && message.includes("Already Exist")) {
+        console.log("Student already exists, handling existing student data...");
+        
+        // Get the contact number
+        const number = userData.fatherContactNumber || userData.studentContactNumber;
+        
+        // Update userData in Redux
+        dispatch(updateUserDetails({
+          ...userData,
+          fatherContactNumber: number
+        }));
+        
+        // If data is already returned from submitFormData, use it
+        if (data && Array.isArray(data) && data.length > 0) {
+          console.log("Using existing student data from response:", data);
+          dispatch(updateAlreadyExistStudent(data));
+        } else {
+          // Otherwise fetch it
+          console.log("Fetching existing student data...");
+          try {
+            await dispatch(fetchAlreadyExistingStudent(number)).unwrap();
+          } catch (fetchError) {
+            console.error("Error fetching existing students:", fetchError);
+            // Continue to navigation even if fetch fails
+          }
+        }
+        
+        // Navigate to already exist page
         navigate("/alreadyExist");
       } else {
         console.log("New student, redirecting to basic details...");
@@ -313,7 +517,6 @@ const SignupForm = ({ logoSrc }) => {
       }
     } else {
       console.error("Form submission failed:", resultAction.payload);
-      // Handle the error case properly
       throw new Error(resultAction.payload || "Form submission failed");
     }
     
@@ -333,6 +536,13 @@ const SignupForm = ({ logoSrc }) => {
     setIsSubmittingForm(false);
   }
 };
+
+
+
+
+
+
+
 
   const handleOTPChange = (e) => {
     const value = e.target.value;

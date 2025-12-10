@@ -17,7 +17,7 @@
 //   AlertCircle,
 // } from "lucide-react";
 
-import SignupDetailsPage from "./SignupDetailsPage";
+// import SignupDetailsPage from "./SignupDetailsPage";
 
 // const VerificationPage = () => {
 //   const navigate = useNavigate();
@@ -412,6 +412,8 @@ import SignupDetailsPage from "./SignupDetailsPage";
 
 import SignupForm from "./SignupForm";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
+import SignupDetailsPage from "./SignupDetailsPage";
+
 
 
 const Signup = () => {

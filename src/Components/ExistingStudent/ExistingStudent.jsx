@@ -18,10 +18,6 @@ const ExistingStudent = () => {
       <AlreadyExistStudent />
     </div>
 
-    {/* Footer (Logo at Bottom) */}
-    <div className="flex justify-center items-center py-4">
-      <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
-    </div>
   </div>
   );
 };
