@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import {
   User,
@@ -17,9 +15,8 @@ import {
   Loader2,
   UserCheck,
   ArrowLeft,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
-
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
@@ -29,7 +26,6 @@ import {
   putFormData,
   fetchUserDetails,
 } from "../../redux/formDataSlice";
-
 import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
 import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "../../api/Spinner";
@@ -44,8 +40,14 @@ import {
 } from "../../utils/validation/inputValidation";
 import YesNoField from "../../utils/YesNoField";
 
-
 const BasicDetailsPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.userDetails);
+  const { studentAdmissionApprovalDetails } = useSelector(
+    (state) => state.alreadyExistStudent
+  );
+
   const [formData, setFormData] = useState({
     studentName: "",
     aadhaarID: "",
@@ -57,11 +59,9 @@ const BasicDetailsPage = () => {
     bloodGroup: "",
     program: "",
     studentClass: "",
-    existingStudent: ""
+    existingStudent: "",
   });
 
-
-  const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,46 +69,59 @@ const BasicDetailsPage = () => {
 
   const subjectOptionsForClass = {
     Foundation: ["VI", "VII", "VIII", "IX", "X"],
-    "JEE(Main & Adv)": ["XI Engineering", "XII Engineering", "XII Passed Engineering"],
-    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"]
+    "JEE(Main & Adv)": [
+      "XI Engineering",
+      "XII Engineering",
+      "XII Passed Engineering",
+    ],
+    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
   };
 
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const programOptions = ["Foundation", "JEE(Main & Adv)", "NEET(UG)"];
 
-  // Validation functions from reference
-  const validateName = (name) => {
-    if (!name || name.trim() === "") {
-      return { isValid: false, message: "Name is required" };
-    }
-    if (name.length < 2) {
-      return { isValid: false, message: "Name must be at least 2 characters" };
-    }
-    if (!/^[a-zA-Z\s]+$/.test(name)) {
-      return { isValid: false, message: "Name can only contain letters and spaces" };
-    }
-    return { isValid: true, message: "" };
-  };
+  // Fetch user details on mount
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, [dispatch]);
 
-  const validateAadhaar = (aadhaar) => {
-    if (!aadhaar || aadhaar.trim() === "") {
-      return { isValid: false, message: "Aadhaar ID is required" };
+  // Sync userData from Redux to local formData state
+  useEffect(() => {
+    console.log("userData useEffect", userData);
+    if (userData && Object.keys(userData).length > 0) {
+      setFormData({
+        studentName: userData.studentName || "",
+        aadhaarID: userData.aadhaarID || "",
+        email: userData.email || "",
+        dob: userData.dob || "",
+        schoolName: userData.schoolName || "",
+        gender: userData.gender || "",
+        category: userData.category || "",
+        bloodGroup: userData.bloodGroup || "",
+        program: userData.program || "",
+        studentClass: userData.studentClass || "",
+        existingStudent: userData.existingStudent || "",
+      });
     }
-    if (!/^\d{12}$/.test(aadhaar)) {
-      return { isValid: false, message: "Aadhaar must be exactly 12 digits" };
-    }
-    return { isValid: true, message: "" };
-  };
+  }, [userData]);
 
-  const validateSchoolName = (schoolName) => {
-    if (!schoolName || schoolName.trim() === "") {
-      return { isValid: false, message: "School name is required" };
+  // Fetch admission approval message when student name is available
+  useEffect(() => {
+    if (userData?.acknowledgementNumber) {
+      dispatch(fetchAdmissionApprovalMessage(userData.acknowledgementNumber));
     }
-    if (schoolName.length < 3) {
-      return { isValid: false, message: "School name must be at least 3 characters" };
+  }, [userData?.acknowledgementNumber, dispatch]);
+
+  // Update approval status when studentAdmissionApprovalDetails changes
+  useEffect(() => {
+    if (studentAdmissionApprovalDetails?.basicDetails) {
+      setApprovalStatus({
+        approved: studentAdmissionApprovalDetails.basicDetails.status,
+        message: studentAdmissionApprovalDetails.basicDetails.message || 
+                 (studentAdmissionApprovalDetails.basicDetails.status ? "Approved" : "Pending Review"),
+      });
     }
-    return { isValid: true, message: "" };
-  };
+  }, [studentAdmissionApprovalDetails]);
 
   const handleChange = (e) => {
     // If approval status exists and is approved, prevent changes
@@ -117,21 +130,25 @@ const BasicDetailsPage = () => {
     }
 
     const { name, value } = e.target;
-    
+
     // Aadhaar ID length restriction
     if (name === "aadhaarID" && value.length > 12) return;
-    
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: "" }));
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const radioChange = (e) => {
+    if (approvalStatus?.approved) {
+      return;
+    }
+
     const { name, value } = e.target;
-    
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     if (value.trim()) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -192,84 +209,63 @@ const BasicDetailsPage = () => {
       isValid = false;
     }
 
+    console.log("formData from basicDetailsPage", formData);
+    console.log("formErrors from basicDetailsPage", formErrors);
+
     setErrors(formErrors);
     return isValid;
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      setSubmitMessage("Please fill all required fields correctly");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitMessage("");
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would normally dispatch your Redux action
-      // await dispatch(putFormData(formData));
-      
-      setSubmitMessage("Form submitted successfully!");
-      
-      // Navigate to next page after successful submission
-      // navigate("/familyDetails");
-      
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setSubmitMessage("Error submitting form. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     try {
+      setIsSubmitting(true);
       dispatch(setLoading(true));
 
-      await dispatch(putFormData(userData));
-      if (document.cookie) {
+      console.log("FormData from onSubmit", formData);
+      await dispatch(putFormData(formData)).unwrap();
+
+      setSubmitMessage("Form submitted successfully!");
+      
+      // Navigate to next page after successful submission
+      setTimeout(() => {
         navigate("/familyDetails");
-      }
+      }, 1000);
+      
     } catch (error) {
       console.log("Error submitting form:", error);
+      setSubmitMessage("Error submitting form. Please try again.");
     } finally {
+      setIsSubmitting(false);
       dispatch(setLoading(false));
     }
   };
 
-
-  
-  
-  
-  
-  
-  
-  
-  
-  // Effect to fetch user details on mount (commented out for demo)
-  useEffect(() => {
-    // dispatch(fetchUserDetails());
-  }, []);
-
-  // Effect to fetch admission approval message (commented out for demo)
-  useEffect(() => {
-    if (formData.studentName) {
-      // dispatch(fetchAdmissionApprovalMessage(formData.acknowledgementNumber));
-    }
-  }, [formData.studentName]);
-
   return (
     <div className="min-h-screen w-full max-w-[768px] mx-auto bg-gradient-to-br from-[#fdf5f6] via-white to-[#f5eff0]">
+      {/* Navigation Bar */}
+      <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-100 shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-[#c61d23] to-[#a01818]">
+                <User size={24} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#c61d23] to-[#a01818]">
+                  Basic Details
+                </h1>
+                <p className="text-xs text-gray-500 hidden sm:block">
+                  Complete your profile
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Decorative Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none max-w-[768px] mx-auto">
         <div className="absolute top-0 right-0 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-gradient-to-br from-[#ffdd00]/5 to-transparent rounded-full blur-3xl"></div>
@@ -286,32 +282,42 @@ const BasicDetailsPage = () => {
                 Basic Information
               </h3>
               <div className="text-xs sm:text-sm text-gray-600">
-                Step 1 of 3
+                Step 1 of 5
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-[#c61d23] to-[#a01818] h-2 rounded-full transition-all duration-300"
-                style={{ width: "33%" }}
+                style={{ width: "20%" }}
               ></div>
             </div>
           </div>
 
           {/* Approval Status */}
           {approvalStatus && (
-            <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
-              approvalStatus.approved 
-                ? "bg-emerald-50 border-emerald-500" 
-                : "bg-red-50 border-red-500"
-            }`}>
+            <div
+              className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
+                approvalStatus.approved
+                  ? "bg-emerald-50 border-emerald-500"
+                  : "bg-red-50 border-red-500"
+              }`}
+            >
               {approvalStatus.approved ? (
-                <CheckCircle2 size={16} className="text-emerald-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]" />
+                <CheckCircle2
+                  size={16}
+                  className="text-emerald-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]"
+                />
               ) : (
-                <AlertCircle size={16} className="text-red-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]" />
+                <AlertCircle
+                  size={16}
+                  className="text-red-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]"
+                />
               )}
-              <span className={`text-xs sm:text-sm font-semibold ${
-                approvalStatus.approved ? "text-emerald-700" : "text-red-700"
-              }`}>
+              <span
+                className={`text-xs sm:text-sm font-semibold ${
+                  approvalStatus.approved ? "text-emerald-700" : "text-red-700"
+                }`}
+              >
                 {approvalStatus.message}
               </span>
             </div>
@@ -321,7 +327,6 @@ const BasicDetailsPage = () => {
           <form onSubmit={onSubmit} className="flex flex-col gap-4 sm:gap-5">
             {/* Personal Information */}
             <InputField
-              icon={User}
               label="Student Name"
               name="studentName"
               placeholder="Enter full name"
@@ -329,10 +334,10 @@ const BasicDetailsPage = () => {
               value={formData.studentName}
               onChange={handleChange}
               error={errors.studentName}
+              disabled={approvalStatus?.approved}
             />
 
             <InputField
-              icon={CreditCard}
               label="Aadhaar ID"
               name="aadhaarID"
               placeholder="12-digit Aadhaar number"
@@ -341,10 +346,10 @@ const BasicDetailsPage = () => {
               value={formData.aadhaarID}
               onChange={handleChange}
               error={errors.aadhaarID}
+              disabled={approvalStatus?.approved}
             />
 
             <InputField
-              icon={Mail}
               label="Email"
               name="email"
               type="email"
@@ -352,20 +357,20 @@ const BasicDetailsPage = () => {
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
+              disabled={approvalStatus?.approved}
             />
 
             <InputField
-              icon={Calendar}
               label="Date of Birth"
               name="dob"
               type="date"
               value={formData.dob}
               onChange={handleChange}
               error={errors.dob}
+              disabled={approvalStatus?.approved}
             />
 
             <SelectField
-              icon={Users}
               label="Gender"
               name="gender"
               options={["Male", "Female"]}
@@ -373,10 +378,10 @@ const BasicDetailsPage = () => {
               value={formData.gender}
               onChange={handleChange}
               error={errors.gender}
+              disabled={approvalStatus?.approved}
             />
 
             <SelectField
-              icon={Droplet}
               label="Blood Group"
               name="bloodGroup"
               options={bloodGroupOptions}
@@ -384,11 +389,11 @@ const BasicDetailsPage = () => {
               value={formData.bloodGroup}
               onChange={handleChange}
               error={errors.bloodGroup}
+              disabled={approvalStatus?.approved}
             />
 
             {/* Academic Information */}
             <InputField
-              icon={School}
               label="Current/Last Attended School"
               name="schoolName"
               placeholder="Enter school name"
@@ -396,10 +401,10 @@ const BasicDetailsPage = () => {
               value={formData.schoolName}
               onChange={handleChange}
               error={errors.schoolName}
+              disabled={approvalStatus?.approved}
             />
 
             <SelectField
-              icon={Users}
               label="Category"
               name="category"
               options={["General", "OBC", "SC", "ST", "ETS"]}
@@ -407,10 +412,10 @@ const BasicDetailsPage = () => {
               value={formData.category}
               onChange={handleChange}
               error={errors.category}
+              disabled={approvalStatus?.approved}
             />
 
             <SelectField
-              icon={BookOpen}
               label="Program"
               name="program"
               options={programOptions}
@@ -418,15 +423,15 @@ const BasicDetailsPage = () => {
               value={formData.program}
               onChange={handleChange}
               error={errors.program}
+              disabled={approvalStatus?.approved}
             />
 
             <SelectField
-              icon={GraduationCap}
               label="Class"
               name="studentClass"
               options={subjectOptionsForClass[formData.program] || []}
               required
-              disabled={!formData.program}
+              disabled={!formData.program || approvalStatus?.approved}
               value={formData.studentClass}
               onChange={handleChange}
               error={errors.studentClass}
@@ -437,21 +442,33 @@ const BasicDetailsPage = () => {
               name="existingStudent"
               value={formData.existingStudent}
               onChange={radioChange}
+              disabled={approvalStatus?.approved}
             />
 
             {/* Submit Message */}
             {submitMessage && (
-              <div className={`p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
-                submitMessage.includes("success")
-                  ? "bg-emerald-50 border-emerald-200"
-                  : "bg-red-50 border-red-200"
-              }`}>
-                <AlertCircle size={16} className={`flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px] ${
-                  submitMessage.includes("success") ? "text-emerald-500" : "text-red-500"
-                }`} />
-                <p className={`text-xs sm:text-sm font-semibold ${
-                  submitMessage.includes("success") ? "text-emerald-700" : "text-red-700"
-                }`}>
+              <div
+                className={`p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
+                  submitMessage.includes("success")
+                    ? "bg-emerald-50 border-emerald-200"
+                    : "bg-red-50 border-red-200"
+                }`}
+              >
+                <AlertCircle
+                  size={16}
+                  className={`flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px] ${
+                    submitMessage.includes("success")
+                      ? "text-emerald-500"
+                      : "text-red-500"
+                  }`}
+                />
+                <p
+                  className={`text-xs sm:text-sm font-semibold ${
+                    submitMessage.includes("success")
+                      ? "text-emerald-700"
+                      : "text-red-700"
+                  }`}
+                >
                   {submitMessage}
                 </p>
               </div>
@@ -469,7 +486,7 @@ const BasicDetailsPage = () => {
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || approvalStatus?.approved}
                 className="flex-[2] flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
                 <span>{isSubmitting ? "Processing..." : "Next"}</span>

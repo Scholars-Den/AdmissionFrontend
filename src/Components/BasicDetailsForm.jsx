@@ -38,8 +38,6 @@
 
 //   // Aadhaar example: ¸
 
-
-
 //   const handleChange = (e) => {
 //     if (studentAdmissionApprovalDetails[0]?.studentDetails?.status) {
 //       return;
@@ -154,7 +152,6 @@
 //     }
 //   }, [userData]);
 
- 
 //   useEffect(() => {
 //     dispatch(fetchUserDetails());
 //   }, []);
@@ -237,7 +234,7 @@
 
 //     const dataField = [
 //       {
-        
+
 //       }
 //     ]
 
@@ -306,7 +303,6 @@
 //         className="flex flex-col sm:px-2 items-center gap-2 sm:py-2 text-white w-full"
 //         onSubmit={onSubmit}
 //       >
-       
 
 //         {studentAdmissionApprovalDetails?.studentDetails &&
 //           (studentAdmissionApprovalDetails?.studentDetails?.status ? (
@@ -405,10 +401,31 @@
 
 // export default BasicDetailsForm;
 
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
+import {
+  updateUserDetails,
+  submitFormData,
+  putFormData,
+  fetchUserDetails,
+} from "../../redux/formDataSlice";
 
+import { fetchAdmissionApprovalMessage } from "../../redux/alreadyExistStudentSlice";
+import { setLoading } from "../../redux/loadingSlice";
+import Spinner from "../../api/Spinner";
+import InputField from "../../utils/InputField";
+import SelectField from "../../utils/SelectField";
+import CheckboxField from "../../utils/CheckboxField";
+import {
+  validateAadhaar,
+  validateName,
+  validatePhoneNo,
+  validateSchoolName,
+} from "../../utils/validation/inputValidation";
+import YesNoField from "../../utils/YesNoField";
 
-
-import { useState } from "react";
 import {
   User,
   Mail,
@@ -425,7 +442,7 @@ import {
   Loader2,
   UserCheck,
   ArrowLeft,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 
 const BasicDetailsForm = () => {
@@ -440,18 +457,23 @@ const BasicDetailsForm = () => {
     bloodGroup: "",
     program: "",
     studentClass: "",
-    existingStudent: ""
+    existingStudent: "",
   });
 
   const [errors, setErrors] = useState({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [approvalStatus, setApprovalStatus] = useState(null);
+  const { userData } = useSelector((state) => state.userDetails);
 
   const subjectOptionsForClass = {
     Foundation: ["VI", "VII", "VIII", "IX", "X"],
-    "JEE(Main & Adv)": ["XI Engineering", "XII Engineering", "XII Passed Engineering"],
-    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"]
+    "JEE(Main & Adv)": [
+      "XI Engineering",
+      "XII Engineering",
+      "XII Passed Engineering",
+    ],
+    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
   };
 
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -459,27 +481,30 @@ const BasicDetailsForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "aadhaarID" && value.length > 12) return;
-    
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: "" }));
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.studentName.trim()) newErrors.studentName = "Student name is required";
+
+    if (!formData.studentName.trim())
+      newErrors.studentName = "Student name is required";
     if (!formData.aadhaarID || formData.aadhaarID.length !== 12) {
       newErrors.aadhaarID = "Aadhaar must be 12 digits";
     }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Invalid email format";
     }
-    if (!formData.schoolName.trim()) newErrors.schoolName = "School name is required";
+    if (!formData.schoolName.trim())
+      newErrors.schoolName = "School name is required";
     if (!formData.gender) newErrors.gender = "Please select gender";
     if (!formData.category) newErrors.category = "Please select category";
-    if (!formData.bloodGroup) newErrors.bloodGroup = "Please select blood group";
+    if (!formData.bloodGroup)
+      newErrors.bloodGroup = "Please select blood group";
     if (!formData.program) newErrors.program = "Please select program";
     if (!formData.studentClass) newErrors.studentClass = "Please select class";
 
@@ -489,7 +514,7 @@ const BasicDetailsForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       setSubmitMessage("Please fill all required fields correctly");
       return;
@@ -504,85 +529,16 @@ const BasicDetailsForm = () => {
     }, 1500);
   };
 
-  const InputField = ({ icon: Icon, label, name, type = "text", placeholder, required = false, maxLength }) => (
-    <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-      <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
-        <Icon size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-        <span className="flex-1">{label}</span>
-        {required && <span className="text-[#c61d23]">*</span>}
-      </label>
-      <input
-        type={type}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-2.5 sm:p-3 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all"
-      />
-      {errors[name] && (
-        <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
-          <AlertCircle size={14} />
-          {errors[name]}
-        </div>
-      )}
-    </div>
-  );
+  useEffect(() => {
+    console.log("userData form USeffect", userData);
+    if (userData?.studentName) {
+      dispatch(fetchAdmissionApprovalMessage(userData?.acknowledgementNumber));
+    }
+  }, [userData]);
 
-  const SelectField = ({ icon: Icon, label, name, options, required = false, disabled = false }) => (
-    <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-      <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
-        <Icon size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-        <span className="flex-1">{label}</span>
-        {required && <span className="text-[#c61d23]">*</span>}
-      </label>
-      <div className="relative">
-        <select
-          name={name}
-          value={formData[name]}
-          onChange={handleChange}
-          disabled={disabled}
-          className="w-full text-sm sm:text-base appearance-none border border-gray-200 rounded-lg p-2.5 sm:p-3 pr-10 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all bg-white cursor-pointer disabled:bg-gray-50 disabled:cursor-not-allowed"
-        >
-          <option value="">Select {label}</option>
-          {options.map(option => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-        <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-      </div>
-      {errors[name] && (
-        <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
-          <AlertCircle size={14} />
-          {errors[name]}
-        </div>
-      )}
-    </div>
-  );
-
-  const YesNoField = ({ label, name }) => (
-    <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
-      <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 mb-3">
-        <UserCheck size={16} className="text-[#c61d23] sm:w-[18px] sm:h-[18px]" />
-        <span className="flex-1">{label}</span>
-      </label>
-      <div className="flex gap-4">
-        {["Yes", "No"].map(option => (
-          <label key={option} className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name={name}
-              value={option}
-              checked={formData[name] === option}
-              onChange={handleChange}
-              className="w-4 h-4 text-[#c61d23] focus:ring-[#c61d23]"
-            />
-            <span className="text-sm text-gray-700">{option}</span>
-          </label>
-        ))}
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, []);
 
   return (
     <div className="min-h-screen w-full max-w-[768px] mx-auto bg-gradient-to-br from-[#fdf5f6] via-white to-[#f5eff0]">
@@ -596,7 +552,7 @@ const BasicDetailsForm = () => {
       <div className="relative py-4 sm:py-6 md:py-8 lg:py-12">
         <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           {/* Header */}
-          {/* <div className="text-center mb-6 sm:mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <div className="inline-flex items-center justify-center mb-3 sm:mb-4">
               <div className="relative">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-xl border-4 border-[#ffdd00]/40 flex items-center justify-center bg-[#c61d23]">
@@ -613,7 +569,7 @@ const BasicDetailsForm = () => {
             <p className="text-xs sm:text-sm md:text-base text-gray-600">
               Complete your registration information
             </p>
-          </div> */}
+          </div>
 
           {/* Progress Indicator */}
           <div className="mb-6 sm:mb-8">
@@ -622,7 +578,7 @@ const BasicDetailsForm = () => {
                 Basic Information
               </h3>
               <div className="text-xs sm:text-sm text-gray-600">
-                Step 1 of 3
+                Step 1 of 5
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -635,19 +591,29 @@ const BasicDetailsForm = () => {
 
           {/* Approval Status */}
           {approvalStatus && (
-            <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
-              approvalStatus.approved 
-                ? "bg-emerald-50 border-emerald-500" 
-                : "bg-red-50 border-red-500"
-            }`}>
+            <div
+              className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
+                approvalStatus.approved
+                  ? "bg-emerald-50 border-emerald-500"
+                  : "bg-red-50 border-red-500"
+              }`}
+            >
               {approvalStatus.approved ? (
-                <CheckCircle2 size={16} className="text-emerald-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]" />
+                <CheckCircle2
+                  size={16}
+                  className="text-emerald-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]"
+                />
               ) : (
-                <AlertCircle size={16} className="text-red-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]" />
+                <AlertCircle
+                  size={16}
+                  className="text-red-500 flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]"
+                />
               )}
-              <span className={`text-xs sm:text-sm font-semibold ${
-                approvalStatus.approved ? "text-emerald-700" : "text-red-700"
-              }`}>
+              <span
+                className={`text-xs sm:text-sm font-semibold ${
+                  approvalStatus.approved ? "text-emerald-700" : "text-red-700"
+                }`}
+              >
                 {approvalStatus.message}
               </span>
             </div>
@@ -738,24 +704,32 @@ const BasicDetailsForm = () => {
               disabled={!formData.program}
             />
 
-            <YesNoField
-              label="Existing Student"
-              name="existingStudent"
-            />
+            <YesNoField label="Existing Student" name="existingStudent" />
 
             {/* Submit Message */}
             {submitMessage && (
-              <div className={`p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
-                submitMessage.includes("success")
-                  ? "bg-emerald-50 border-emerald-200"
-                  : "bg-red-50 border-red-200"
-              }`}>
-                <AlertCircle size={16} className={`flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px] ${
-                  submitMessage.includes("success") ? "text-emerald-500" : "text-red-500"
-                }`} />
-                <p className={`text-xs sm:text-sm font-semibold ${
-                  submitMessage.includes("success") ? "text-emerald-700" : "text-red-700"
-                }`}>
+              <div
+                className={`p-3 sm:p-4 rounded-xl border-2 flex items-start gap-2 sm:gap-3 ${
+                  submitMessage.includes("success")
+                    ? "bg-emerald-50 border-emerald-200"
+                    : "bg-red-50 border-red-200"
+                }`}
+              >
+                <AlertCircle
+                  size={16}
+                  className={`flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px] ${
+                    submitMessage.includes("success")
+                      ? "text-emerald-500"
+                      : "text-red-500"
+                  }`}
+                />
+                <p
+                  className={`text-xs sm:text-sm font-semibold ${
+                    submitMessage.includes("success")
+                      ? "text-emerald-700"
+                      : "text-red-700"
+                  }`}
+                >
                   {submitMessage}
                 </p>
               </div>

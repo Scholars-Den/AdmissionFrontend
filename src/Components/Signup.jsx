@@ -413,6 +413,7 @@
 import SignupForm from "./SignupForm";
 import scholarsDenLogo from "../assets/scholarsdenLogo.png";
 import SignupDetailsPage from "./SignupDetailsPage";
+import FormHeader from "./FormHeader";
 
 
 
@@ -422,7 +423,8 @@ const Signup = () => {
       {/* Header */}
       <div className="bg-white/50 backdrop-blur-sm border-b border-gray-200">
         <div className="px-4 py-3">
-          <SignupDetailsPage />
+          {/* <SignupDetailsPage /> */}
+          <FormHeader/>
         </div>
       </div>
 
@@ -435,3 +437,12 @@ const Signup = () => {
 };
 
 export default Signup;
+
+
+
+
+
+
+
+
+

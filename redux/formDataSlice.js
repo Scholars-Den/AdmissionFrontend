@@ -56,7 +56,7 @@ export const fetchUserDetails = createAsyncThunk(
             fatherDob: data?.fatherDob || "",
             fatherBloodGroup: data?.fatherBloodGroup || "",
             fatherOccupations: data?.fatherOccupations || "",
-             fatherContactNumber : data?.fatherContactNumber,
+            fatherContactNumber : data?.fatherContactNumber,
             motherContactNumber : data?.motherContactNumber,
             motherName: data?.motherName || "",
             motherAadhaarID: data?.motherAadhaarID || "",

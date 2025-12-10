@@ -25,6 +25,8 @@ import ExistingStudent from "./Components/ExistingStudent/ExistingStudent";
 import PaymentCompleted from "./Components/AdminView/PaymentCompleted";
 import AccountsDashboard from "./Components/AccountsView/AccountsDashboard";
 import AddressComponent from "./Components/AddressComponent";
+import AlreadyExistStudent from "./Components/ExistingStudent/AlreadyExistStudent";
+import FamilyDetails from "./Components/FamilyDetails";
 
 
 function App() {
@@ -39,7 +41,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Signup />} />
-          <Route path="/alreadyExist" element={<ExistingStudent />} />
+          <Route path="/alreadyExist" element={<AlreadyExistStudent />} />
           <Route path="/basicDetails" element={<BasicDetailsPage />} />
           <Route
             path="/termsAndConditions"
@@ -51,7 +53,7 @@ function App() {
             path="/familyDetails"
             element={
               <ProtectedRouteForStudent>
-                <FamilyComponents />
+                <FamilyDetails />
               </ProtectedRouteForStudent>
             }
           />
