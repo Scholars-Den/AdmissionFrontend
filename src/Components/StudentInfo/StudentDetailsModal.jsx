@@ -130,6 +130,10 @@ const StudentDetailsModal = ({
 
           {/* Footer */}
 
+          {console.log("admissionStatus.data.status", admisionStatus)}
+          {console.log("selectedStudent", selectedStudent)}
+
+
           <div className="flex justify-end">
             {(admisionStatus?.data?.status !== "approved" &&
               admisionStatus?.data?.status !== "successful") && (

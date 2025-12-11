@@ -1393,11 +1393,11 @@ const AdminComponent = () => {
                   Assign Counsellor *
                 </label>
                 <div className="relative">
-                  <UserCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  {/* <UserCheck className="absolute left-3  top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /> */}
                   <select
                     value={consellorAssign || ""}
                     onChange={onChangeOptions}
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffdd00]/30 focus:border-[#ffdd00] transition-all text-gray-900"
+                    className="w-full pl-10 pr-4 py-3 px-7 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ffdd00]/30 focus:border-[#ffdd00] transition-all text-gray-900"
                   >
                     <option value="">Select a counsellor...</option>
                     {options.map((option) => (

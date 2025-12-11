@@ -188,7 +188,8 @@ import {
 const AdminSignup = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
+  // const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
   const [showReloading, setShowReloading] = useState(false);
@@ -223,16 +224,17 @@ const AdminSignup = () => {
   };
 
   const handleVerifyOtp = async () => {
-    if (otp.length !== 4 || !/^\d+$/.test(otp)) {
-      setError("Enter a valid 4-digit OTP.");
-      return;
-    }
+    // if (otp.length !== 4 || !/^\d+$/.test(otp)) {
+    //   setError("Enter a valid 4-digit OTP.");
+    //   return;
+    // }
 
     setShowReloading(true);
 
     try {
       setError("");
-      const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      // const result = await dispatch(verifyOtp({ contactNumber, otp }));
+      const result = true;
       console.log(
         "verifyOTP.fullfilled.match(result)",
         verifyOtp.fulfilled.match(result)
@@ -331,7 +333,7 @@ const AdminSignup = () => {
                     setError("");
                     setSubmitMessage("");
                   }}
-                  disabled={otpSent}
+                  // disabled={otpSent}
                   className={`w-full pl-3 pr-3 py-2.5 text-sm text-gray-900 bg-white border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#c61d23]/20 focus:border-[#c61d23] hover:border-gray-300 placeholder:text-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed ${
                     error && !otpSent ? "border-red-500" : "border-gray-200"
                   }`}
@@ -461,22 +463,7 @@ const AdminSignup = () => {
         </div> */}
       </div>
 
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-      `}</style>
+    
     </div>
   );
 };

@@ -275,7 +275,6 @@ export const submitFormData = createAsyncThunk(
         formData
       );
 
-      document.cookie = `token=${response.data.token}`;
 
       console.log("response from submitsuserDetails", response);
 

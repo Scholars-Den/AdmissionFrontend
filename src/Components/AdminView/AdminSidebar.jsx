@@ -93,32 +93,18 @@
 
 // export default AdminSidebar;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
-  LogOut, 
+import {
+  Clock,
+  CheckCircle2,
+  XCircle,
+  LogOut,
   User,
   GraduationCap,
-  X
-} from 'lucide-react';
+  X,
+} from "lucide-react";
 import { fetchAdminDetails } from "../../../redux/adminDetailsSlice";
 
 const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -138,9 +124,19 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       { to: "/cashierDashboard", text: "Approved", icon: CheckCircle2 },
       { to: "/amountPaid", text: "Paid", icon: CheckCircle2 },
     ],
-    counsellor: [{ to: "/consellorDashboard", text: "Assigned", icon: CheckCircle2 }],
-    accounts: [{ to: "/accountsDashboard", text: "Amount Paid", icon: CheckCircle2 }],
-    admissionHead: [{ to: "/admissionHeadDasboard", text: "Admission Taken", icon: CheckCircle2 }],
+    counsellor: [
+      { to: "/consellorDashboard", text: "Assigned", icon: CheckCircle2 },
+    ],
+    accounts: [
+      { to: "/accountsDashboard", text: "Amount Paid", icon: CheckCircle2 },
+    ],
+    admissionHead: [
+      {
+        to: "/admissionHeadDasboard",
+        text: "Admission Taken",
+        icon: CheckCircle2,
+      },
+    ],
   };
 
   const handleLogout = () => {
@@ -163,13 +159,15 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   return (
-    <div className={`
+    <div
+      className={`
       fixed lg:relative inset-y-0 left-0 z-50
       w-64 bg-gradient-to-b from-[#c61d23] to-[#a01818]
       transform transition-transform duration-300 ease-in-out
-      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       flex flex-col shadow-2xl
-    `}>
+    `}
+    >
       {/* Logo Section */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center justify-between mb-4">
@@ -179,10 +177,12 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="flex flex-col">
               <span className="text-white font-bold text-lg">Scholars Den</span>
-              <span className="text-white/70 text-xs">{formatRoleName(role)}</span>
+              <span className="text-white/70 text-xs">
+                {formatRoleName(role)}
+              </span>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-white/70 hover:text-white transition-colors"
           >
@@ -192,10 +192,14 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
           <div className="flex items-center gap-2">
             <User className="w-4 h-4 text-white/70" />
-            <span className="text-white text-sm font-medium truncate">{adminDetails?.name}</span>
+            <span className="text-white text-sm font-medium truncate">
+              {adminDetails?.name}
+            </span>
           </div>
         </div>
       </div>
+
+      {console.log("sidebarElementList ", sidebarElementList)}
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -210,9 +214,10 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
               className={`
                 w-full flex items-center gap-3 px-4 py-3 rounded-xl
                 transition-all duration-200 font-medium text-sm
-                ${isActive 
-                  ? 'bg-white text-[#c61d23] shadow-lg' 
-                  : 'text-white/90 hover:bg-white/10 hover:text-white'
+                ${
+                  isActive
+                    ? "bg-white text-[#c61d23] shadow-lg"
+                    : "text-white/90 hover:bg-white/10 hover:text-white"
                 }
               `}
             >
@@ -225,7 +230,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Logout */}
       <div className="p-4 border-t border-white/10">
-        <button 
+        <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
         >

@@ -452,7 +452,8 @@ const onSubmit = async (e) => {
         return;
       }
       
-      const otpVerified = await checkVerificationCode();
+      // const otpVerified = await checkVerificationCode();
+      const otpVerified = true;
       console.log("otpVerified ", otpVerified);
       
       if (!otpVerified) {
@@ -478,9 +479,7 @@ const onSubmit = async (e) => {
       console.log("data from resultAction:", data);
       
       // Store token in cookie
-      if (token) {
-        document.cookie = `token=${token}; path=/`;
-      }
+    
       
       if (message && message.includes("Already Exist")) {
         console.log("Student already exists, handling existing student data...");

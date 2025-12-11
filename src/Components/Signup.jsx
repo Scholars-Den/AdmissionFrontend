@@ -419,7 +419,7 @@ import FormHeader from "./FormHeader";
 
 const Signup = () => {
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-br from-[#fdf5f6] via-white to-[#f5eff0] overflow-hidden">
+    <div className="mx-auto max-w-3xl h-screen flex flex-col bg-gradient-to-br from-[#fdf5f6] via-white to-[#f5eff0] overflow-hidden">
       {/* Header */}
       <div className="bg-white/50 backdrop-blur-sm border-b border-gray-200">
         <div className="px-4 py-3">

@@ -37,7 +37,9 @@ const AlreadyExistStudent = () => {
         if (!userData || !userData.fatherContactNumber) {
           console.log("userData is empty, fetching from token...");
           const response = await axios.get("/user/me");
-          
+
+          console.log("responser from useEffect", response);
+
           if (response.data && response.data.fatherContactNumber) {
             console.log("Fetched userData from token:", response.data);
           }
@@ -54,9 +56,10 @@ const AlreadyExistStudent = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      
-      const number = userData?.fatherContactNumber || userData?.studentContactNumber;
-      
+
+      const number =
+        userData?.fatherContactNumber || userData?.studentContactNumber;
+
       console.log("useEffect from alreadyExistStudent number ", number);
       console.log("useEffect from alreadyExistStudent userData", userData);
 
@@ -69,11 +72,14 @@ const AlreadyExistStudent = () => {
       } else {
         console.warn("No contact number available to fetch students");
       }
-      
+
       setIsLoading(false);
     };
 
-    if (userData && (userData.fatherContactNumber || userData.studentContactNumber)) {
+    if (
+      userData &&
+      (userData.fatherContactNumber || userData.studentContactNumber)
+    ) {
       fetchData();
     } else {
       setIsLoading(false);
@@ -120,7 +126,7 @@ const AlreadyExistStudent = () => {
   const handleCardClick = (student) => {
     setSelectedStudent(student);
     console.log("Student from handleCardClick", student);
-    
+
     if (student?.acknowledgementNumber) {
       fetchAdmissionMessage(student.acknowledgementNumber);
     }
@@ -142,11 +148,14 @@ const AlreadyExistStudent = () => {
       const data = {
         acknowledgementNumber: selectedStudent.acknowledgementNumber,
       };
-      const response = await axios.post("/admissions/editAdmissionDetails", data);
+      const response = await axios.post(
+        "/admissions/editAdmissionDetails",
+        data
+      );
 
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
       document.cookie = `token=${response.data.token}; path=/`;
-      
+
       navigate("/basicDetails");
       console.log("response from handleEditClick", response);
     } catch (error) {
@@ -175,7 +184,7 @@ const AlreadyExistStudent = () => {
       );
 
       console.log("CreateNewAdmission from createNewUser", createNewAdmission);
-      
+
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
       document.cookie = `token=${createNewAdmission.data.token}; path=/`;
 
@@ -214,7 +223,8 @@ const AlreadyExistStudent = () => {
             No Contact Information
           </h3>
           <p className="text-gray-600 mb-6">
-            We couldn't find any contact information associated with your account.
+            We couldn't find any contact information associated with your
+            account.
           </p>
           <button
             onClick={() => navigate("/")}
@@ -228,7 +238,7 @@ const AlreadyExistStudent = () => {
   }
 
   return (
-    <div className="bg-[#fdf5f6] p-1 sm:p-10 overflow-auto min-h-screen">
+    <div className="mx-auto max-w-3xl bg-[#fdf5f6] p-1 sm:p-10 overflow-auto min-h-screen">
       {/* Header */}
       <div className="sticky top-0 z-40 backdrop-blur-md bg-white/70 border-b border-gray-100 -mx-1 sm:-mx-10 px-1 sm:px-10 py-6 mb-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -347,7 +357,7 @@ const AlreadyExistStudent = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedStudent(student);
-                        handleEditClick();
+                        // handleEditClick();
                       }}
                       className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-all duration-300 border border-gray-200 hover:border-gray-300 flex items-center justify-center gap-2"
                     >
