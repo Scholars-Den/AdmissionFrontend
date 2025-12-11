@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-#root {
+/* #root {
   max-width: 768px;
   margin: 0 auto;
   padding: 0;
@@ -14,7 +14,7 @@
   position: relative;
   
 
-}
+} */
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
