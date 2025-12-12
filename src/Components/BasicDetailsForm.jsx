@@ -567,7 +567,7 @@ const BasicDetailsForm = () => {
               Student Details
             </h2>
             <p className="text-xs sm:text-sm md:text-base text-gray-600">
-              Complete your registration information
+              Complete your admission information
             </p>
           </div>
 

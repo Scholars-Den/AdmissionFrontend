@@ -20,6 +20,10 @@ const AdmissionHeadComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const batchAuthToken = import.meta.env.Batch_Auth_Token;
+
+  console.log("batchAuthToken", batchAuthToken);
+
   const fetchApprovedData = async (page = 1) => {
     try {
       const response = await axios.get(`/approval/paid?page=${page}`);
@@ -38,8 +42,7 @@ const AdmissionHeadComponent = () => {
   const getBatch = async () => {
     const response = await fetch("https://erptestapi.scholarsden.in/batches", {
       headers: {
-        Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwOTE2NTM1LCJpYXQiOjE3NTA4MzAxMzUsImp0aSI6ImU5ZDMzODY2OWYxMDRhNjliZTkwOThmODUwNzczNTk5IiwidXNlcl9pZCI6MX0.ZmFsyLn1j2OfuBXgsOFEavNRbwa83gZqVe9eEQ8RYHQ",
+        Authorization: `JWT ${batchAuthToken}`,
       },
     });
 

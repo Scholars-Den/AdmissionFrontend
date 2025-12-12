@@ -18,7 +18,7 @@ const FormHeader = ({ heading = "" }) => {
         <div className="flex">
           <div className="flex flex-col justify-between w-full text-xs sm:text-lg">
             <div className="">
-              <h4 className=" ">Please fill your Registration Form</h4>
+              <h4 className=" ">Please fill your Admission Form</h4>
             </div>
 
             <div className="font-semibold">TRUST . CARE . HONESTY</div>
