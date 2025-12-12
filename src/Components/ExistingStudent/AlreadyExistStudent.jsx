@@ -30,27 +30,27 @@ const AlreadyExistStudent = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch user data from token on mount if userData is empty
-  useEffect(() => {
-    const fetchUserDataFromToken = async () => {
-      try {
-        if (!userData || !userData.fatherContactNumber) {
-          console.log("userData is empty, fetching from token...");
-          const response = await axios.get("/user/me");
+  // // Fetch user data from token on mount if userData is empty
+  // useEffect(() => {
+  //   const fetchUserDataFromToken = async () => {
+  //     try {
+  //       if (!userData || !userData.fatherContactNumber) {
+  //         console.log("userData is empty, fetching from token...");
+  //         const response = await axios.get("/user/me");
 
-          console.log("responser from useEffect", response);
+  //         console.log("responser from useEffect", response);
 
-          if (response.data && response.data.fatherContactNumber) {
-            console.log("Fetched userData from token:", response.data);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user data from token:", error);
-      }
-    };
+  //         if (response.data && response.data.fatherContactNumber) {
+  //           console.log("Fetched userData from token:", response.data);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data from token:", error);
+  //     }
+  //   };
 
-    fetchUserDataFromToken();
-  }, []);
+  //   fetchUserDataFromToken();
+  // }, []);
 
   // Fetch existing students when userData is available
   useEffect(() => {

@@ -1,12 +1,5 @@
-import React from "react";
-import LoginSugnupPageImg from "../assets/LoginSugnupPageImg.png";
-import whatsapp from "../assets/whatsapp.png";
-import facebook from "../assets/facebook.png";
-import twitter from "../assets/twitter.png";
-import { Link } from "react-router-dom";
 
-import { Form } from "react-router-dom";
-import { User } from "lucide-react";
+import LoginSugnupPageImg from "../assets/LoginSugnupPageImg.png";
 
 // const SignupDetailsPage = () => {
 //   return (

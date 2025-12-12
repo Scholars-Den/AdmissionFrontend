@@ -240,7 +240,8 @@ const AdminSignup = () => {
         verifyOtp.fulfilled.match(result)
       );
       console.log("result", result);
-      if (verifyOtp.fulfilled.match(result)) {
+      // if (verifyOtp.fulfilled.match(result)) {
+      if (result) {
         setSubmitMessage("OTP verified successfully.");
         const isLogin = await dispatch(submitAdminDetails(contactNumber));
         console.log(
